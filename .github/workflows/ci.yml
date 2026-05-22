@@ -1,0 +1,58 @@
+name: CI · 한지 위 검증
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: 빌드 · 타입 · 린트
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: Node 환경 준비
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 린트
+        run: npm run lint --if-present
+
+      - name: 타입 체크
+        run: npx tsc --noEmit
+
+      - name: 프로덕션 빌드
+        run: npm run build
+        env:
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+
+  korean-design-guard:
+    name: 단청 5% · 한지 톤 검증
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 순백 #FFFFFF 사용 검사
+        run: |
+          ! grep -rE "background.*#?[fF]{6}\b|background.*#[fF]{3}\b" \
+            --include="*.tsx" --include="*.ts" --include="*.css" \
+            app/ src/ public/satgat/ \
+            | grep -v "node_modules" | grep -v "// .*permit" \
+            && echo "✓ 순백 사용 없음" || (echo "✗ 한지 위에 순백 사용 감지" && exit 1)
+
+      - name: TsangerJinKai · Charter 유료 폰트 의존 검사
+        run: |
+          ! grep -rE "TsangerJinKai|Charter[^a-z]" \
+            --include="*.tsx" --include="*.ts" --include="*.css" --include="*.html" \
+            app/ src/ public/satgat/satgat-ko.html public/satgat/overrides.css \
+            && echo "✓ 유료 폰트 의존 없음" || (echo "✗ 유료 폰트 의존 감지" && exit 1)
