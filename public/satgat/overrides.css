@@ -1,0 +1,1408 @@
+/* ═════════════════════════════════════════════════════════════════════════
+ *  삿갓 — 우리만의 디자인 시스템 (한지·먹·단청)
+ *  v2 · 2026-05-16
+ *
+ *  핵심 원칙
+ *   ① 한지(韓紙) — 따뜻한 크림. Kami의 누리끼리 #F5F4ED 가 아니다.
+ *   ② 닥섬유(楮纖維) 질감 — 단순 노이즈가 아닌 결을 가진 종이
+ *   ③ 단청(丹靑) — 단 하나의 강조색, 5% 이내
+ *   ④ 명조(明朝)가 위계 — 굵기와 크기로 위계, 장식 금지
+ *   ⑤ 한글 가독성 우선 — Latin보다 넉넉한 행간·자간
+ * ═════════════════════════════════════════════════════════════════════════ */
+
+/* ─── 무료 한국어 폰트 (Google Fonts OFL) ─────────────────────────────────
+ *   Nanum Myeongjo  · Display·H1 (장중한 명조 800)
+ *   Gowun Batang    · 본문 (따뜻한 바탕 400/700)
+ *   Gowun Dodum     · UI·라벨 (정갈한 돋움 400)
+ *   Cormorant       · Latin display italic 페어링
+ *   Pretendard      · fallback variable sans
+ * ───────────────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  토큰 — html[lang='ko']
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] {
+  /* ── 한지(韓紙) — 우리의 캔버스 v3 ────────────────────────────────────
+   *  Kami parchment #F5F4ED (누리끼리, yellow-tan) 폐기.
+   *  v2: #F4F0E4 (담황 → 크림) — 너무 균질
+   *  v3: #F1ECDF (살짝 깊이) — 한국 백한지 실측값
+   *      hex 분해 R241 G236 B223 — H≈45° S≈25% L≈91%
+   *      Kami(R245 G244 B237) 대비 적·녹 비중 미세 조정으로
+   *      한국 한지 특유의 약간 차분한 따스함 구현.
+   * ─────────────────────────────────────────────────────────────────── */
+  /* v10 — 진짜 백한지(白韓紙). 노란기 제거 near-white.
+   *  사진 reference 백한지 close-up = near-white + tan fibers.
+   *  v9 (#F2EDDF) 아직 노란기 — 폐기.
+   *  v10 (#F5F2EA) 진짜 백한지. R245 G242 B234 — H42° S22% L94%.
+   *  거의 white이되 살짝 따스함. 닥섬유 tan #a89776 위에 얹힌다.
+   * ─────────────────────────────────────────────────────────────────── */
+  --parchment: #f5f2ea;       /* 백한지 v10 — 진짜 한지 톤 */
+  --hanji: #f5f2ea;            /* alias */
+  --baekja: #f5f2ea;           /* 백자(白磁) */
+  --buncheong: #ebe6d8;        /* 분청 짙은 톤 — 카드 음영 */
+  --ivory: #faf7f0;            /* 이보리 — 한지 위 한 톤 밝은 surface */
+  --warm-sand: #ddd6c3;        /* 황지(黃紙) — 인터랙티브 표면 */
+  --hanji-shadow: #d8d2bf;     /* 한지 그늘 — 카드 음영 */
+  --hanji-bright: #fbf8f0;     /* 한지 결 밝은 부분 */
+  --hanji-deep: #d8d1bd;       /* 닥섬유 클러스터 진한 영역 */
+  --sumuk-ink: #0a0907;        /* 수묵 먹 — 가장 진한 brush stroke */
+
+  /* ── 색동(色동) 오방색 — 한국 전통 무지개 ───────────────────────────── */
+  --saekdong-blue: #2d4e7a;    /* 청(靑) — 색동 첫 줄 */
+  --saekdong-red: #b91c5c;     /* 적(赤) — 무궁화 단심 */
+  --saekdong-yellow: #d4a737;  /* 황(黃) — 색동 셋째 줄 */
+  --saekdong-green: #2e6b5e;   /* 녹(綠) — 청죽 */
+  --saekdong-black: #1c1916;   /* 흑(黑) — 먹 */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   *  무궁화(無窮花) — 메인 브랜드 색
+   *  한국 국화(國花). 단심(丹心) 진한 자주가 페이지의 시선을 모은다.
+   *  단청 적색보다 분홍이 살아 있어, 한국 정체성을 더 직접 환기.
+   * ═══════════════════════════════════════════════════════════════════ */
+  --brand: #b91c5c;            /* 무궁화 단심(丹心) — 메인 강조 */
+  --brand-light: #d03f7a;      /* hover · 다크 위 링크 */
+  --brand-deep: #8e1242;       /* 강조 진하기 — h2 borderbar 등 */
+  --brand-tint: #f6d5de;       /* 무궁화 꽃잎 — tag 배경 light */
+
+  --mugunghwa: #b91c5c;        /* alias */
+  --mugunghwa-petal: #f6d5de;  /* 꽃잎 색 — 가장 옅은 tint */
+  --mugunghwa-pale: #fae5ea;   /* 가장자리 흰빛 */
+  --mugunghwa-mid: #e889a4;    /* 중간 분홍 */
+  --mugunghwa-deep: #8e1242;   /* 단심 가장 진하기 */
+
+  /* ── 단청(丹靑) — 조선왕실 적색, 보조 액센트로 보존 ─────────────────── */
+  --dancheong: #9b1b1b;        /* 단청 — 사군자 매(梅)·인장·전통 표지 */
+  --dancheong-light: #b53030;
+  --dancheong-tint: #f0d9d3;
+
+  /* ── 취색(翠色) — 청자 깊이, 보조 강조 ───────────────────────────────── */
+  --jade: #2e6b5e;
+  --jade-light: #3d8b7a;
+  --jade-tint: #d8e3df;
+
+  /* ── 금박(金箔) — 절제된 고급감 ─────────────────────────────────────── */
+  --gold: #b8954f;
+  --gold-light: #d4b76a;
+  --gold-tint: #ede3cc;
+
+  /* ── 먹(墨) 계열 — warm black, cool gray 금지 ────────────────────────── */
+  --near-black: #1c1916;       /* 먹 본색 */
+  --dark-warm: #3a3833;        /* 부엽 */
+  --olive: #4d4b46;            /* 숯 */
+  --stone: #6b6862;            /* 이끼 */
+  --olive-soft: #807c75;       /* 옅은 이끼 */
+
+  /* ── 엷음(淡) — 보더·구분선 ─────────────────────────────────────────── */
+  --border: #ddd6c4;
+  --border-soft: #e8e2d0;
+  --hairline: #d2cab5;
+
+  /* ═══════════════════════════════════════════════════════════════════
+   *  사계(四季) — 한국 절기 색
+   *  봄·여름·가을·겨울 각 한 점 색. 시즌별 강조에 단청 대신 사용 가능.
+   * ═══════════════════════════════════════════════════════════════════ */
+  --season-spring: #8ba888;  /* 봄 — 새순 (春) 연녹 */
+  --season-summer: #2e6b5e;  /* 여름 — 청죽 (夏) 취색 */
+  --season-autumn: #b8593a;  /* 가을 — 단풍 (秋) 다홍 */
+  --season-winter: #1c1916;  /* 겨울 — 먹 (冬) 깊은 흑 */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   *  오방색(五方色) — 동·서·남·북·중앙
+   *  한국 전통 우주관 색채. 단청은 五方 중 남(南) 적색에 해당.
+   * ═══════════════════════════════════════════════════════════════════ */
+  --obangsaek-blue: #2d4e7a;   /* 동방(東) 청(靑) */
+  --obangsaek-white: #f1ecdf;  /* 서방(西) 백(白) — 한지 */
+  --obangsaek-red: #b91c5c;    /* 남방(南) 적(赤) — 무궁화 단심 */
+  --obangsaek-black: #1c1916;  /* 북방(北) 흑(黑) — 먹 */
+  --obangsaek-yellow: #b8954f; /* 중앙(中) 황(黃) — 금박 */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   *  정서(情緖) 어휘 → 색 매핑
+   *  한국 정서 4 결: 한(恨)·정(情)·기(氣)·결(結)
+   * ═══════════════════════════════════════════════════════════════════ */
+  --emotion-han: #4d4b46;    /* 한(恨) — 깊은 숯, 응축된 슬픔 */
+  --emotion-jeong: #b8593a;  /* 정(情) — 따뜻한 다홍, 머무는 마음 */
+  --emotion-gi: #2e6b5e;     /* 기(氣) — 청죽, 흐르는 생기 */
+  --emotion-gyeol: #1c1916;  /* 결(結) — 먹, 무늬와 단정함 */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   *  여백(餘白) 스케일 — 한국 회화의 호흡
+   *  Kami spacing(4pt)보다 여유롭게. 8pt × 무한.
+   * ═══════════════════════════════════════════════════════════════════ */
+  --yeobaek-breath: 8pt;     /* 한 호흡 */
+  --yeobaek-pause: 16pt;     /* 한 마디 */
+  --yeobaek-verse: 32pt;     /* 한 행 (시조 한 장) */
+  --yeobaek-stanza: 64pt;    /* 한 연 (시조 전체) */
+  --yeobaek-page: 96pt;      /* 한 폭 (산수화 페이지) */
+  --yeobaek-scroll: 144pt;   /* 두루마리 펼침 */
+
+  /* ═══════════════════════════════════════════════════════════════════
+   *  문창살(門窓) 격자 — 한옥 창살 9궁 SVG 패턴
+   *  한지 위 옅게 깔리는 배경 보조. 정보 영역에는 사용 금지.
+   * ═══════════════════════════════════════════════════════════════════ */
+  --texture-changsal-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg stroke='%231c1916' stroke-width='0.5' fill='none' opacity='0.06'%3E%3Cline x1='0' y1='40' x2='120' y2='40'/%3E%3Cline x1='0' y1='80' x2='120' y2='80'/%3E%3Cline x1='40' y1='0' x2='40' y2='120'/%3E%3Cline x1='80' y1='0' x2='80' y2='120'/%3E%3C/g%3E%3C/svg%3E");
+  --texture-changsal-strong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg stroke='%231c1916' stroke-width='0.8' fill='none' opacity='0.12'%3E%3Cline x1='0' y1='40' x2='120' y2='40'/%3E%3Cline x1='0' y1='80' x2='120' y2='80'/%3E%3Cline x1='40' y1='0' x2='40' y2='120'/%3E%3Cline x1='80' y1='0' x2='80' y2='120'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* ── 폰트 스택 ──────────────────────────────────────────────────────── */
+  --serif:
+    'Gowun Batang', 'Nanum Myeongjo', AppleMyungjo,
+    'Noto Serif KR', 'Source Han Serif K', 'Batang',
+    Georgia, serif;
+  --serif-display:
+    'Nanum Myeongjo', AppleMyungjo, 'Noto Serif KR',
+    'Source Han Serif K', Georgia, serif;
+  --serif-latin:
+    'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans:
+    'Gowun Dodum', 'Pretendard Variable', Pretendard,
+    -apple-system, BlinkMacSystemFont, system-ui,
+    'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+    sans-serif;
+  --mono:
+    'JetBrains Mono', 'IBM Plex Mono', 'Fira Code',
+    'SF Mono', Consolas, Monaco, monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  한지 캔버스 v6 — 분청 톤 + 한국 시각 어휘
+ *  Kami parchment 완전 단절. 단순 cream 평면이 아닌 한국 도자 + 색동 + 무궁화.
+ *  9층 합성:
+ *   ① 분청 베이스 #EAE4D0 (회색 머금은 한국 도자색)
+ *   ② 중앙 가마 빛 — 백자 유백 살짝 밝게
+ *   ③ 좌상 청자 그늘 + 우하 무궁화 잔향
+ *   ④ 거대 무궁화 watermark — 한국 정체성 핵심 (보이는 크기)
+ *   ⑤ 창호지 9궁 격자 — 한옥 창살
+ *   ⑥ 닥섬유 fractal — 한지 결
+ *   ⑦ 도자기 grain — 입자감
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] body {
+  /* 진짜 한지 — 사진 reference 기반 닥섬유 strokes.
+   * only-flower.tistory.com/82 백한지 close-up 참조.
+   * 30+ scattered 긴 fiber lines + 작은 spots + 안개띠 grain.
+   * 종이 자체로 보이도록 fiber visibility 우선.
+   */
+  background-color: var(--parchment);
+  background-image:
+    /* ① 닥섬유 stroke 큰 결 — 30 strokes per 720px tile, 길게 흩어진 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720' viewBox='0 0 720 720'%3E%3Cg stroke='%23a89776' fill='none' stroke-linecap='round'%3E%3Cline x1='30' y1='50' x2='220' y2='45' stroke-width='0.7' opacity='0.5'/%3E%3Cline x1='180' y1='90' x2='420' y2='95' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='450' y1='40' x2='680' y2='55' stroke-width='0.6' opacity='0.4'/%3E%3Cline x1='50' y1='120' x2='280' y2='128' stroke-width='0.4' opacity='0.5'/%3E%3Cline x1='320' y1='140' x2='560' y2='135' stroke-width='0.55' opacity='0.42'/%3E%3Cline x1='600' y1='115' x2='710' y2='125' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='80' y1='180' x2='200' y2='178' stroke-width='0.45' opacity='0.45'/%3E%3Cline x1='240' y1='190' x2='480' y2='198' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='510' y1='180' x2='700' y2='190' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='30' y1='240' x2='180' y2='248' stroke-width='0.55' opacity='0.45'/%3E%3Cline x1='220' y1='260' x2='440' y2='255' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='470' y1='250' x2='680' y2='258' stroke-width='0.45' opacity='0.48'/%3E%3Cline x1='60' y1='310' x2='240' y2='318' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='290' y1='320' x2='510' y2='312' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='540' y1='310' x2='710' y2='320' stroke-width='0.55' opacity='0.45'/%3E%3Cline x1='40' y1='380' x2='220' y2='388' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='260' y1='390' x2='480' y2='385' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='520' y1='378' x2='700' y2='386' stroke-width='0.4' opacity='0.42'/%3E%3Cline x1='30' y1='440' x2='250' y2='448' stroke-width='0.55' opacity='0.46'/%3E%3Cline x1='290' y1='460' x2='510' y2='455' stroke-width='0.45' opacity='0.4'/%3E%3Cline x1='540' y1='448' x2='710' y2='458' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='80' y1='510' x2='240' y2='518' stroke-width='0.6' opacity='0.48'/%3E%3Cline x1='280' y1='520' x2='460' y2='515' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='500' y1='510' x2='680' y2='518' stroke-width='0.45' opacity='0.4'/%3E%3Cline x1='40' y1='570' x2='200' y2='578' stroke-width='0.55' opacity='0.5'/%3E%3Cline x1='240' y1='580' x2='460' y2='572' stroke-width='0.6' opacity='0.46'/%3E%3Cline x1='500' y1='570' x2='700' y2='580' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='30' y1='630' x2='220' y2='640' stroke-width='0.45' opacity='0.45'/%3E%3Cline x1='260' y1='648' x2='480' y2='638' stroke-width='0.55' opacity='0.48'/%3E%3Cline x1='520' y1='640' x2='700' y2='648' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='100' y1='690' x2='280' y2='698' stroke-width='0.6' opacity='0.45'/%3E%3Cline x1='320' y1='700' x2='540' y2='692' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='580' y1='698' x2='710' y2='708' stroke-width='0.45' opacity='0.43'/%3E%3C/g%3E%3Cg fill='%23a89776'%3E%3Ccircle cx='150' cy='75' r='1.2' opacity='0.42'/%3E%3Ccircle cx='380' cy='110' r='0.9' opacity='0.38'/%3E%3Ccircle cx='580' cy='160' r='1.3' opacity='0.4'/%3E%3Ccircle cx='110' cy='285' r='1' opacity='0.45'/%3E%3Ccircle cx='350' cy='340' r='0.8' opacity='0.35'/%3E%3Ccircle cx='620' cy='400' r='1.4' opacity='0.42'/%3E%3Ccircle cx='180' cy='495' r='1.1' opacity='0.4'/%3E%3Ccircle cx='450' cy='600' r='0.9' opacity='0.38'/%3E%3Ccircle cx='640' cy='660' r='1.2' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E"),
+    /* ② 닥섬유 짧은 다발 — 더 진한 cluster 작게 흩뿌림 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'%3E%3Cg stroke='%238a7656' fill='none' stroke-linecap='round'%3E%3Cline x1='40' y1='80' x2='95' y2='85' stroke-width='0.4' opacity='0.45'/%3E%3Cline x1='45' y1='84' x2='90' y2='88' stroke-width='0.3' opacity='0.4'/%3E%3Cline x1='220' y1='180' x2='280' y2='178' stroke-width='0.35' opacity='0.42'/%3E%3Cline x1='225' y1='184' x2='275' y2='182' stroke-width='0.3' opacity='0.38'/%3E%3Cline x1='100' y1='280' x2='160' y2='284' stroke-width='0.4' opacity='0.45'/%3E%3Cline x1='105' y1='284' x2='155' y2='288' stroke-width='0.3' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E"),
+    /* ③ 한지 안개띠 — 가로결 옅게 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cfilter id='hanjiMist'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.42' numOctaves='4' seed='29' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.22 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23hanjiMist)' opacity='0.08'/%3E%3C/svg%3E"),
+    /* ④ 미세 grain — 종이 입자 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23paperGrain)' opacity='0.018'/%3E%3C/svg%3E");
+  background-size:
+    720px 720px,
+    360px 360px,
+    600px 600px,
+    220px 220px;
+  background-attachment: fixed, fixed, fixed, fixed;
+  background-repeat: repeat, repeat, repeat, repeat;
+}
+
+/* 수묵 히어로 ink splash + brush stroke 폐기 — invitation 페이지로 leak.
+ * 색동·단청 ribbon으로 정체성 충분. */
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  한글 가독성 미세 조정
+ *  핵심: Latin보다 넉넉한 행간 + 약한 자간 + word-break: keep-all
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] {
+  word-break: keep-all;
+  word-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'palt' 1, 'kern' 1;
+}
+
+/* 한글 본문은 바탕(Gowun Batang) 세리프 — Kami의 sans 기본을 override */
+html[lang='ko'] body,
+html[lang='ko'] main {
+  font-family: var(--serif);
+}
+
+/* 한글 본문 행간 — Kami(1.45-1.55) 보다 넉넉 */
+html[lang='ko'] body,
+html[lang='ko'] p,
+html[lang='ko'] li,
+html[lang='ko'] dd,
+html[lang='ko'] td,
+html[lang='ko'] blockquote {
+  font-family: var(--serif);
+  line-height: 1.72;
+  letter-spacing: -0.005em;
+}
+
+/* 한글 제목 — 묵직한 무게감 + 자간 조이기 */
+html[lang='ko'] h1,
+html[lang='ko'] h2,
+html[lang='ko'] h3,
+html[lang='ko'] h4 {
+  font-family: var(--serif-display);
+  font-weight: 800;
+  letter-spacing: -0.018em;
+  line-height: 1.18;
+  word-break: keep-all;
+  text-shadow:
+    0 0 0.3px rgba(28, 25, 22, 0.10),
+    0 0 0.7px rgba(28, 25, 22, 0.05);
+}
+html[lang='ko'] h3,
+html[lang='ko'] h4 {
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+}
+
+/* 영문/숫자 inline — Latin italic 페어링 */
+html[lang='ko'] em.latin,
+html[lang='ko'] .latin-italic,
+html[lang='ko'] em[lang='en'] {
+  font-family: var(--serif-latin);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+/* UI 라벨 — 돋움 + uppercase + 자간 넓힘 */
+html[lang='ko'] .section-num,
+html[lang='ko'] .eyebrow,
+html[lang='ko'] .label,
+html[lang='ko'] .hero-tokens b {
+  font-family: var(--sans);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Body small — 캡션 톤 */
+html[lang='ko'] .section-lede,
+html[lang='ko'] .demo-desc,
+html[lang='ko'] dd {
+  font-family: var(--serif);
+  line-height: 1.72;
+  letter-spacing: -0.003em;
+  color: var(--dark-warm);
+}
+
+/* 코드 블록 — mono 그대로, 한지 위 부드러운 cream bg */
+html[lang='ko'] pre.code,
+html[lang='ko'] code {
+  font-family: var(--mono);
+}
+html[lang='ko'] pre.code {
+  background: var(--ivory);
+  border: 1px solid var(--border-soft);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  인장(印章) seal — 우리 시스템 확장
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .satgat-seal,
+html[lang='ko'] .satgat-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif-display);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 0.3px rgba(28, 25, 22, 0.15);
+  box-shadow:
+    0 1px 2px rgba(28, 25, 22, 0.08),
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.2);
+}
+html[lang='ko'] .satgat-seal[data-variant='dancheong'] { background: var(--brand); color: var(--parchment); }
+html[lang='ko'] .satgat-seal[data-variant='jade'] { background: var(--jade); color: var(--parchment); }
+html[lang='ko'] .satgat-seal[data-variant='gold'] { background: var(--gold); color: var(--near-black); }
+html[lang='ko'] .satgat-seal[data-variant='ink'] { background: var(--near-black); color: var(--parchment); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  매니페스토 한자 인덱스 — 금박 톤
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .manifesto-num,
+html[lang='ko'] .rules .n {
+  font-family: var(--serif-display);
+  font-weight: 800;
+  color: var(--brand);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  카드 / 패널 미세 조정
+ *  Kami의 카드 ivory 대신 한지 위 살짝 밝은 cream + ring shadow
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .demo-card,
+html[lang='ko'] .landing-card,
+html[lang='ko'] .swatch,
+html[lang='ko'] .family,
+html[lang='ko'] .component-card,
+html[lang='ko'] .anti-card {
+  background: var(--ivory);
+}
+
+/* hover ring — 단청 hairline */
+html[lang='ko'] .demo-card:hover,
+html[lang='ko'] .landing-card:hover {
+  box-shadow: 0 0 0 1pt var(--brand), 0 8pt 24pt rgba(28, 25, 22, 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  사용법 — 一·二·三 시조 결 3 step
+ *  한자 인덱스 + 한국식 wording. Kami numbered list 차원이 다른 결.
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .usage-steps {
+  list-style: none;
+  padding: 0;
+  margin: 32px 0 0 0;
+  display: grid;
+  gap: 14pt;
+}
+
+html[lang='ko'] .usage-step {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  align-items: start;
+  gap: 24px;
+  padding: 22pt 24pt;
+  background: var(--ivory);
+  border-radius: 12pt;
+  border: 0.5pt solid var(--border-soft);
+  position: relative;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+html[lang='ko'] .usage-step:hover {
+  border-color: var(--brand);
+  box-shadow:
+    0 0 0 1pt var(--brand-tint),
+    0 6pt 18pt rgba(28, 25, 22, 0.05);
+}
+
+html[lang='ko'] .usage-num {
+  font-family: var(--serif-display);
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+  text-align: center;
+  border-right: 0.5pt solid var(--hairline);
+  padding-right: 24px;
+  align-self: center;
+}
+
+html[lang='ko'] .usage-body {
+  padding-left: 4px;
+}
+
+html[lang='ko'] .usage-title {
+  font-family: var(--serif-display);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--near-black);
+  margin: 0 0 8pt 0;
+  letter-spacing: -0.01em;
+}
+
+html[lang='ko'] .usage-text {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--dark-warm);
+  margin: 0 0 8pt 0;
+}
+
+html[lang='ko'] .usage-example {
+  font-family: var(--serif);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--olive);
+  margin: 0;
+  padding: 10pt 14pt;
+  background: var(--parchment);
+  border-left: 2pt solid var(--brand);
+  border-radius: 0 4pt 4pt 0;
+  font-style: italic;
+}
+
+html[lang='ko'] .usage-meta {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--stone);
+  margin: 0;
+}
+
+html[lang='ko'] .usage-link {
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 700;
+  border-bottom: 0.5pt solid var(--brand-tint);
+  transition: border-color 0.15s ease;
+}
+
+html[lang='ko'] .usage-link:hover {
+  border-bottom-color: var(--brand);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  카드 hover depth 폴리싱 — 한지 위 부드러운 부상
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .demo-card,
+html[lang='ko'] .landing-card {
+  transition:
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1),
+    box-shadow 0.22s ease,
+    border-color 0.18s ease;
+}
+
+html[lang='ko'] .demo-card:hover,
+html[lang='ko'] .landing-card:hover {
+  transform: translateY(-2pt);
+  box-shadow:
+    0 0 0 1pt var(--brand),
+    0 12pt 28pt rgba(28, 25, 22, 0.08),
+    0 2pt 6pt rgba(28, 25, 22, 0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  히어로 token row — 살짝 더 여유로운 spacing + 분리감
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .hero-tokens {
+  margin-top: 18pt;
+  padding-top: 14pt;
+  border-top: 0.5pt solid var(--hairline);
+  gap: 18pt;
+}
+
+html[lang='ko'] .hero-tokens span {
+  letter-spacing: 0.005em;
+}
+
+html[lang='ko'] .hero-tokens b {
+  margin-right: 6pt;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  Section heading polish — 섹션 번호 hairline 띠
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .section-num {
+  display: inline-block;
+  padding: 4pt 10pt;
+  background: var(--ivory);
+  border: 0.5pt solid var(--border);
+  border-radius: 3pt;
+  font-size: 10.5px;
+  color: var(--brand);
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  margin-bottom: 14pt;
+}
+
+html[lang='ko'] .section-title {
+  letter-spacing: -0.018em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  Footer polish — 한지 결 따라가는 fine separator
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] footer {
+  margin-top: 64pt;
+  padding-top: 32pt;
+  border-top: 0.5pt solid var(--hairline);
+  position: relative;
+}
+
+html[lang='ko'] footer::before {
+  content: '';
+  position: absolute;
+  top: -2pt;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80pt;
+  height: 4pt;
+  background:
+    repeating-linear-gradient(
+      to right,
+      var(--brand) 0px, var(--brand) 6pt,
+      transparent 6pt, transparent 10pt
+    );
+  border-radius: 2pt;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  자세히 보기 — A4 full-detail specimen
+ *  Kami showcase 결. 한국 시니어 fictional 이력서.
+ *  좌측: 표지+본문+경력+솜씨 / 우측: 사이드 metadata
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .full-specimen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 32pt;
+  margin-top: 32pt;
+  align-items: start;
+}
+
+@media (max-width: 880px) {
+  html[lang='ko'] .full-specimen {
+    grid-template-columns: 1fr;
+  }
+}
+
+html[lang='ko'] .specimen-sheet {
+  background: var(--ivory);
+  padding: 48pt 44pt 36pt;
+  border-radius: 6pt;
+  border: 0.5pt solid var(--border);
+  box-shadow:
+    0 1pt 2pt rgba(28, 25, 22, 0.04),
+    0 18pt 48pt rgba(28, 25, 22, 0.08),
+    0 0 0 0.5pt rgba(28, 25, 22, 0.03);
+  position: relative;
+  font-family: var(--serif);
+  color: var(--near-black);
+  line-height: 1.55;
+}
+
+html[lang='ko'] .specimen-head {
+  border-bottom: 0.5pt solid var(--hairline);
+  padding-bottom: 22pt;
+  margin-bottom: 28pt;
+}
+
+html[lang='ko'] .specimen-eyebrow {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--olive);
+  font-weight: 700;
+  margin-bottom: 14pt;
+}
+
+html[lang='ko'] .specimen-name {
+  display: flex;
+  align-items: baseline;
+  gap: 18pt;
+  margin-bottom: 10pt;
+}
+
+html[lang='ko'] .specimen-name-ko {
+  font-family: var(--serif-display);
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--near-black);
+  line-height: 1;
+}
+
+html[lang='ko'] .specimen-name-cn {
+  font-family: var(--serif-display);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--olive);
+  letter-spacing: 0.06em;
+}
+
+html[lang='ko'] .specimen-role {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark-warm);
+  margin-bottom: 6pt;
+}
+
+html[lang='ko'] .specimen-meta {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--stone);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6pt;
+}
+
+html[lang='ko'] .specimen-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  gap: 32pt;
+}
+
+@media (max-width: 720px) {
+  html[lang='ko'] .specimen-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+html[lang='ko'] .specimen-statement {
+  font-family: var(--serif);
+  font-size: 13px;
+  line-height: 1.78;
+  color: var(--dark-warm);
+  border-left: 2pt solid var(--brand);
+  padding: 4pt 0 4pt 14pt;
+  margin: 0 0 24pt 0;
+}
+
+html[lang='ko'] .specimen-sec {
+  font-family: var(--serif-display);
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--near-black);
+  margin: 0 0 12pt 0;
+  padding-bottom: 4pt;
+  border-bottom: 0.5pt solid var(--border-soft);
+}
+
+html[lang='ko'] .specimen-sec-side {
+  font-size: 12.5px;
+  margin-top: 22pt;
+}
+
+html[lang='ko'] .specimen-sec-side:first-of-type {
+  margin-top: 0;
+}
+
+html[lang='ko'] .specimen-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22pt 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14pt;
+}
+
+html[lang='ko'] .specimen-list li {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 14pt;
+  align-items: baseline;
+}
+
+html[lang='ko'] .specimen-list-side li {
+  grid-template-columns: 1fr;
+  gap: 2pt;
+}
+
+html[lang='ko'] .specimen-period {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--olive);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+html[lang='ko'] .specimen-role-name {
+  font-family: var(--serif);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--near-black);
+  margin: 0 0 3pt 0;
+}
+
+html[lang='ko'] .specimen-role-name span {
+  font-weight: 400;
+  color: var(--olive);
+  font-size: 12.5px;
+}
+
+html[lang='ko'] .specimen-desc {
+  font-family: var(--serif);
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--dark-warm);
+  margin: 0;
+}
+
+html[lang='ko'] .specimen-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6pt;
+}
+
+html[lang='ko'] .specimen-tags span {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--dark-warm);
+  background: var(--parchment);
+  border: 0.5pt solid var(--border-soft);
+  padding: 4pt 9pt;
+  border-radius: 2pt;
+}
+
+html[lang='ko'] .specimen-photo {
+  margin-bottom: 22pt;
+}
+
+html[lang='ko'] .specimen-photo-box {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: var(--parchment);
+  border: 0.5pt dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--olive-soft);
+  letter-spacing: 0.16em;
+  border-radius: 2pt;
+}
+
+html[lang='ko'] .specimen-metric {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16pt 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10pt;
+}
+
+html[lang='ko'] .specimen-metric li {
+  display: flex;
+  align-items: baseline;
+  gap: 10pt;
+}
+
+html[lang='ko'] .specimen-metric b {
+  font-family: var(--serif-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--brand);
+  font-variant-numeric: tabular-nums;
+  min-width: 60pt;
+}
+
+html[lang='ko'] .specimen-metric span {
+  font-family: var(--serif);
+  font-size: 11.5px;
+  color: var(--dark-warm);
+}
+
+html[lang='ko'] .specimen-lang {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+html[lang='ko'] .specimen-lang li {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--serif);
+  font-size: 12px;
+  color: var(--near-black);
+  padding: 5pt 0;
+  border-bottom: 0.5pt solid var(--border-soft);
+}
+
+html[lang='ko'] .specimen-lang li:last-child {
+  border-bottom: none;
+}
+
+html[lang='ko'] .specimen-lang span {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--olive);
+  letter-spacing: 0.04em;
+}
+
+html[lang='ko'] .specimen-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28pt;
+  padding-top: 18pt;
+  border-top: 0.5pt solid var(--hairline);
+}
+
+html[lang='ko'] .specimen-foot-meta {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--stone);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6pt;
+}
+
+html[lang='ko'] .specimen-seal {
+  width: 28pt;
+  height: 28pt;
+  background: var(--brand);
+  color: var(--parchment);
+  font-family: var(--serif-display);
+  font-weight: 800;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2pt;
+  letter-spacing: 0;
+  box-shadow:
+    0 1pt 2pt rgba(28, 25, 22, 0.1),
+    inset 0 0 0 1pt rgba(255, 255, 255, 0.15);
+}
+
+/* 사이드 노트 */
+html[lang='ko'] .full-specimen-side {
+  position: sticky;
+  top: 28pt;
+  padding: 22pt 20pt;
+  background: var(--parchment);
+  border: 0.5pt solid var(--border);
+  border-radius: 6pt;
+}
+
+@media (max-width: 880px) {
+  html[lang='ko'] .full-specimen-side {
+    position: static;
+  }
+}
+
+html[lang='ko'] .full-specimen-note {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--olive);
+  margin: 0 0 8pt 0;
+}
+
+html[lang='ko'] .full-specimen-note b {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+html[lang='ko'] .full-specimen-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--dark-warm);
+  margin: 0 0 14pt 0;
+  padding: 10pt 12pt;
+  background: var(--ivory);
+  border-left: 2pt solid var(--brand);
+  border-radius: 0 4pt 4pt 0;
+}
+
+html[lang='ko'] .full-specimen-arrow {
+  text-align: center;
+  font-size: 18px;
+  color: var(--brand);
+  margin: 6pt 0 6pt 0;
+}
+
+html[lang='ko'] .full-specimen-spec {
+  font-family: var(--serif);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--dark-warm);
+  margin: 0 0 18pt 0;
+}
+
+html[lang='ko'] .full-specimen-cta {
+  display: block;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--parchment);
+  background: var(--brand);
+  padding: 11pt 14pt;
+  border-radius: 4pt;
+  text-decoration: none;
+  transition: background 0.18s ease;
+}
+
+html[lang='ko'] .full-specimen-cta:hover {
+  background: var(--brand-deep);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  Equity Report — 분기 보고서 양식
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .equity-sheet {
+  padding: 40pt 44pt 32pt;
+}
+
+html[lang='ko'] .equity-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 18pt;
+  border-bottom: 0.5pt solid var(--hairline);
+  margin-bottom: 22pt;
+  gap: 24pt;
+  flex-wrap: wrap;
+}
+
+html[lang='ko'] .equity-name {
+  font-family: var(--serif-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--near-black);
+  letter-spacing: -0.018em;
+  line-height: 1;
+}
+
+html[lang='ko'] .equity-name span {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--olive);
+  margin-left: 8pt;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+html[lang='ko'] .equity-meta {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--olive);
+  margin-top: 6pt;
+}
+
+html[lang='ko'] .equity-price {
+  text-align: right;
+}
+
+html[lang='ko'] .equity-curr {
+  font-family: var(--serif-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--near-black);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+html[lang='ko'] .equity-delta {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  margin-top: 5pt;
+  font-variant-numeric: tabular-nums;
+}
+
+html[lang='ko'] .equity-delta span {
+  font-weight: 500;
+  font-size: 12px;
+}
+
+html[lang='ko'] .equity-asof {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--stone);
+  letter-spacing: 0.04em;
+  margin-top: 5pt;
+}
+
+html[lang='ko'] .equity-summary {
+  margin-bottom: 24pt;
+}
+
+html[lang='ko'] .equity-summary p {
+  font-family: var(--serif);
+  font-size: 13px;
+  line-height: 1.78;
+  color: var(--dark-warm);
+  margin: 0;
+}
+
+html[lang='ko'] .equity-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 32pt;
+  margin-bottom: 24pt;
+}
+
+@media (max-width: 720px) {
+  html[lang='ko'] .equity-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+html[lang='ko'] .equity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--serif);
+  font-size: 12px;
+}
+
+html[lang='ko'] .equity-table th {
+  text-align: right;
+  padding: 7pt 6pt;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--olive);
+  font-weight: 600;
+  border-bottom: 0.5pt solid var(--border);
+}
+
+html[lang='ko'] .equity-table th:first-child {
+  text-align: left;
+}
+
+html[lang='ko'] .equity-table td {
+  padding: 7pt 6pt;
+  text-align: right;
+  color: var(--near-black);
+  font-variant-numeric: tabular-nums;
+  border-bottom: 0.5pt solid var(--border-soft);
+}
+
+html[lang='ko'] .equity-table td:first-child {
+  text-align: left;
+  color: var(--dark-warm);
+  font-weight: 500;
+}
+
+html[lang='ko'] .equity-table td.hi {
+  color: var(--brand);
+  font-weight: 700;
+}
+
+html[lang='ko'] .equity-table-foot {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  color: var(--stone);
+  margin: 6pt 0 0 0;
+  letter-spacing: 0.04em;
+}
+
+html[lang='ko'] .equity-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  font-family: var(--sans);
+}
+
+html[lang='ko'] .equity-chart-foot {
+  font-family: var(--serif);
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--dark-warm);
+  margin: 8pt 0 0 0;
+}
+
+html[lang='ko'] .equity-outlook {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24pt;
+  padding-top: 18pt;
+  border-top: 0.5pt solid var(--border-soft);
+}
+
+@media (max-width: 720px) {
+  html[lang='ko'] .equity-outlook {
+    grid-template-columns: 1fr;
+  }
+}
+
+html[lang='ko'] .equity-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6pt;
+}
+
+html[lang='ko'] .equity-bullets li {
+  font-family: var(--serif);
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--dark-warm);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  Slides 6-page deck
+ * ═══════════════════════════════════════════════════════════════════════ */
+html[lang='ko'] .slides-deck {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18pt;
+  margin-top: 32pt;
+}
+
+@media (max-width: 880px) {
+  html[lang='ko'] .slides-deck {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  html[lang='ko'] .slides-deck {
+    grid-template-columns: 1fr;
+  }
+}
+
+html[lang='ko'] .slide-page {
+  aspect-ratio: 16 / 10;
+  background: var(--ivory);
+  border: 0.5pt solid var(--border);
+  border-radius: 6pt;
+  padding: 22pt 24pt;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow:
+    0 1pt 2pt rgba(28, 25, 22, 0.03),
+    0 6pt 18pt rgba(28, 25, 22, 0.05);
+  font-family: var(--serif);
+  color: var(--near-black);
+  transition:
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1),
+    box-shadow 0.22s ease;
+  overflow: hidden;
+}
+
+html[lang='ko'] .slide-page:hover {
+  transform: translateY(-2pt);
+  box-shadow:
+    0 0 0 0.5pt var(--brand),
+    0 12pt 28pt rgba(28, 25, 22, 0.08);
+}
+
+html[lang='ko'] .slide-eyebrow,
+html[lang='ko'] .slide-num {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  color: var(--olive);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8pt;
+}
+
+html[lang='ko'] .slide-num {
+  color: var(--brand);
+  letter-spacing: 0.16em;
+}
+
+html[lang='ko'] .slide-title {
+  font-family: var(--serif-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.018em;
+  color: var(--near-black);
+  margin: 6pt 0 6pt 0;
+  line-height: 1.18;
+}
+
+html[lang='ko'] .slide-h {
+  font-family: var(--serif-display);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.012em;
+  color: var(--near-black);
+  margin: 0 0 8pt 0;
+  line-height: 1.22;
+}
+
+html[lang='ko'] .slide-sub {
+  font-family: var(--serif);
+  font-size: 12px;
+  color: var(--dark-warm);
+  margin: 0;
+}
+
+html[lang='ko'] .slide-body {
+  font-family: var(--serif);
+  font-size: 11.5px;
+  line-height: 1.62;
+  color: var(--dark-warm);
+  margin: 0;
+}
+
+html[lang='ko'] .slide-list {
+  list-style: none;
+  padding: 0;
+  margin: 10pt 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4pt;
+}
+
+html[lang='ko'] .slide-list li {
+  font-family: var(--serif);
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--dark-warm);
+}
+
+html[lang='ko'] .slide-footer {
+  margin-top: auto;
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: var(--stone);
+}
+
+html[lang='ko'] .slide-cover {
+  background:
+    linear-gradient(135deg, var(--parchment) 0%, var(--ivory) 100%);
+  position: relative;
+}
+
+html[lang='ko'] .slide-cover::after {
+  content: '';
+  position: absolute;
+  top: 16pt;
+  right: 18pt;
+  width: 18pt;
+  height: 18pt;
+  border-radius: 50%;
+  background: var(--brand);
+  opacity: 0.85;
+}
+
+html[lang='ko'] .slide-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5pt;
+  margin-top: auto;
+}
+
+html[lang='ko'] .slide-token {
+  font-family: var(--serif);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4pt 9pt;
+  border-radius: 3pt;
+  letter-spacing: 0.02em;
+}
+
+html[lang='ko'] .slide-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8pt;
+  margin: 12pt 0;
+}
+
+html[lang='ko'] .slide-metrics div {
+  text-align: center;
+  padding: 6pt 4pt;
+  border-left: 0.5pt solid var(--hairline);
+}
+
+html[lang='ko'] .slide-metrics div:first-child {
+  border-left: none;
+}
+
+html[lang='ko'] .slide-metrics b {
+  display: block;
+  font-family: var(--serif-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+html[lang='ko'] .slide-metrics span {
+  display: block;
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--olive);
+  margin-top: 5pt;
+}
+
+html[lang='ko'] .slide-roadmap {
+  list-style: none;
+  padding: 0;
+  margin: 8pt 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5pt;
+}
+
+html[lang='ko'] .slide-roadmap li {
+  display: grid;
+  grid-template-columns: 30pt 36pt 1fr;
+  align-items: baseline;
+  gap: 6pt;
+  padding: 4pt 0;
+  border-bottom: 0.5pt dotted var(--border-soft);
+  font-family: var(--serif);
+  font-size: 11px;
+}
+
+html[lang='ko'] .slide-roadmap li:last-child {
+  border-bottom: none;
+}
+
+html[lang='ko'] .slide-roadmap span {
+  font-family: var(--serif-display);
+  font-weight: 800;
+  color: var(--brand);
+}
+
+html[lang='ko'] .slide-roadmap b {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--near-black);
+  letter-spacing: 0.04em;
+}
+
+html[lang='ko'] .slide-roadmap em {
+  font-style: normal;
+  color: var(--dark-warm);
+}
+
+html[lang='ko'] .slide-end {
+  background:
+    linear-gradient(160deg, var(--near-black) 0%, #2a2622 100%);
+  color: var(--parchment);
+}
+
+html[lang='ko'] .slide-end .slide-num {
+  color: var(--brand-light);
+}
+
+html[lang='ko'] .slide-end .slide-h {
+  color: var(--parchment);
+}
+
+html[lang='ko'] .slide-end .slide-body {
+  color: var(--hanji-shadow);
+}
+
+html[lang='ko'] .slide-end .slide-footer {
+  color: var(--olive-soft);
+}
+
+html[lang='ko'] .slide-end-mark {
+  font-family: var(--serif-display);
+  font-size: 60px;
+  font-weight: 800;
+  color: var(--brand);
+  text-align: center;
+  margin: 6pt 0;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  인쇄 안정성 — @page 한지 색 유지
+ * ═══════════════════════════════════════════════════════════════════════ */
+@media print {
+  html[lang='ko'] body {
+    background-image: none !important;
+    background-color: var(--parchment) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  @page {
+    size: A4;
+    margin: 0;
+    background: var(--parchment);
+  }
+}

@@ -1,0 +1,2103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>삿갓(笠) 紙: 한국형 AI 문서 디자인 시스템</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="삿갓 - 한지(韓紙) 위에 먹(墨)글씨. 단청(丹靑) 단일 강조색, 명조 주도 위계, 한국형 여백.">
+  <link rel="icon" href="https://gw.alipayobjects.com/zos/k/vl/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/satgat/satgat.css">
+  <link rel="stylesheet" href="/satgat/overrides.css">
+  <link rel="canonical" href="https://satgat.fun/ko">
+  <link rel="alternate" hreflang="ko" href="https://satgat.fun/ko">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="삿갓: 한지(韓紙) 위에 먹(墨)글씨. AI가 옮겨 적는 한국 문서 생성기">
+  <meta property="og:description" content="삿갓 - 한지(韓紙) 위에 먹(墨)글씨. 단청(丹靑) 단일 강조색, 명조 주도 위계, 한국형 여백.">
+  <meta property="og:url" content="https://satgat.fun/ko">
+  <meta property="og:image" content="https://satgat.fun/satgat/assets/og-cover.png">
+  <meta property="og:image:width" content="3110">
+  <meta property="og:image:height" content="2392">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="삿갓: 한지(韓紙) 위에 먹(墨)글씨. AI가 옮겨 적는 한국 문서 생성기">
+  <meta name="twitter:description" content="삿갓 - 한지(韓紙) 위에 먹(墨)글씨. 단청(丹靑) 단일 강조색, 명조 주도 위계, 한국형 여백.">
+  <meta name="twitter:image" content="https://satgat.fun/satgat/assets/og-cover.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "삿갓",
+    "description": "한지(韓紙) 위에 먹(墨)글씨. AI가 옮겨 적는 한국 문서 생성기. 단청(丹靑) 단일 강조색, 명조 위계, 한국형 여백.",
+    "url": "https://satgat.fun",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "Any",
+    "author": {
+      "@type": "Person",
+      "name": "EungjePark",
+      "url": "https://satgat.fun",
+      "sameAs": ["https://github.com/EungjePark/satgat"]
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "삿갓이 무엇인가요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "삿갓은 한국형 AI 문서 생성기입니다. 한지 캔버스 위에 단청(丹靑) 단일 강조색, 명조(明朝) 주도 위계, 한국형 여백. 자연어로 입력하면 AI가 슬롯을 채워 완성된 한국 문서를 만듭니다."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "삿갓으로 무엇을 만들 수 있나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "8가지 한국 문서: 이력서(履), 자기소개서(介), 명함(名), 청첩장(牒), 연하장(賀), 회사 제안서(案), 뉴스레터(報), 포트폴리오(作). 브라우저 인쇄로 PDF 저장 가능."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "삿갓은 어떻게 쓰나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "삿갓.fun 에 접속해 템플릿을 고르고 자연어로 내용을 적으면, AI가 한지 위에 옮겨 적습니다. 브라우저 인쇄로 PDF 저장. 별도 설치 불필요."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "어떤 언어를 지원하나요?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "한국어 전용입니다. 명조(Nanum Myeongjo), 바탕(Gowun Batang), 돋움(Gowun Dodum) — 모두 무료 OFL 폰트를 씁니다. Latin 보조로 Cormorant Garamond italic을 페어링합니다."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+<main class="page">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="eyebrow">
+      <span>디자인 시스템 · v0.6<span class="eyebrow-date"> · 2026.05</span></span>
+      <span class="hero-links">
+        <a href="/ko/new" style="color:var(--stone); text-decoration:none; font-size:12px; font-weight:500; letter-spacing:0.04em; transition:color 0.15s;">새 문서 생성 →</a>
+        <a href="https://github.com/EungjePark/satgat" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="X">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </span>
+    </div>
+    <h1>삿갓<span class="cn">笠</span></h1>
+    <p class="tagline">좋은 콘텐츠는 좋은 종이를 만날 자격이 있습니다. 삿갓은 한지(韓紙) 위에 먹(墨)으로 옮겨 적는 한국형 AI 문서 디자인 시스템입니다. 무궁화(無窮花)의 단심(丹心)이 시선의 중심을 짓습니다.</p>
+    <div class="hero-tokens">
+      <span><b>분청 한지</b>#F5F2EA</span>
+      <span><b>무궁화(無窮花)</b>#B91C5C</span>
+      <span><b>먹(墨)</b>#1C1916</span>
+      <span><b>색동(色동)</b>5色 띠</span>
+      <span><b>단청(丹靑)</b>처마 띠</span>
+    </div>
+  </header>
+
+  <!-- ============ 00 DEMOS ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">00 · 보기(見)</p>
+      <h2 class="section-title">출력 샘플</h2>
+      <p class="section-lede">자연어로 한 문장 적으면, 삿갓이 한지 위에 옮겨 적습니다. 이력서·자기소개서·명함·청첩장·연하장·제안서·뉴스레터·포트폴리오 — 모두 같은 한 벌의 규칙(規) 위에 다른 표정으로.</p>
+    </div>
+    <div class="demo-grid satgat-samples">
+      <!-- 이력서 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=resume" class="satgat-paper" data-format="a4" aria-label="이력서 견본">
+          <span class="paper-seal" data-variant="ink">履</span>
+          <div class="paper-inner">
+            <div class="resume-head">
+              <div class="resume-name">
+                <span class="ko">김상세</span>
+                <span class="hanja">金詳細</span>
+              </div>
+              <div class="resume-photo" aria-hidden></div>
+            </div>
+            <div class="resume-meta">프로덕트 디자이너 · 7년차</div>
+            <div class="resume-rule"></div>
+            <div class="resume-section-title">경력(經歷)</div>
+            <ul class="resume-list">
+              <li><b>2024 — 現</b><span>카카오 · 시각디자인팀</span></li>
+              <li><b>2020 — 2024</b><span>무신사 · UX 리드</span></li>
+              <li><b>2018 — 2020</b><span>29CM · 디자이너</span></li>
+            </ul>
+            <div class="resume-section-title">학력(學歷)</div>
+            <ul class="resume-list">
+              <li><b>2014 — 2018</b><span>홍익대 · 시각디자인</span></li>
+            </ul>
+          </div>
+        </a>
+        <p class="demo-title">이력서<span class="demo-hanja">履歷書</span></p>
+        <p class="demo-desc">A4 1-2장 · 한자 이름 옵션 · 증명사진 자리</p>
+      </div>
+
+      <!-- 명함 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=business-card" class="satgat-paper" data-format="card" aria-label="명함 견본">
+          <span class="paper-seal sm" data-variant="dancheong">名</span>
+          <div class="card-inner">
+            <div class="card-rule"></div>
+            <div class="card-name">
+              <span class="ko">박상세</span>
+              <span class="hanja">朴詳細</span>
+            </div>
+            <div class="card-title">대표 · Founder</div>
+            <div class="card-foot">
+              <span class="card-line">satgat.fun</span>
+              <span class="card-line">@sangse_pjs · 010-0000-0000</span>
+            </div>
+          </div>
+        </a>
+        <p class="demo-title">명함<span class="demo-hanja">名銜</span></p>
+        <p class="demo-desc">90×55mm · A4 8-up 인쇄 · 한·영 양면</p>
+      </div>
+
+      <!-- 청첩장 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=invitation" class="satgat-paper" data-format="a5" aria-label="청첩장 견본">
+          <span class="paper-seal sm" data-variant="dancheong">牒</span>
+          <div class="invitation-inner">
+            <div class="invitation-eyebrow">청 첩 장</div>
+            <div class="invitation-divider"></div>
+            <div class="invitation-couple">
+              <span class="i-name">상세</span>
+              <span class="i-and">·</span>
+              <span class="i-name">한지</span>
+            </div>
+            <div class="invitation-date">
+              <span class="i-date-ko">2026년 6월 14일</span>
+              <span class="i-date-hanja">丙午年 六月 十四日</span>
+              <span class="i-date-time">토요일 오후 2시</span>
+            </div>
+            <div class="invitation-divider thin"></div>
+            <div class="invitation-place">서울 그랜드인터컨티넨탈<br>그랜드 볼룸</div>
+          </div>
+        </a>
+        <p class="demo-title">청첩장<span class="demo-hanja">請牒狀</span></p>
+        <p class="demo-desc">A5 · 한자 이름 · 약도 + RSVP</p>
+      </div>
+
+      <!-- 제안서 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=proposal" class="satgat-paper" data-format="a4" aria-label="제안서 견본">
+          <span class="paper-seal" data-variant="dancheong">案</span>
+          <div class="paper-inner proposal-inner">
+            <div class="proposal-eyebrow">PROPOSAL · 2026</div>
+            <div class="proposal-title">한국형 PDP<br>AI 생성 도입안</div>
+            <div class="proposal-bar"></div>
+            <div class="proposal-metrics">
+              <div><b>+18%</b><span>전환율</span></div>
+              <div><b>10분</b><span>생성 시간</span></div>
+              <div><b>8종</b><span>한국 문서</span></div>
+            </div>
+            <div class="proposal-body">
+              <p>― 평균 작성 시간 <b>2주 → 10분</b>으로 단축</p>
+              <p>― 한국 인쇄 양식 표준 8종 모두 지원</p>
+              <p>― SaaS 구독 · 한 달 ₩9,900부터</p>
+            </div>
+            <div class="proposal-foot">
+              <span class="proposal-page">8 pages</span>
+              <span class="proposal-author">삿갓 · 2026.05</span>
+            </div>
+          </div>
+        </a>
+        <p class="demo-title">제안서<span class="demo-hanja">提案書</span></p>
+        <p class="demo-desc">A4 5-10장 · 무궁화 강조 · 메트릭 카드</p>
+      </div>
+
+      <!-- 자기소개서 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=self-intro" class="satgat-paper" data-format="a4" aria-label="자기소개서 견본">
+          <span class="paper-seal" data-variant="dancheong">介</span>
+          <div class="paper-inner">
+            <p style="font-family:var(--mono); font-size:7px; letter-spacing:0.16em; color:var(--olive); margin:0 0 10px;">自己紹介書 · 一</p>
+            <h1 style="font-family:var(--serif-display); font-size:18px; font-weight:800; line-height:1.1; color:var(--near-black); letter-spacing:-0.02em; margin:0 0 4px;">김상세</h1>
+            <p style="font-family:var(--serif); font-size:9.5px; color:var(--olive); margin:0 0 12px; letter-spacing:0.02em;">삿갓 · 프론트엔드 개발자</p>
+            <div style="height:1.2pt; background:var(--near-black); margin:0 0 10px;"></div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div>
+                <p style="font-family:var(--serif-display); font-size:9px; font-weight:800; color:var(--near-black); margin:0;">一. 지원 동기</p>
+                <p style="font-family:var(--serif); font-size:7.5px; line-height:1.55; color:var(--dark-warm); margin:2px 0 0;">한국에서 만든 문서인데 한국이 보이지 않는 현실이…</p>
+              </div>
+              <div>
+                <p style="font-family:var(--serif-display); font-size:9px; font-weight:800; color:var(--near-black); margin:0;">二. 직무 역량</p>
+                <p style="font-family:var(--serif); font-size:7.5px; line-height:1.55; color:var(--dark-warm); margin:2px 0 0;">React 7년차. 디자인 시스템 구축…</p>
+              </div>
+            </div>
+          </div>
+        </a>
+        <p class="demo-title">자기소개서<span class="demo-hanja">自己紹介書</span></p>
+        <p class="demo-desc">A4 · 一二三四 4문항 표준 · 한국 자소서</p>
+      </div>
+
+      <!-- 연하장 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=new-year-card" class="satgat-paper" data-format="card" aria-label="연하장 견본">
+          <span class="paper-seal sm" data-variant="gold">賀</span>
+          <div class="paper-inner" style="text-align:center; padding:14px 18px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <p style="font-family:var(--serif-display); font-size:7px; color:var(--gold); letter-spacing:0.24em; margin:0 0 6px;">丙午年</p>
+            <h1 style="font-family:var(--serif-display); font-size:18px; font-weight:800; color:var(--near-black); margin:0 0 6px; letter-spacing:-0.02em;">謹賀新年</h1>
+            <p style="font-family:var(--serif); font-size:7.5px; line-height:1.6; color:var(--olive); margin:0; letter-spacing:0.02em;">새해에도 건강과 평안이<br>가득하시기를 빕니다</p>
+          </div>
+        </a>
+        <p class="demo-title">연하장<span class="demo-hanja">年賀狀</span></p>
+        <p class="demo-desc">엽서 90×60 · 금박 모서리 · 가족 명단</p>
+      </div>
+
+      <!-- 뉴스레터 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=newsletter" class="satgat-paper" data-format="a4" aria-label="뉴스레터 견본">
+          <span class="paper-seal" data-variant="gold">報</span>
+          <div class="paper-inner">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+              <p style="font-family:var(--mono); font-size:7px; letter-spacing:0.16em; color:var(--olive); margin:0;">第 拾貳 號</p>
+              <p style="font-family:var(--mono); font-size:7px; letter-spacing:0.04em; color:var(--olive); margin:0;">2026.05</p>
+            </div>
+            <h1 style="font-family:var(--serif-display); font-size:16px; font-weight:800; line-height:1.12; color:var(--near-black); letter-spacing:-0.018em; margin:0 0 10px;">한지 위에<br>먹으로 옮긴다</h1>
+            <div style="height:1pt; background:var(--gold); width:32px; margin:0 0 10px;"></div>
+            <p style="font-family:var(--serif); font-size:7.5px; line-height:1.65; color:var(--dark-warm); margin:0 0 6px;">AI가 자연어를 받아 한지 위에 옮겨 적습니다. 평균 10초 안에 완성.</p>
+            <p style="font-family:var(--serif); font-size:7.5px; line-height:1.65; color:var(--dark-warm); margin:0 0 8px;">― 무궁화 단심으로 시선 모으기</p>
+            <p style="font-family:var(--serif); font-size:7.5px; line-height:1.65; color:var(--dark-warm); margin:0;">― 8종 한국 문서 확장</p>
+          </div>
+        </a>
+        <p class="demo-title">뉴스레터<span class="demo-hanja">消息誌</span></p>
+        <p class="demo-desc">A4 · 第 號 한자 발행 · Stibee 호환</p>
+      </div>
+
+      <!-- 포트폴리오 -->
+      <div class="demo-card satgat-sample">
+        <a href="/ko/new?template=portfolio" class="satgat-paper" data-format="a4" aria-label="포트폴리오 견본">
+          <span class="paper-seal" data-variant="jade">作</span>
+          <div class="paper-inner">
+            <p style="font-family:var(--mono); font-size:7px; letter-spacing:0.16em; color:var(--jade); margin:0 0 8px;">PORTFOLIO · 作品集</p>
+            <h1 style="font-family:var(--serif-display); font-size:17px; font-weight:800; line-height:1.1; color:var(--near-black); letter-spacing:-0.018em; margin:0 0 4px;">이상세</h1>
+            <p style="font-family:var(--serif); font-size:9px; color:var(--olive); margin:0 0 10px;">디자이너 · 솜씨를 펼치다</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-bottom:8px;">
+              <div style="background:var(--warm-sand); aspect-ratio:1; border-radius:2px;"></div>
+              <div style="background:var(--hanji-shadow); aspect-ratio:1; border-radius:2px;"></div>
+              <div style="background:var(--jade); aspect-ratio:1; border-radius:2px; opacity:0.55;"></div>
+              <div style="background:var(--warm-sand); aspect-ratio:1; border-radius:2px;"></div>
+            </div>
+            <p style="font-family:var(--serif); font-size:7px; line-height:1.55; color:var(--dark-warm); margin:0;">상세 디자인 시스템 · 무신사 PDP · 카카오 리뉴얼…</p>
+          </div>
+        </a>
+        <p class="demo-title">포트폴리오<span class="demo-hanja">作品集</span></p>
+        <p class="demo-desc">A4-L 가로 · 2×2 작품 그리드 · 취색 인장</p>
+      </div>
+    </div>
+
+    <style>
+      .satgat-samples { gap: 28px 24px; }
+      .satgat-sample .satgat-paper {
+        position: relative;
+        display: block;
+        background: var(--ivory, #F4EEDB);
+        background-image:
+          radial-gradient(ellipse 100% 70% at 50% 20%, rgba(255,250,235,0.4) 0%, transparent 60%),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.22' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.25 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E"),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)' opacity='0.02'/%3E%3C/svg%3E");
+        background-size: auto, 200px 200px, 120px 120px;
+        border-radius: 4px;
+        box-shadow:
+          0 0 0 1pt var(--border-soft, #E8E2D0),
+          0 1pt 2pt rgba(28, 25, 22, 0.04),
+          0 12pt 32pt -6pt rgba(28, 25, 22, 0.10);
+        padding: 0;
+        overflow: hidden;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        transition: box-shadow 0.22s ease, transform 0.22s ease;
+      }
+      .satgat-sample .satgat-paper:hover {
+        box-shadow:
+          0 0 0 1pt var(--brand, #9B1B1B),
+          0 4pt 8pt rgba(28, 25, 22, 0.06),
+          0 18pt 40pt -6pt rgba(28, 25, 22, 0.14);
+        transform: translateY(-3px);
+      }
+      .satgat-sample .satgat-paper[data-format='a4'] { aspect-ratio: 210/297; }
+      .satgat-sample .satgat-paper[data-format='a5'] { aspect-ratio: 148/210; }
+      .satgat-sample .satgat-paper[data-format='card'] { aspect-ratio: 90/55; }
+
+      .paper-seal {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--serif-display);
+        font-weight: 800;
+        font-size: 14px;
+        letter-spacing: 0.04em;
+        border-radius: 3px;
+        z-index: 2;
+        box-shadow: inset 0 0 0 1.2px rgba(255,255,255,0.18), 0 1px 2px rgba(28,25,22,0.1);
+      }
+      .paper-seal.sm { width: 22px; height: 22px; font-size: 12px; right: 10px; bottom: 10px; }
+      .paper-seal[data-variant='ink'] { background: var(--near-black); color: var(--parchment); }
+      .paper-seal[data-variant='dancheong'] { background: var(--brand); color: var(--parchment); }
+      .paper-seal[data-variant='jade'] { background: var(--jade); color: var(--parchment); }
+      .paper-seal[data-variant='gold'] { background: var(--gold); color: var(--near-black); }
+
+      .paper-inner { padding: 26px 22px 22px; font-family: var(--serif); }
+
+      /* 이력서 */
+      .resume-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
+      .resume-name { display: flex; flex-direction: column; gap: 1px; }
+      .resume-name .ko { font-family: var(--serif-display); font-weight: 800; font-size: 21px; color: var(--near-black); letter-spacing: -0.02em; line-height: 1.05; }
+      .resume-name .hanja { font-family: var(--serif-display); font-size: 9px; color: var(--olive); letter-spacing: 0.06em; }
+      .resume-photo { width: 28px; height: 36px; background: var(--warm-sand); border: 0.5pt solid var(--border-soft); border-radius: 1.5px; flex-shrink: 0; }
+      .resume-meta { font-size: 9.5px; color: var(--olive); margin: 4px 0 12px; letter-spacing: -0.005em; }
+      .resume-rule { height: 1.5pt; background: var(--near-black); margin: 0 0 14px; opacity: 0.92; }
+      .resume-section-title { font-family: var(--serif-display); font-weight: 700; font-size: 10px; color: var(--near-black); margin: 12px 0 5px; letter-spacing: 0.02em; padding-bottom: 2.5px; border-bottom: 0.4pt solid var(--border-soft); }
+      .resume-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2.5px; }
+      .resume-list li { display: grid; grid-template-columns: 64px 1fr; gap: 8px; font-size: 8.5px; line-height: 1.45; color: var(--dark-warm); }
+      .resume-list li b { font-weight: 700; color: var(--near-black); font-family: var(--serif); letter-spacing: -0.01em; }
+
+      /* 명함 */
+      .card-inner { padding: 14px 16px; display: flex; flex-direction: column; height: 100%; position: relative; font-family: var(--serif); }
+      .card-rule { position: absolute; top: 50%; left: 16px; right: 16px; height: 0.6pt; background: var(--brand); opacity: 0.85; transform: translateY(-50%); }
+      .card-name { display: flex; align-items: baseline; gap: 6px; margin-bottom: 1px; }
+      .card-name .ko { font-family: var(--serif-display); font-weight: 800; font-size: 15px; color: var(--near-black); letter-spacing: -0.015em; }
+      .card-name .hanja { font-family: var(--serif-display); font-size: 8px; color: var(--olive); letter-spacing: 0.06em; }
+      .card-title { font-size: 7.5px; color: var(--olive); letter-spacing: 0.04em; margin-bottom: auto; }
+      .card-foot { display: flex; flex-direction: column; gap: 2px; margin-top: auto; }
+      .card-line { font-family: var(--mono); font-size: 6.5px; color: var(--stone); letter-spacing: 0.04em; }
+
+      /* 청첩장 */
+      .invitation-inner { padding: 28px 18px 22px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; height: 100%; font-family: var(--serif); }
+      .invitation-eyebrow { font-family: var(--serif-display); font-size: 10px; font-weight: 700; color: var(--brand); letter-spacing: 0.65em; padding-left: 0.65em; }
+      .invitation-divider { width: 36px; height: 0.8pt; background: var(--brand); }
+      .invitation-divider.thin { width: 24px; height: 0.4pt; opacity: 0.5; }
+      .invitation-couple { display: flex; align-items: baseline; gap: 10px; margin: 4px 0; }
+      .invitation-couple .i-name { font-family: var(--serif-display); font-weight: 800; font-size: 18px; color: var(--near-black); letter-spacing: -0.015em; }
+      .invitation-couple .i-and { font-family: var(--serif-latin); font-style: italic; font-size: 14px; color: var(--brand); }
+      .invitation-date { display: flex; flex-direction: column; gap: 1px; align-items: center; margin: 2px 0; }
+      .i-date-ko { font-size: 9px; color: var(--near-black); }
+      .i-date-hanja { font-size: 8px; color: var(--olive); letter-spacing: 0.1em; }
+      .i-date-time { font-size: 8px; color: var(--olive); margin-top: 2px; }
+      .invitation-place { margin-top: auto; font-size: 7.5px; color: var(--stone); line-height: 1.5; letter-spacing: 0.04em; }
+
+      /* 제안서 */
+      .proposal-inner { padding: 22px 20px 18px; display: flex; flex-direction: column; height: 100%; font-family: var(--serif); gap: 0; }
+      .proposal-eyebrow { font-family: var(--mono); font-size: 7.5px; color: var(--olive); letter-spacing: 0.18em; margin-bottom: 8px; }
+      .proposal-title { font-family: var(--serif-display); font-weight: 800; font-size: 16px; line-height: 1.1; color: var(--near-black); letter-spacing: -0.022em; margin-bottom: 10px; }
+      .proposal-bar { width: 32px; height: 2pt; background: var(--brand); margin-bottom: 12px; }
+      .proposal-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+      .proposal-metrics > div { display: flex; flex-direction: column; gap: 1px; padding: 6px 4px; border-top: 0.4pt solid var(--border-soft); }
+      .proposal-metrics b { font-family: var(--serif-display); font-weight: 800; font-size: 13px; color: var(--brand); line-height: 1; letter-spacing: -0.015em; }
+      .proposal-metrics span { font-size: 6.5px; color: var(--olive); letter-spacing: 0.04em; }
+      .proposal-body { display: flex; flex-direction: column; gap: 3px; margin-bottom: auto; }
+      .proposal-body p { font-size: 8px; line-height: 1.6; color: var(--dark-warm); margin: 0; letter-spacing: -0.005em; }
+      .proposal-body b { color: var(--near-black); font-weight: 700; }
+      .proposal-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 0.4pt solid var(--border-soft); }
+      .proposal-page { font-family: var(--mono); font-size: 6.5px; color: var(--stone); letter-spacing: 0.06em; }
+      .proposal-author { font-family: var(--serif); font-size: 7px; color: var(--olive); font-style: italic; }
+
+      /* meta typography */
+      .satgat-sample .demo-title {
+        font-family: var(--serif-display);
+        font-weight: 800;
+        font-size: 16px;
+        color: var(--near-black);
+        margin: 14px 0 2px;
+        letter-spacing: -0.015em;
+        display: inline-flex;
+        align-items: baseline;
+        gap: 6px;
+      }
+      .satgat-sample .demo-hanja {
+        font-family: var(--serif-display);
+        font-size: 11px;
+        color: var(--olive);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      .satgat-sample .demo-desc {
+        font-family: var(--serif);
+        font-size: 12.5px;
+        color: var(--olive);
+        line-height: 1.55;
+        margin: 0;
+        letter-spacing: -0.003em;
+      }
+    </style>
+  </section>
+
+  <!-- ============ 한국 문서 라인업 ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">0½ · 한국 문서</p>
+      <h2 class="section-title">여덟 종류의 종이</h2>
+      <p class="section-lede">한국에서 자주 만드는 여덟 종류. 같은 규칙(規) 위에서 인장(印章)으로 구별합니다. 각 문서는 자기 자리에서 자기 표정으로.</p>
+    </div>
+    <div class="landing-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+      <a href="/ko/new?template=resume" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px; transition:box-shadow 0.15s, transform 0.15s; cursor:pointer;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">이력서</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--near-black); color: var(--parchment); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">履</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">한 사람의 자취</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">A4 · 1-2 pages</span>
+      </a>
+      <a href="/ko/new?template=self-intro" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">자기소개서</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--brand); color: var(--parchment); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">介</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">나의 결을 풀어 적다</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">A4 · 4 sections</span>
+      </a>
+      <a href="/ko/new?template=business-card" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">명함</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--jade,#2e6b5e); color: var(--parchment); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">名</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">한 사람의 표지</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">90×55 · 8-up A4</span>
+      </a>
+      <a href="/ko/new?template=invitation" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">청첩장</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--brand); color: var(--parchment); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">牒</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">두 사람의 시작</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">A5 · 지도+RSVP</span>
+      </a>
+      <a href="/ko/new?template=new-year-card" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">연하장</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--gold,#b8954f); color: var(--near-black); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">賀</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">한 해의 인사</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">엽서 · 가족 명단</span>
+      </a>
+      <a href="/ko/new?template=proposal" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">제안서</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--brand); color: var(--parchment); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">案</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">사업의 길</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">A4 · 5-10 pages</span>
+      </a>
+      <a href="/ko/new?template=newsletter" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">뉴스레터</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--gold,#b8954f); color: var(--near-black); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">報</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">정기 소식</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">A4 · Stibee 호환</span>
+      </a>
+      <a href="/ko/new?template=portfolio" class="landing-card" style="background:var(--ivory); border-radius:8px; padding:20px; box-shadow:0 0 0 1pt var(--border-soft); text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family: var(--serif-display); font-size: 18px; font-weight: 800; color: var(--near-black);">포트폴리오</span>
+          <span style="display:inline-block; width:28px; height:28px; background: var(--jade,#2e6b5e); color: var(--parchment); font-family: var(--serif-display); font-size:14px; font-weight:800; text-align:center; line-height:28px; border-radius:3px;">作</span>
+        </div>
+        <span style="font-family:var(--serif); font-size:12px; color:var(--olive);">솜씨를 펼치다</span>
+        <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">A4-L · 가로</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ 0¾ FULL SPECIMEN — A4 자세히 보기 ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">0¾ · 자세히 보기</p>
+      <h2 class="section-title">한 장의 이력서, A4 그대로</h2>
+      <p class="section-lede">8 종 가운데 한 장을 풀어 봅니다 — 한국 테크 시니어의 이력서 전체 모습. 명조 표지·한자 이름·경력 5 행·학력·솜씨·인장. 인쇄 PDF와 동일한 결.</p>
+    </div>
+
+    <div class="full-specimen">
+      <article class="specimen-sheet">
+        <!-- 머리(頭) — 표지 -->
+        <header class="specimen-head">
+          <div class="specimen-eyebrow">履歷書 · RESUME · 二〇二六</div>
+          <div class="specimen-name">
+            <span class="specimen-name-ko">정상세</span>
+            <span class="specimen-name-cn">鄭詳細</span>
+          </div>
+          <div class="specimen-role">프로덕트 디자이너 · 12 년차</div>
+          <div class="specimen-meta">
+            <span>서울 성동구</span>
+            <span>·</span>
+            <span>jung@sangse.kr</span>
+            <span>·</span>
+            <span>010-0000-0000</span>
+          </div>
+        </header>
+
+        <!-- 두 단 -->
+        <div class="specimen-cols">
+          <!-- 왼쪽: 본문 -->
+          <div class="specimen-main">
+            <!-- 한 문장 자기소개 -->
+            <p class="specimen-statement">한지 위에 옮겨 적는 일을 합니다. 한글이 가장 자연스럽게 읽히는 시각 시스템을 짓고, 한국 사용자의 마음 결을 디자인 토큰으로 옮깁니다.</p>
+
+            <!-- 경력 -->
+            <h3 class="specimen-sec">경력(經歷)</h3>
+            <ul class="specimen-list">
+              <li>
+                <div class="specimen-period">2024 — 現</div>
+                <div class="specimen-entry">
+                  <p class="specimen-role-name">카카오 · 시각디자인팀 <span>· 디자인 리드</span></p>
+                  <p class="specimen-desc">메신저 인쇄 양식 시스템 구축. 한글 가독성 토큰 12 개 + 한자 페어링 규(規) 7 개 설계. 시즌 캠페인 8 종 디자인 디렉팅.</p>
+                </div>
+              </li>
+              <li>
+                <div class="specimen-period">2020 — 2024</div>
+                <div class="specimen-entry">
+                  <p class="specimen-role-name">무신사 · UX 리드</p>
+                  <p class="specimen-desc">PDP 리뉴얼(2022) — 전환율 +18%, 평균 체류 3.4 분 → 4.7 분. 한국 신뢰 신호 6 개(원산지·KC·후기 등) 모듈 표준화.</p>
+                </div>
+              </li>
+              <li>
+                <div class="specimen-period">2018 — 2020</div>
+                <div class="specimen-entry">
+                  <p class="specimen-role-name">29CM · 디자이너</p>
+                  <p class="specimen-desc">큐레이션 매거진 인쇄 · 디지털 동시 양식 작업. 한국 에디토리얼 톤 정립.</p>
+                </div>
+              </li>
+              <li>
+                <div class="specimen-period">2016 — 2018</div>
+                <div class="specimen-entry">
+                  <p class="specimen-role-name">네이버 · UI 디자이너</p>
+                  <p class="specimen-desc">메일·캘린더 한글 UI 미세 조정. 본문 행간 1.45 → 1.72 기준 정립 PoC.</p>
+                </div>
+              </li>
+              <li>
+                <div class="specimen-period">2014 — 2016</div>
+                <div class="specimen-entry">
+                  <p class="specimen-role-name">신생 스튜디오 · 그래픽 디자이너</p>
+                  <p class="specimen-desc">서울 시립 미술관 인쇄물·도록 디자인. 한지 인쇄 양식 첫 경험.</p>
+                </div>
+              </li>
+            </ul>
+
+            <!-- 솜씨 -->
+            <h3 class="specimen-sec">솜씨(技)</h3>
+            <div class="specimen-tags">
+              <span>한글 타이포</span>
+              <span>인쇄 양식</span>
+              <span>디자인 시스템</span>
+              <span>한자 페어링</span>
+              <span>Figma · 12년</span>
+              <span>React · 7년</span>
+              <span>InDesign</span>
+              <span>Adobe Illustrator</span>
+            </div>
+          </div>
+
+          <!-- 오른쪽: 메타 -->
+          <aside class="specimen-side">
+            <!-- 증명 자리 -->
+            <div class="specimen-photo">
+              <div class="specimen-photo-box">
+                <span>증명사진</span>
+              </div>
+            </div>
+
+            <!-- 학력 -->
+            <h3 class="specimen-sec specimen-sec-side">학력(學歷)</h3>
+            <ul class="specimen-list specimen-list-side">
+              <li>
+                <div class="specimen-period">2010 — 2014</div>
+                <div class="specimen-entry">
+                  <p class="specimen-role-name">홍익대학교</p>
+                  <p class="specimen-desc">시각디자인학과 · 학사 · GPA 3.8</p>
+                </div>
+              </li>
+              <li>
+                <div class="specimen-period">2007 — 2010</div>
+                <div class="specimen-entry">
+                  <p class="specimen-role-name">서울예술고등학교</p>
+                  <p class="specimen-desc">미술과</p>
+                </div>
+              </li>
+            </ul>
+
+            <!-- 주요 성과 -->
+            <h3 class="specimen-sec specimen-sec-side">성과(成果)</h3>
+            <ul class="specimen-metric">
+              <li><b>+18%</b><span>무신사 PDP 전환율</span></li>
+              <li><b>8 종</b><span>인쇄 양식 표준화</span></li>
+              <li><b>3 회</b><span>디자인어워드 수상</span></li>
+            </ul>
+
+            <!-- 언어 -->
+            <h3 class="specimen-sec specimen-sec-side">언어(言)</h3>
+            <ul class="specimen-lang">
+              <li>한국어 <span>모어</span></li>
+              <li>영어 <span>업무 가능</span></li>
+              <li>일본어 <span>기초 회화</span></li>
+            </ul>
+          </aside>
+        </div>
+
+        <!-- 꼬리 — 인장 + 발행 -->
+        <footer class="specimen-foot">
+          <div class="specimen-foot-meta">
+            <span>1 / 1</span>
+            <span>·</span>
+            <span>삿갓 笠 · 한국형 AI 문서 디자인 시스템</span>
+            <span>·</span>
+            <span>2026.05.17</span>
+          </div>
+          <div class="specimen-seal">履</div>
+        </footer>
+      </article>
+
+      <div class="full-specimen-side">
+        <p class="full-specimen-note"><b>입력:</b> 자연어 한 문장</p>
+        <p class="full-specimen-quote">"디자이너 정상세. 카카오 시각디자인팀 리드, 무신사 UX 리드, 29CM·네이버. 홍익대 시각디자인 졸업. 12년차."</p>
+        <p class="full-specimen-note"><b>출력:</b> 위 한 장 — 평균 10초.</p>
+        <p class="full-specimen-arrow">↓</p>
+        <p class="full-specimen-spec">A4 · 명조 800 표지 / 바탕 400 본문 / 한자 인장 · 한국 인쇄 양식 표준 · 무료 OFL 폰트</p>
+        <a href="/ko/new?template=resume" class="full-specimen-cta">이 양식으로 나도 만들기 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 0⅞ EQUITY REPORT — 분기 실적 분석 ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">0⅞ · 자세히 보기</p>
+      <h2 class="section-title">한 장의 분기 보고서</h2>
+      <p class="section-lede">증권사 리포트 한 폭 — 종목 표지·투자 요지·재무 표·주가 그래프·전망. 한자 숫자(壹貳參) 와 아라비아 숫자 결을 함께. 한국 증권 양식의 인쇄 톤.</p>
+    </div>
+
+    <div class="full-specimen">
+      <article class="specimen-sheet equity-sheet">
+        <!-- 표지 -->
+        <header class="equity-head">
+          <div class="equity-ticker">
+            <div class="equity-name">삼성전자<span>(005930)</span></div>
+            <div class="equity-meta">KOSPI · 반도체 · 2026 Q1 분기 분석</div>
+          </div>
+          <div class="equity-price">
+            <div class="equity-curr">₩ 81,400</div>
+            <div class="equity-delta">▲ +2,100 <span>(+2.65%)</span></div>
+            <div class="equity-asof">2026.05.16 종가 · 53 주 고가 ₩ 84,600 / 저가 ₩ 64,200</div>
+          </div>
+        </header>
+
+        <!-- 투자 요지 -->
+        <div class="equity-summary">
+          <h3 class="specimen-sec">투자 요지(投資 要旨)</h3>
+          <p>Q1 매출 <b style="color:var(--brand)">77.3 조</b>(YoY +9.6%) · 영업이익 <b style="color:var(--brand)">6.4 조</b>(YoY +1,332%). HBM3E 양산 본격 진입, DRAM 가격 반등 사이클 진입. AI 가속기향 수요 강세로 2026 H2 추가 마진 확대 가능. <b>목표 주가 ₩ 95,000</b> 상향, 매수 유지.</p>
+        </div>
+
+        <!-- 재무 표 + 차트 두 단 -->
+        <div class="equity-grid">
+          <!-- 재무 표 -->
+          <div class="equity-financials">
+            <h3 class="specimen-sec">재무 개요(財務 槪要)</h3>
+            <table class="equity-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>FY2024</th>
+                  <th>FY2025</th>
+                  <th>Q1 2026</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>매출</td><td>258.9 조</td><td>282.1 조</td><td class="hi">77.3 조</td></tr>
+                <tr><td>영업이익</td><td>32.7 조</td><td>40.5 조</td><td class="hi">6.4 조</td></tr>
+                <tr><td>당기순이익</td><td>26.4 조</td><td>34.4 조</td><td>5.8 조</td></tr>
+                <tr><td>EPS (원)</td><td>3,884</td><td>5,063</td><td>853</td></tr>
+                <tr><td>영업이익률</td><td>12.6%</td><td>14.4%</td><td class="hi">8.3%</td></tr>
+                <tr><td>ROE</td><td>14.2%</td><td>17.3%</td><td>—</td></tr>
+              </tbody>
+            </table>
+            <p class="equity-table-foot">단위: 한화 / 출처: 삿갓 모의 데이터</p>
+          </div>
+
+          <!-- 차트 -->
+          <div class="equity-chart-wrap">
+            <h3 class="specimen-sec">최근 주가 추이</h3>
+            <svg class="equity-chart" viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+              <!-- 격자 -->
+              <g stroke="#ddd6c4" stroke-width="0.4" fill="none">
+                <line x1="20" y1="20" x2="270" y2="20"/>
+                <line x1="20" y1="60" x2="270" y2="60"/>
+                <line x1="20" y1="100" x2="270" y2="100"/>
+                <line x1="20" y1="140" x2="270" y2="140"/>
+              </g>
+              <!-- y label -->
+              <g font-family="inherit" font-size="7" fill="#807c75" letter-spacing="0.04em">
+                <text x="16" y="22" text-anchor="end">85K</text>
+                <text x="16" y="62" text-anchor="end">75K</text>
+                <text x="16" y="102" text-anchor="end">65K</text>
+                <text x="16" y="142" text-anchor="end">55K</text>
+              </g>
+              <!-- 영역 -->
+              <path d="M 25,108 L 50,118 L 75,112 L 100,98 L 125,82 L 150,72 L 175,66 L 200,48 L 225,38 L 250,42 L 265,28 L 265,140 L 25,140 Z" fill="#f6d5de" opacity="0.32"/>
+              <!-- 라인 -->
+              <path d="M 25,108 L 50,118 L 75,112 L 100,98 L 125,82 L 150,72 L 175,66 L 200,48 L 225,38 L 250,42 L 265,28" fill="none" stroke="#b91c5c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- 마커 -->
+              <circle cx="25" cy="108" r="1.6" fill="#b91c5c"/>
+              <circle cx="125" cy="82" r="1.6" fill="#b91c5c"/>
+              <circle cx="200" cy="48" r="1.6" fill="#b91c5c"/>
+              <circle cx="265" cy="28" r="2.8" fill="#b91c5c"/>
+              <circle cx="265" cy="28" r="4.5" fill="none" stroke="#b91c5c" stroke-width="0.6" opacity="0.5"/>
+              <!-- 최고점 라벨 -->
+              <text x="262" y="22" text-anchor="end" font-family="inherit" font-size="8" font-weight="700" fill="#b91c5c">₩ 81,400</text>
+              <!-- x label -->
+              <g font-family="inherit" font-size="7" fill="#807c75" letter-spacing="0.04em">
+                <text x="25" y="155">2 月</text>
+                <text x="100" y="155">3 月</text>
+                <text x="175" y="155">4 月</text>
+                <text x="260" y="155" text-anchor="end">5 月</text>
+              </g>
+            </svg>
+            <p class="equity-chart-foot">— 4분기 저점 후 HBM 모멘텀 회복, 3개월 +26.7%.</p>
+          </div>
+        </div>
+
+        <!-- 전망 + 위험 -->
+        <div class="equity-outlook">
+          <div>
+            <h3 class="specimen-sec">상승 동력</h3>
+            <ul class="equity-bullets">
+              <li>― HBM3E·HBM4 양산 본격 진입, AI 가속기 수요 강세</li>
+              <li>― DRAM·NAND 가격 반등 사이클 진입(2025 H2~)</li>
+              <li>― 파운드리 3 nm 수율 회복, 미국 텍사스 팹 가동 시작</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="specimen-sec">위험 요인</h3>
+            <ul class="equity-bullets">
+              <li>― 중국 메모리 굴기에 따른 범용 DRAM 가격 압박</li>
+              <li>― 미국 對中 수출 통제 추가 강화 가능성</li>
+              <li>― 환율 1,400 원대 안정화 여부 불확실</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 꼬리 -->
+        <footer class="specimen-foot">
+          <div class="specimen-foot-meta">
+            <span>1 / 1</span><span>·</span><span>삿갓 笠 · 증권 분석 양식 v1</span><span>·</span><span>2026.05.17</span>
+          </div>
+          <div class="specimen-seal" style="background:var(--jade);">案</div>
+        </footer>
+      </article>
+
+      <div class="full-specimen-side">
+        <p class="full-specimen-note"><b>입력:</b> 자연어 한 문장</p>
+        <p class="full-specimen-quote">"삼성전자 Q1 2026 분기 보고서. 매출 77.3조, 영업이익 6.4조. HBM 모멘텀 강세, 목표가 95,000원."</p>
+        <p class="full-specimen-note"><b>출력:</b> 표지·요지·재무표·차트·전망 완성.</p>
+        <p class="full-specimen-arrow">↓</p>
+        <p class="full-specimen-spec">한국 증권사 IR 양식 결 · tabular-nums 한자/한글 숫자 페어링 · 인쇄 PDF 직출</p>
+        <a href="/ko/new?template=proposal" class="full-specimen-cta">이 양식으로 만들기 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 0⅞ SLIDES — 6 슬라이드 keynote ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">0⅞ · 자세히 보기</p>
+      <h2 class="section-title">여섯 장의 keynote</h2>
+      <p class="section-lede">발표 자료 한 묶음 — 한지 슬라이드 6 장. 표지·문제·해결·핵심 메트릭·로드맵·다음. 같은 규(規) 위에서 슬라이드도 한 벌의 결로 짭니다.</p>
+    </div>
+
+    <div class="slides-deck">
+      <!-- 슬라이드 1: 표지 -->
+      <article class="slide-page slide-cover">
+        <div class="slide-eyebrow">강연 · 2026.06</div>
+        <h3 class="slide-title">한지 위에 옮겨 적는 일</h3>
+        <p class="slide-sub">한국형 AI 문서 디자인 시스템</p>
+        <div class="slide-footer">정 상 세 · 삿갓 · 笠</div>
+      </article>
+
+      <!-- 슬라이드 2: 문제 -->
+      <article class="slide-page">
+        <div class="slide-num">壹 · 1</div>
+        <h3 class="slide-h">왜 한국 문서는 한국 같지 않은가</h3>
+        <p class="slide-body">워드는 영문이 기본. 한컴은 90 년대 양식. 노션은 한국 인쇄에 약함. 한국에서 만든 문서인데 한국이 보이지 않는 좌절.</p>
+        <ul class="slide-list">
+          <li>― 영문 시스템 폰트 위에 한글 얹기</li>
+          <li>― 한국 인쇄 표준 없음 (이력서·자소서·청첩장)</li>
+          <li>― 한국 문자(한자·한글) 페어링 무규(無規)</li>
+        </ul>
+      </article>
+
+      <!-- 슬라이드 3: 해결 -->
+      <article class="slide-page">
+        <div class="slide-num">貳 · 2</div>
+        <h3 class="slide-h">한지 토큰 시스템</h3>
+        <p class="slide-body">한지·먹·무궁화·취색·금박 — 5 개 디자인 토큰. 단 세 가지 폰트. 한 페이지의 5 % 이하 단일 강조.</p>
+        <div class="slide-tokens">
+          <span class="slide-token" style="background:#f5f2ea; color:#1c1916;">한지</span>
+          <span class="slide-token" style="background:#1c1916; color:#f5f2ea;">먹</span>
+          <span class="slide-token" style="background:#b91c5c; color:#f5f2ea;">무궁화</span>
+          <span class="slide-token" style="background:#2e6b5e; color:#f5f2ea;">취색</span>
+          <span class="slide-token" style="background:#b8954f; color:#1c1916;">금박</span>
+        </div>
+      </article>
+
+      <!-- 슬라이드 4: 메트릭 -->
+      <article class="slide-page">
+        <div class="slide-num">參 · 3</div>
+        <h3 class="slide-h">숫자로 본 결과</h3>
+        <div class="slide-metrics">
+          <div>
+            <b>10초</b>
+            <span>평균 생성 시간</span>
+          </div>
+          <div>
+            <b>8 종</b>
+            <span>한국 문서 양식</span>
+          </div>
+          <div>
+            <b>+18%</b>
+            <span>PDP 전환율 (PoC)</span>
+          </div>
+        </div>
+        <p class="slide-body" style="margin-top:auto;">두 주 걸리던 작업이 십 초. 명조와 바탕만으로.</p>
+      </article>
+
+      <!-- 슬라이드 5: 로드맵 -->
+      <article class="slide-page">
+        <div class="slide-num">肆 · 4</div>
+        <h3 class="slide-h">로드맵 · 사계(四季)</h3>
+        <ul class="slide-roadmap">
+          <li><span>봄</span><b>v0.6</b><em>분청 한지 + 8 양식</em></li>
+          <li><span>여름</span><b>v0.8</b><em>인쇄 양식 표준화 + PDF 직출</em></li>
+          <li><span>가을</span><b>v1.0</b><em>유료 SaaS 런칭 · Polar</em></li>
+          <li><span>겨울</span><b>v1.2</b><em>커뮤니티 양식 공개·기여</em></li>
+        </ul>
+      </article>
+
+      <!-- 슬라이드 6: 다음 -->
+      <article class="slide-page slide-end">
+        <div class="slide-num">伍 · 5</div>
+        <h3 class="slide-h" style="font-size:30px;">고맙습니다</h3>
+        <p class="slide-body" style="font-size:13.5px;">satgat.fun 에서 직접 만들어 보세요. 셀프 호스팅 OK · MIT.</p>
+        <div class="slide-end-mark">笠</div>
+        <div class="slide-footer">정 상 세 · @sangse_pjs · jung@sangse.kr</div>
+      </article>
+    </div>
+
+    <p class="section-lede" style="font-size:13px; margin-top:24px; text-align:center;">슬라이드 한 묶음 — 같은 토큰, 같은 결. 인쇄·발표·PDF 동일.</p>
+  </section>
+
+  <!-- ============ 무궁화(無窮花) — 메인 브랜드 ============ -->
+  <section class="mugunghwa-section">
+    <div class="section-head">
+      <p class="section-num">○ · 무궁화(無窮花)</p>
+      <h2 class="section-title">메인 강조의 정신</h2>
+      <p class="section-lede">한국 국화(國花). 새벽에 피어 저녁에 지고, 이튿날 다시 피기를 백 일. 끊임없이 피어 무궁화(無窮花)입니다. 삿갓의 메인 강조색은 무궁화 단심(丹心) — 5장 꽃잎 가운데 짙은 자주가 시선을 모읍니다.</p>
+    </div>
+    <div class="mugunghwa-stage">
+      <!-- 큰 무궁화 SVG -->
+      <div class="mugunghwa-svg-wrap">
+        <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="무궁화" class="mugunghwa-flower">
+          <defs>
+            <radialGradient id="mugunghwaPetal" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#FAE5EA"/>
+              <stop offset="55%" stop-color="#F6D5DE"/>
+              <stop offset="100%" stop-color="#E889A4"/>
+            </radialGradient>
+            <radialGradient id="mugunghwaCenter" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#B91C5C"/>
+              <stop offset="70%" stop-color="#8E1242"/>
+              <stop offset="100%" stop-color="#5C0828"/>
+            </radialGradient>
+          </defs>
+          <!-- 5 꽃잎 — 72° 간격 -->
+          <g>
+            <ellipse cx="0" cy="-50" rx="36" ry="55" fill="url(#mugunghwaPetal)" stroke="#D03F7A" stroke-width="0.6" opacity="0.95"/>
+          </g>
+          <g transform="rotate(72)">
+            <ellipse cx="0" cy="-50" rx="36" ry="55" fill="url(#mugunghwaPetal)" stroke="#D03F7A" stroke-width="0.6" opacity="0.95"/>
+          </g>
+          <g transform="rotate(144)">
+            <ellipse cx="0" cy="-50" rx="36" ry="55" fill="url(#mugunghwaPetal)" stroke="#D03F7A" stroke-width="0.6" opacity="0.95"/>
+          </g>
+          <g transform="rotate(216)">
+            <ellipse cx="0" cy="-50" rx="36" ry="55" fill="url(#mugunghwaPetal)" stroke="#D03F7A" stroke-width="0.6" opacity="0.95"/>
+          </g>
+          <g transform="rotate(288)">
+            <ellipse cx="0" cy="-50" rx="36" ry="55" fill="url(#mugunghwaPetal)" stroke="#D03F7A" stroke-width="0.6" opacity="0.95"/>
+          </g>
+          <!-- 단심(丹心) 가운데 -->
+          <circle cx="0" cy="0" r="22" fill="url(#mugunghwaCenter)"/>
+          <!-- 꽃술 -->
+          <g stroke="#FAE5EA" stroke-width="0.6" opacity="0.4">
+            <line x1="0" y1="0" x2="0" y2="-18"/>
+            <line x1="0" y1="0" x2="14" y2="-12"/>
+            <line x1="0" y1="0" x2="-14" y2="-12"/>
+            <line x1="0" y1="0" x2="12" y2="13"/>
+            <line x1="0" y1="0" x2="-12" y2="13"/>
+          </g>
+          <!-- 가운데 한자 -->
+          <text x="0" y="5" text-anchor="middle" font-family="Nanum Myeongjo, serif" font-size="14" font-weight="800" fill="#FAE5EA" letter-spacing="0">無</text>
+        </svg>
+      </div>
+
+      <div class="mugunghwa-meta">
+        <div class="m-petal">
+          <p class="m-label">꽃잎 가장자리</p>
+          <p class="m-name">연분홍 — 잎이 흩어지는 결</p>
+          <p class="m-hex"><span class="m-chip" style="background:#FAE5EA"></span>#FAE5EA</p>
+        </div>
+        <div class="m-petal">
+          <p class="m-label">꽃잎 중심</p>
+          <p class="m-name">매홍 — 다섯 잎의 본색</p>
+          <p class="m-hex"><span class="m-chip" style="background:#F6D5DE"></span>#F6D5DE</p>
+        </div>
+        <div class="m-petal">
+          <p class="m-label">중심 단심(丹心)</p>
+          <p class="m-name">메인 강조 — 시선의 한 점</p>
+          <p class="m-hex"><span class="m-chip" style="background:#B91C5C"></span>#B91C5C</p>
+        </div>
+        <div class="m-petal">
+          <p class="m-label">단심 깊이</p>
+          <p class="m-name">강조 진하기 — h2 좌측 바</p>
+          <p class="m-hex"><span class="m-chip" style="background:#8E1242"></span>#8E1242</p>
+        </div>
+      </div>
+    </div>
+    <blockquote class="mugunghwa-quote">
+      <p>무궁화 무궁화 우리나라 꽃<br>삼천리 강산에 우리나라 꽃</p>
+      <cite>— 김성태 《무궁화 노래》 (1948)</cite>
+    </blockquote>
+  </section>
+
+  <style>
+    .mugunghwa-section { position: relative; }
+    .mugunghwa-stage {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) 1fr;
+      gap: 56px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .mugunghwa-svg-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .mugunghwa-flower {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      filter: drop-shadow(0 8pt 32pt rgba(185, 28, 92, 0.18));
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .mugunghwa-flower:hover { transform: rotate(36deg) scale(1.04); }
+    .mugunghwa-meta {
+      display: grid;
+      gap: 18px;
+    }
+    .m-petal {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 14px 16px;
+      background: var(--ivory);
+      border: 1px solid var(--border-soft);
+      border-left: 2pt solid var(--brand);
+      border-radius: 4px;
+    }
+    .m-petal:nth-child(1) { border-left-color: #FAE5EA; }
+    .m-petal:nth-child(2) { border-left-color: #F6D5DE; }
+    .m-petal:nth-child(3) { border-left-color: #B91C5C; }
+    .m-petal:nth-child(4) { border-left-color: #8E1242; }
+    .m-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--olive);
+      margin: 0;
+    }
+    .m-name {
+      font-family: var(--serif-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--near-black);
+      margin: 0;
+      letter-spacing: -0.005em;
+    }
+    .m-hex {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--olive);
+      margin: 4px 0 0;
+      letter-spacing: 0.04em;
+    }
+    .m-chip {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      box-shadow: inset 0 0 0 0.5pt rgba(28, 25, 22, 0.1);
+    }
+    .mugunghwa-quote {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 32px;
+      border-left: 3pt solid var(--brand);
+      background: var(--mugunghwa-pale);
+      font-family: var(--serif);
+    }
+    .mugunghwa-quote p {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--near-black);
+      margin: 0 0 8px;
+      letter-spacing: -0.005em;
+    }
+    .mugunghwa-quote cite {
+      font-style: normal;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--olive);
+    }
+    @media (max-width: 720px) {
+      .mugunghwa-stage { grid-template-columns: 1fr; gap: 32px; }
+      .mugunghwa-svg-wrap { max-width: 260px; margin: 0 auto; }
+    }
+  </style>
+
+  <!-- ============ 01 사용법 — 3 step visual ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">01 · 사용법</p>
+      <h2 class="section-title">세 걸음에 끝납니다</h2>
+      <p class="section-lede">설치도, 가입도, 결제도 필요 없습니다. 한지 위에 옮겨 적을 자기 이야기만 풀어 놓으면 됩니다.</p>
+    </div>
+
+    <ol class="usage-steps">
+      <li class="usage-step">
+        <div class="usage-num">一</div>
+        <div class="usage-body">
+          <h3 class="usage-title">종이를 고르다</h3>
+          <p class="usage-text">여덟 종 한국 문서 가운데 한 장을 고릅니다. 이력서·자기소개서·명함·청첩장·연하장·제안서·뉴스레터·포트폴리오.</p>
+          <p class="usage-meta"><a href="/ko/new" class="usage-link">satgat.fun → 새 문서 생성 →</a></p>
+        </div>
+      </li>
+      <li class="usage-step">
+        <div class="usage-num">二</div>
+        <div class="usage-body">
+          <h3 class="usage-title">이야기를 풀다</h3>
+          <p class="usage-text">자연어로 한 문장 풀어 적습니다. 양식을 칸칸이 채울 필요 없습니다.</p>
+          <p class="usage-example">"신입 프론트엔드 이력서. 홍익대 시각디자인 졸업, 카카오 인턴 6개월, 토이프로젝트 3개…"</p>
+        </div>
+      </li>
+      <li class="usage-step">
+        <div class="usage-num">三</div>
+        <div class="usage-body">
+          <h3 class="usage-title">한지에 옮겨 적히다</h3>
+          <p class="usage-text">AI가 슬롯을 채우고 한지 위에 명조로 옮겨 적습니다. 평균 <b style="color:var(--brand)">10초</b>. 브라우저 인쇄로 PDF 저장.</p>
+          <p class="usage-meta">8종 문서 전부 무료 OFL 폰트로 인쇄 가능.</p>
+        </div>
+      </li>
+    </ol>
+
+    <p class="section-lede" style="font-size:13.5px; margin-top:28px; text-align:center;">개발자라면 GitHub: <a href="https://github.com/EungjePark/satgat" style="color:var(--brand); text-decoration:none; font-weight:600;">EungjePark/satgat</a> · 셀프 호스팅 OK · MIT.</p>
+  </section>
+
+  <!-- ============ 02 MANIFESTO ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">02 · 규(規)</p>
+      <h2 class="section-title">디자인 원칙</h2>
+    </div>
+    <p class="manifesto">한지(韓紙) 위에 먹(墨)으로 옮겨 적습니다. <em class="latin">무궁화(無窮花)</em>의 단심(丹心) 한 점만으로 시선을 모으고, 명조(明朝)가 위계를 짓고, 여백이 호흡합니다. 화려한 그림자도 두 번째 색도 두지 않습니다. 인쇄에 견디는 색만, 합성 볼드 없이, 옛 종이 위 글씨의 단정함으로.</p>
+    <ol class="rules">
+      <li><span class="n">一</span><p>페이지 본바탕은 분청 한지 <code>#F5F2EA</code> — 조선 분청사기 회청을 머금은 한국 도자색. 영국 양피지·Kami parchment의 따뜻한 노란 크림이 아닌, 회색 한 점이 깔린 한반도 고유 톤.</p></li>
+      <li><span class="n">二</span><p>강조색은 무궁화(無窮花) 단심(丹心) <code>#B91C5C</code> 하나. 한 페이지의 5%를 넘지 않는다. 그 이상은 절제가 아니라 혼잡이다.</p></li>
+      <li><span class="n">三</span><p>페이지 상단에 색동(色동) 5색 띠 — 청·적·황·녹·흑. 한복 색동저고리의 띠를 페이지 머리에 옮긴다.</p></li>
+      <li><span class="n">四</span><p>페이지 하단에 단청(丹靑) 처마 띠 — 단청·취색·금박 dash. 조선왕실 처마 단청을 띠 한 줄로 압축.</p></li>
+      <li><span class="n">五</span><p>회색은 모두 따뜻한 황갈 + 분청 회청 사이. 푸른 회색은 한지 위에서 차갑게 떠 보인다.</p></li>
+      <li><span class="n">六</span><p>제목은 명조(800), 본문은 바탕(400). 위계는 굵기와 크기가 짓는다. 한글 본문 행간 1.7–1.8.</p></li>
+      <li><span class="n">七</span><p>태그·배지는 solid hex만. rgba는 인쇄에서 결이 어긋난다. 그림자는 가는 테 또는 옅은 whisper.</p></li>
+      <li><span class="n">八</span><p>여백은 디자인이다. xl/2xl 간격을 두려워하지 말 것. 무궁화 watermark가 빈 자리에 핀다.</p></li>
+    </ol>
+  </section>
+
+  <!-- ============ 03 COLOR ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">03 · 색(色)</p>
+      <h2 class="section-title">따뜻한 절제</h2>
+      <p class="section-lede">하나의 강조색 + 따뜻한 중성색 + 차가운 색상 제로. 무궁화(無窮花) 단심(丹心)은 어떤 페이지에서든 <b>5%</b> 이하만 차지합니다. 그 이상은 절제가 아니라 혼잡입니다.</p>
+    </div>
+
+    <h3 class="subhead">한지(韓紙) — 캔버스</h3>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#F5F2EA"></div><div class="info"><p class="name">분청 한지(粉靑韓紙)</p><p class="role">페이지 본바탕. 조선 분청사기 회청 + 색동 띠 + 무궁화 watermark + 창호지 격자</p><span class="hex">#F5F2EA</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#F4EEDB"></div><div class="info"><p class="name">이보리(象牙)</p><p class="role">카드·부상 표면. 한지 위 한 톤 밝은 결</p><span class="hex">#F4EEDB</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#ECE6D4"></div><div class="info"><p class="name">황지(黃紙)</p><p class="role">버튼·인터랙티브 표면. 살짝 진한 한지</p><span class="hex">#ECE6D4</span></div></div>
+      <div class="swatch dark"><div class="chip" style="background:#1C1916"></div><div class="info"><p class="name" style="color:var(--parchment)">먹(墨)</p><p class="role">다크 패널 본색. 따뜻한 흑, cool gray 아님</p><span class="hex">#1C1916</span></div></div>
+    </div>
+
+    <h3 class="subhead">무궁화·취색·금박 — 강조</h3>
+    <div class="swatches">
+      <div class="swatch brand"><div class="chip" style="background:#B91C5C"></div><div class="info"><p class="name">무궁화(無窮花)</p><p class="role">메인 강조색 · 페이지의 5% 이내 · 한국 국화</p><span class="hex">#B91C5C</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#B53030"></div><div class="info"><p class="name">무궁화 밝게</p><p class="role">호버·hover 상태 · 다크 위 링크</p><span class="hex">#D03F7A</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#2E6B5E"></div><div class="info"><p class="name">취색(翠色)</p><p class="role">청자(靑瓷)의 깊이 · 보조 강조 · 인장</p><span class="hex">#2E6B5E</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#B8954F"></div><div class="info"><p class="name">금박(金箔)</p><p class="role">절제된 고급 · 메달·디바이더 · 최소 사용</p><span class="hex">#B8954F</span></div></div>
+    </div>
+
+    <h3 class="subhead">먹(墨) 계열 — 본문 위계</h3>
+    <div class="swatches" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="swatch"><div class="chip" style="background:#1C1916"></div><div class="info"><p class="name">먹(墨)</p><p class="role">본문 H1·H2</p><span class="hex">#1C1916</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#3A3833"></div><div class="info"><p class="name">부엽(腐葉)</p><p class="role">본문 9.5pt</p><span class="hex">#3A3833</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#4D4B46"></div><div class="info"><p class="name">숯(炭)</p><p class="role">캡션·인용</p><span class="hex">#4D4B46</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#6B6862"></div><div class="info"><p class="name">이끼(苔)</p><p class="role">메타·label</p><span class="hex">#6B6862</span></div></div>
+    </div>
+
+    <h3 class="subhead">엷음(淡) — 보더·구분선</h3>
+    <p style="font-size:14px; color: var(--olive); margin: 0 0 16px; line-height: 1.7;">무궁화 위에 얹는 옅은 tint는 모두 <b>solid hex</b>로. rgba 금지(인쇄 시 alpha 계산이 들쭉날쭉). 한지의 따뜻한 황갈에 맞춰 조정된 tint 5단계.</p>
+    <div class="tint-strip">
+      <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#FAE5EA; color:var(--brand)">한지 위 무궁화 옅게</span><p class="opacity">tint 1</p><span class="hex">#F4ECE9</span></div>
+      <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#F6D5DE; color:var(--brand)">한지 위 무궁화 옅게</span><p class="opacity">tint 2</p><span class="hex">#EEDED9</span></div>
+      <div class="tint default"><span class="flag">기본</span><span class="sample" style="background:#EFC4D2; color:var(--brand)">한지 위 무궁화</span><p class="opacity">tint 3</p><span class="hex">#E8D0C9</span></div>
+      <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#E5B0C2; color:var(--brand)">한지 위 무궁화 진하게</span><p class="opacity">tint 4</p><span class="hex">#DDC3BB</span></div>
+      <div class="tint"><span class="flag">&nbsp;</span><span class="sample" style="background:#D996AE; color:var(--brand)">한지 위 무궁화 진하게</span><p class="opacity">tint 5</p><span class="hex">#D0B4AB</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 04 TYPE ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">04 · 자(字)</p>
+      <h2 class="section-title">타입 시스템</h2>
+      <p class="section-lede">한 페이지에 단 세 가지 글꼴 — 명조(明朝) 위계, 바탕(平字) 본문, 돋움(楷字) 라벨. 모두 무료 OFL 폰트입니다. 한자(漢字)는 한글 폰트에 포함된 글리프를 그대로 사용합니다.</p>
+    </div>
+
+    <div class="family-grid">
+      <div class="family serif">
+        <p class="glyph">字</p>
+        <p class="role">명조 · Display</p>
+        <p class="name">Nanum Myeongjo 800</p>
+        <p class="use">표지·H1·인장에 씁니다. 장중한 무게감과 미세한 먹 번짐(ink bleed). 한자 글리프 자연스럽게 어울립니다.</p>
+      </div>
+      <div class="family serif">
+        <p class="glyph">글</p>
+        <p class="role">바탕 · 본문</p>
+        <p class="name">Gowun Batang 400/700</p>
+        <p class="use">본문·인용·숫자에 씁니다. 둥근 곡선이 한지 위에서 따뜻하게 읽힙니다. weight 400 본문, 700 인용 강조.</p>
+      </div>
+      <div class="family serif">
+        <p class="glyph">가</p>
+        <p class="role">돋움 · 라벨</p>
+        <p class="name">Gowun Dodum 400</p>
+        <p class="use">섹션 번호·라벨·메타에 씁니다. 정갈한 직선미. 대문자 + letter-spacing 0.18em로 우아한 흐름.</p>
+      </div>
+      <div class="family mono">
+        <p class="glyph">Aa</p>
+        <p class="role">Latin · italic</p>
+        <p class="name">Cormorant Garamond italic</p>
+        <p class="use">영문 강조에 페어링. 한자 명조와 같은 시대 감성. 인용·brand 강조에 단청 색으로 일점.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">스케일 (인쇄 pt; 화면 px = pt x 1.33)</h3>
+    <div class="type-grid">
+      <div class="type-row">
+        <div class="type-label">Display</div>
+        <div class="type-sample display">한 사람의 자취를<br>한 장의 종이에</div>
+        <div class="type-specs"><b>36-48 pt</b><br>weight 800<br>line 1.10</div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">H1 섹션</div>
+        <div class="type-sample h1">색(色) — 무궁화를 절제하다</div>
+        <div class="type-specs"><b>18-22 pt</b><br>weight 800<br>line 1.20</div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">H2 소제목</div>
+        <div class="type-sample h2">한지 · 먹 · 무궁화</div>
+        <div class="type-specs"><b>14-16 pt</b><br>weight 700<br>line 1.25</div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">H3 항목</div>
+        <div class="type-sample h3">엷음 — 보더와 구분선</div>
+        <div class="type-specs"><b>12-13 pt</b><br>weight 700<br>line 1.30</div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">본문</div>
+        <div class="type-sample body">무궁화(無窮花) 단심은 한 페이지의 5%를 넘지 않습니다. 그 이상은 절제가 아니라 혼잡입니다. 모든 회색은 따뜻한 황갈을 머금어 한지의 결과 어우러집니다.</div>
+        <div class="type-specs"><b>10-11 pt</b><br>weight 400<br>line 1.72</div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">캡션</div>
+        <div class="type-sample caption">그림 설명, 각주, 메타 텍스트. 색은 숯(炭) 또는 이끼(苔)로 한 단계 낮춥니다.</div>
+        <div class="type-specs"><b>8.5-9 pt</b><br>weight 400<br>line 1.55</div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">라벨</div>
+        <div class="type-sample label">삿갓 · v1.0 · 2026</div>
+        <div class="type-specs"><b>7.5-8 pt</b><br>weight 600<br>line 1.35</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 SPACING ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">05 · 결(結)·꼴</p>
+      <h2 class="section-title">리듬과 형태</h2>
+      <p class="section-lede">기본 단위: 4pt. 밀집 레이아웃은 더 작은 여백을, 격식 있는 문서는 더 큰 여백을 사용합니다.</p>
+    </div>
+
+    <table class="space-table">
+      <tr><th>스케일</th><th>값</th><th>용도</th><th></th></tr>
+      <tr><td class="name">xs</td><td class="val">2-3 pt</td><td class="use">인라인 요소</td><td class="bar"><span style="width:6px"></span></td></tr>
+      <tr><td class="name">sm</td><td class="val">4-5 pt</td><td class="use">태그 패딩 · 타이트 레이아웃</td><td class="bar"><span style="width:12px"></span></td></tr>
+      <tr><td class="name">md</td><td class="val">8-10 pt</td><td class="use">컴포넌트 내부</td><td class="bar"><span style="width:24px"></span></td></tr>
+      <tr><td class="name">lg</td><td class="val">16-20 pt</td><td class="use">컴포넌트 간격 · 카드 패딩</td><td class="bar"><span style="width:48px"></span></td></tr>
+      <tr><td class="name">xl</td><td class="val">24-32 pt</td><td class="use">섹션 제목 마진</td><td class="bar"><span style="width:72px"></span></td></tr>
+      <tr><td class="name">2xl</td><td class="val">40-60 pt</td><td class="use">주요 섹션 간격</td><td class="bar"><span style="width:140px"></span></td></tr>
+      <tr><td class="name">3xl</td><td class="val">80-120 pt</td><td class="use">긴 문서 챕터 간격</td><td class="bar"><span style="width:240px"></span></td></tr>
+    </table>
+
+    <h3 class="subhead">Radii</h3>
+    <div class="radii">
+      <div class="radius"><div class="box" style="border-radius:4px"></div><div class="r"><b>4</b> pt</div><div class="label">타이트</div></div>
+      <div class="radius"><div class="box" style="border-radius:6px"></div><div class="r"><b>6</b> pt</div><div class="label">코드 블록</div></div>
+      <div class="radius"><div class="box" style="border-radius:8px"></div><div class="r"><b>8</b> pt</div><div class="label">기본 카드</div></div>
+      <div class="radius"><div class="box" style="border-radius:12px"></div><div class="r"><b>12</b> pt</div><div class="label">컨테이너</div></div>
+      <div class="radius"><div class="box" style="border-radius:16px"></div><div class="r"><b>16</b> pt</div><div class="label">피처 카드</div></div>
+      <div class="radius"><div class="box" style="border-radius:24px"></div><div class="r"><b>24</b> pt</div><div class="label">대형 컨테이너</div></div>
+      <div class="radius"><div class="box" style="border-radius:32px"></div><div class="r"><b>32</b> pt</div><div class="label">히어로</div></div>
+    </div>
+
+    <h3 class="subhead">깊이 — 세 가지 그림자</h3>
+    <p style="font-size:14px; color: var(--olive); margin: 0 0 12px; line-height: 1.72;">하드 드롭 그림자는 한지 위에 얼룩처럼 떨어집니다. 삿갓은 가는 테(ring) · 옅은 whisper · 한지↔먹 명암 교차 세 가지로만 깊이를 짓습니다.</p>
+    <div class="shadow-row">
+      <div class="shadow-demo sd-ring">
+        <p class="t">가는 테 (ring)</p>
+        <p class="s">0 0 0 1pt var(--border)<br>&nbsp;<br>버튼 · 카드 호버 · 입력 포커스</p>
+      </div>
+      <div class="shadow-demo sd-whisper">
+        <p class="t">옅은 whisper</p>
+        <p class="s">0 4pt 24pt rgba(28,25,22,0.05)<br>&nbsp;<br>피처 카드 · 부드러운 부상</p>
+      </div>
+      <div class="shadow-demo sd-alt">
+        <p class="t">한지 ⇌ 먹</p>
+        <p class="s">#F5F2EA ⇌ #1C1916<br>&nbsp;<br>섹션 레벨 명암 교차</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 COMPONENTS ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">06 · 모듈</p>
+      <h2 class="section-title">원자 모듈</h2>
+      <p class="section-lede">작은 고정 세트로, 구체적인 문서 문제를 해결하는 곳에만 유지합니다.</p>
+    </div>
+
+    <div class="comp-grid">
+      <div class="comp">
+        <h4>버튼 세 종류</h4>
+        <p class="hint">하드 드롭 대신 가는 테(ring) · 8pt 모서리</p>
+        <div class="demo" style="display:flex; gap:10px; flex-wrap:wrap;">
+          <span class="btn btn-primary">문서 만들기</span>
+          <span class="btn btn-secondary">미리 보기</span>
+          <span class="btn btn-ghost">처음으로</span>
+        </div>
+      </div>
+      <div class="comp">
+        <h4>태그, 세 단계</h4>
+        <p class="hint">solid hex만 · 옅음에서 진함으로</p>
+        <div class="demo" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <span class="tag calm">한지 위 무궁화 옅게</span>
+          <span class="tag standard">한지 위 무궁화</span>
+          <span class="tag brush">한지 위 무궁화 진하게</span>
+        </div>
+      </div>
+      <div class="comp">
+        <h4>인용</h4>
+        <p class="hint">좌측 2pt 무궁화 + 숯(炭) 텍스트</p>
+        <blockquote class="quote">한 사람의 자취를 한 장의 종이에 옮긴다. 장식보다 명확함을, 화려함보다 절제를.</blockquote>
+      </div>
+      <div class="comp">
+        <h4>메트릭</h4>
+        <p class="hint">명조 숫자 + 돋움 라벨 · tabular-nums</p>
+        <div class="metrics demo">
+          <div class="metric"><span class="metric-value">8</span><span class="metric-label">한국 문서</span></div>
+          <div class="metric"><span class="metric-value">1</span><span class="metric-label">강조색</span></div>
+          <div class="metric"><span class="metric-value">7</span><span class="metric-label">디자인 규(規)</span></div>
+        </div>
+      </div>
+      <div class="comp">
+        <h4>섹션 제목</h4>
+        <p class="hint">명조 800 · 15pt · 크기·굵기가 위계</p>
+        <div class="demo">
+          <span class="sample-section-title">경력 · 솜씨를 펼치다</span>
+        </div>
+      </div>
+      <div class="comp">
+        <h4>대시 목록</h4>
+        <p class="hint">불릿 대신 대시(–) · 에디토리얼 톤</p>
+        <ul class="dash demo">
+          <li>한지(韓紙)가 본바탕, 순백(純白)은 두지 않는다</li>
+          <li>무궁화(無窮花) 단심 단 하나의 강조색, 5% 이내</li>
+          <li>명조(明朝)가 위계, 굵기·크기로 구조를 짓는다</li>
+        </ul>
+      </div>
+      <div class="comp">
+        <h4>코드 블록</h4>
+        <p class="hint">이보리 bg + 0.5pt 테두리 + 6pt 모서리</p>
+<pre class="code"><span class="c">// 한지 위 먹글씨, 단청 일점</span>
+canvas  = <span class="k">한지(韓紙)</span> #F5F2EA
+accent  = <span class="k">무궁화(無窮花)</span> #B91C5C  <span class="c">// ≤ 5%</span>
+serif   = <span class="k">명조</span> × <span class="k">바탕</span> (Nanum + Gowun)
+beauty  = 절제 × 의도 ÷ 장식</pre>
+      </div>
+      <div class="comp">
+        <h4>피처 카드</h4>
+        <p class="hint">whisper 그림자 + 16pt 모서리</p>
+        <div class="demo" style="background:var(--ivory); border-radius:16px; padding:18px 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.05); border: 1px solid var(--border-soft);">
+          <p style="font-family:var(--serif-display); font-weight:800; font-size:16px; margin:0 0 6px; color:var(--near-black); letter-spacing:-0.01em;">이력서(履歷書) · 한 장의 자취</p>
+          <p style="font-size:12.5px; color:var(--olive); margin:0 0 10px; line-height:1.7; font-family:var(--serif);">A4 1-2장 · 인적사항 + 자기소개 + 경력 + 학력 + 스킬 · 한자(漢字) 이름 옵션</p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="tag calm">한국어</span>
+            <span class="tag calm">A4 × 1-2</span>
+            <span class="tag calm">무궁화 강조</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 도해(圖解) — 한국 정서 ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">07 · 도해</p>
+      <h2 class="section-title">네 결의 마음을 그림으로</h2>
+      <p class="section-lede">한자 사괘·진경산수 같은 박물관 어휘 대신, 한국 사람이 일상에서 쓰는 마음의 결을 차트로 풀었습니다. <b>한 · 정 · 기 · 결</b> — 깊어지는 슬픔, 차곡차곡 쌓이는 따스함, 산기슭을 흐르는 생기, 종이의 결무늬. 데이터가 한국 사람의 정서를 입습니다.</p>
+    </div>
+    <div class="chart-showcase">
+
+      <!-- 1. 한(恨) — 깊어지는 농담 그라데이션 -->
+      <div class="chart-card">
+        <div class="chart-label">한 · 깊어지는 결</div>
+        <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">
+          <rect width="280" height="160" fill="#F5F2EA"/>
+          <!-- 7층 농담 — 옅음 → 짙은 먹. 응축된 슬픔의 농담. -->
+          <rect x="20"  y="36" width="34" height="92" fill="#D2C8A6"/>
+          <rect x="56"  y="46" width="34" height="82" fill="#A8A28B"/>
+          <rect x="92"  y="58" width="34" height="70" fill="#807C75"/>
+          <rect x="128" y="68" width="34" height="60" fill="#6B6862"/>
+          <rect x="164" y="78" width="34" height="50" fill="#4D4B46"/>
+          <rect x="200" y="88" width="34" height="40" fill="#3A3833"/>
+          <rect x="236" y="96" width="34" height="32" fill="#1C1916"/>
+          <!-- 옅은 안개띠 (한지 결) -->
+          <line x1="14" y1="128" x2="270" y2="128" stroke="#8E1242" stroke-width="0.6" opacity="0.5"/>
+          <text x="37" y="146" text-anchor="middle" font-size="9" font-weight="700" fill="#6B6862">어제</text>
+          <text x="109" y="146" text-anchor="middle" font-size="9" font-weight="700" fill="#4D4B46">한 달</text>
+          <text x="181" y="146" text-anchor="middle" font-size="9" font-weight="700" fill="#3A3833">한 해</text>
+          <text x="253" y="146" text-anchor="middle" font-size="9" font-weight="800" fill="#1C1916">평생</text>
+          <text x="140" y="26" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1916">한(恨) 농담</text>
+        </svg>
+        <p class="chart-caption">시간이 쌓일수록 마음의 결은 깊어집니다. 풀리지 않은 그리움을 차트의 농담으로 옮긴 한국식 시간 누적도.</p>
+      </div>
+
+      <!-- 2. 정(情) — 사람 사이 따스함 쌓이기 -->
+      <div class="chart-card">
+        <div class="chart-label">정 · 차곡차곡 쌓이다</div>
+        <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">
+          <rect width="280" height="160" fill="#F5F2EA"/>
+          <!-- 사람과 사람 사이에 정이 쌓인다 — 양쪽 두 사람 + 가운데 정 누적 -->
+          <!-- 좌측 사람 -->
+          <circle cx="48" cy="64" r="9" fill="#4D4B46"/>
+          <rect x="40" y="74" width="16" height="32" rx="6" fill="#4D4B46"/>
+          <text x="48" y="124" text-anchor="middle" font-size="10" font-weight="800" fill="#1C1916">너</text>
+          <!-- 우측 사람 -->
+          <circle cx="232" cy="64" r="9" fill="#4D4B46"/>
+          <rect x="224" y="74" width="16" height="32" rx="6" fill="#4D4B46"/>
+          <text x="232" y="124" text-anchor="middle" font-size="10" font-weight="800" fill="#1C1916">나</text>
+          <!-- 가운데 정의 켜켜 — 따스한 다홍 stack -->
+          <g>
+            <rect x="106" y="98" width="68" height="10" rx="2" fill="#B8593A" opacity="0.42"/>
+            <rect x="110" y="86" width="60" height="10" rx="2" fill="#B8593A" opacity="0.58"/>
+            <rect x="114" y="74" width="52" height="10" rx="2" fill="#B8593A" opacity="0.72"/>
+            <rect x="118" y="62" width="44" height="10" rx="2" fill="#B8593A" opacity="0.85"/>
+            <rect x="122" y="50" width="36" height="10" rx="2" fill="#B8593A"/>
+            <rect x="126" y="38" width="28" height="10" rx="2" fill="#8E1242"/>
+          </g>
+          <text x="140" y="32" text-anchor="middle" font-size="9" font-weight="700" fill="#8E1242">한 해</text>
+          <text x="140" y="118" text-anchor="middle" font-size="9" font-weight="600" fill="#4D4B46">첫 만남</text>
+          <text x="140" y="146" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1916">정(情) 누적</text>
+        </svg>
+        <p class="chart-caption">한국에서 정은 차곡차곡 쌓이는 것 — 첫 만남부터 한 해까지, 너와 나 사이에 켜켜이 얹히는 따스함의 두께.</p>
+      </div>
+
+      <!-- 3. 기(氣) — 산기슭에 흐르는 생기 -->
+      <div class="chart-card">
+        <div class="chart-label">기 · 산기슭에 흐르다</div>
+        <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">
+          <rect width="280" height="160" fill="#F5F2EA"/>
+          <!-- 산기슭 silhouette -->
+          <path d="M 0,120 L 30,110 L 55,114 L 85,98 L 110,108 L 140,86 L 170,100 L 200,90 L 230,104 L 260,94 L 280,100 L 280,140 L 0,140 Z" fill="#6B6862" opacity="0.18"/>
+          <path d="M 0,130 L 35,124 L 65,128 L 95,116 L 125,124 L 155,108 L 185,118 L 215,108 L 245,118 L 280,112 L 280,140 L 0,140 Z" fill="#4D4B46" opacity="0.22"/>
+          <!-- 기(氣) 흐름선 — 청죽 -->
+          <path d="M 10,68 Q 50,52 90,66 T 170,60 T 270,52" fill="none" stroke="#2E6B5E" stroke-width="2.2"/>
+          <path d="M 10,80 Q 50,66 90,80 T 170,74 T 270,68" fill="none" stroke="#2E6B5E" stroke-width="1.4" opacity="0.7"/>
+          <path d="M 10,92 Q 50,82 90,94 T 170,90 T 270,84" fill="none" stroke="#3D8B7A" stroke-width="0.9" opacity="0.5"/>
+          <!-- 흐름 점 표시 (호흡 marker) -->
+          <circle cx="50" cy="60" r="3" fill="#2E6B5E"/>
+          <circle cx="130" cy="62" r="4" fill="#2E6B5E"/>
+          <circle cx="210" cy="58" r="3.5" fill="#2E6B5E"/>
+          <circle cx="270" cy="52" r="2.6" fill="#3D8B7A"/>
+          <text x="50" y="48" text-anchor="middle" font-size="9" font-weight="700" fill="#2E6B5E">새벽</text>
+          <text x="130" y="48" text-anchor="middle" font-size="9" font-weight="800" fill="#2E6B5E">한낮</text>
+          <text x="210" y="44" text-anchor="middle" font-size="9" font-weight="700" fill="#2E6B5E">저녁</text>
+          <text x="140" y="152" text-anchor="middle" font-size="10" font-weight="800" fill="#1C1916">기(氣) 흐름</text>
+        </svg>
+        <p class="chart-caption">산기슭을 따라 흐르는 청죽의 푸름 — 하루의 생기. 새벽·한낮·저녁의 호흡을 한국 풍경 위에 흐름선으로 옮긴 활력 곡선.</p>
+      </div>
+
+      <!-- 4. 결(結) — 한지 결무늬 비율 -->
+      <div class="chart-card">
+        <div class="chart-label">결 · 결무늬 비율</div>
+        <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg" style="font-family:inherit">
+          <rect width="280" height="160" fill="#F5F2EA"/>
+          <!-- 한지 결무늬 — 가로 결의 굵기 비율로 비중을 표시 (donut 대체) -->
+          <g transform="translate(20,30)">
+            <!-- 큰 결 — 본 작업 60% -->
+            <rect x="0" y="0" width="240" height="14" fill="#1C1916"/>
+            <text x="245" y="11" font-size="11" font-weight="800" fill="#1C1916">본 일</text>
+            <text x="120" y="11" text-anchor="middle" font-size="10" font-weight="800" fill="#F5F2EA">六十 · 60%</text>
+            <!-- 중간 결 -->
+            <rect x="0" y="22" width="100" height="11" fill="#B91C5C"/>
+            <text x="105" y="31" font-size="10" font-weight="700" fill="#B91C5C">곁들임</text>
+            <text x="50" y="31" text-anchor="middle" font-size="9" font-weight="700" fill="#FAE5EA">二十五 · 25%</text>
+            <!-- 작은 결 -->
+            <rect x="0" y="41" width="60" height="9" fill="#B8954F"/>
+            <text x="65" y="49" font-size="10" font-weight="700" fill="#B8954F">여백</text>
+            <text x="30" y="49" text-anchor="middle" font-size="8" font-weight="700" fill="#EDE3CC">十五 · 15%</text>
+            <!-- 미세 결 — 한지 결 표시 (밑단) -->
+            <g stroke="#6B6862" stroke-width="0.4" opacity="0.4">
+              <line x1="0" y1="68" x2="240" y2="68"/>
+              <line x1="0" y1="74" x2="240" y2="74"/>
+              <line x1="0" y1="80" x2="240" y2="80"/>
+              <line x1="0" y1="86" x2="240" y2="86"/>
+              <line x1="0" y1="92" x2="240" y2="92"/>
+              <line x1="0" y1="98" x2="240" y2="98"/>
+              <line x1="0" y1="104" x2="240" y2="104"/>
+            </g>
+            <text x="0" y="120" font-size="9" font-weight="600" fill="#6B6862" letter-spacing="0.1em">한지 결 — 백 푼</text>
+          </g>
+        </svg>
+        <p class="chart-caption">한지 결무늬 — 본 일이 큰 결, 곁들임이 가운데 결, 여백이 작은 결. 종이 자체의 결로 비중을 옮긴 결(結) 분할도.</p>
+      </div>
+    </div>
+
+    <p class="section-lede" style="font-size:13px; margin-top:24px; color:var(--olive);">
+      한국 사람의 마음 = 한·정·기·결 네 결. 데이터·시간·관계·비중을 한국 정서 어휘 위에 다시 짭니다.
+    </p>
+  </section>
+
+  <!-- ============ 07 DECISION TABLE ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">08 · 빠른 참조</p>
+      <h2 class="section-title">빠른 참조</h2>
+      <p class="section-lede">무엇을 사용해야 할지 확신이 없을 때 이 표를 참고하세요. 여기에 없다면, 기본 원칙으로 돌아가세요.</p>
+    </div>
+    <table class="decision">
+      <tr><th>작업</th><th>방법</th></tr>
+      <tr><td class="task">큰 제목</td><td class="how">명조 800, 위계별 크기, line-height <code>1.10-1.30</code></td></tr>
+      <tr><td class="task">읽기 본문</td><td class="how">바탕 400, <code>10-11 pt</code>, line-height <code>1.72</code></td></tr>
+      <tr><td class="task">숫자 강조</td><td class="how"><code>color: var(--brand)</code> (단심), 굵기는 그대로</td></tr>
+      <tr><td class="task">두 섹션 구분</td><td class="how"><code>2.5pt</code> 단청 좌측 바, 또는 <code>0.5pt</code> 엷음(淡) 점선</td></tr>
+      <tr><td class="task">인용</td><td class="how">좌측 <code>2pt</code> 무궁화 solid + 숯(炭) 텍스트</td></tr>
+      <tr><td class="task">코드 표시</td><td class="how">이보리 bg + <code>0.5pt</code> 테두리 + <code>6pt</code> 모서리 + 모노 폰트</td></tr>
+      <tr><td class="task">기본 vs 보조 버튼</td><td class="how">기본: 무궁화 fill + 한지 텍스트 / 보조: 황지(黃紙) + 먹(墨)</td></tr>
+      <tr><td class="task">특별 카드 표시</td><td class="how"><code>border: 0.5pt solid var(--brand)</code> 또는 <code>border-left: 3pt var(--brand)</code></td></tr>
+      <tr><td class="task">섹션 시작</td><td class="how">명조 800 · <code>15pt</code> · 크기·굵기로 위계, 장식 없음</td></tr>
+      <tr><td class="task">문서 표지</td><td class="how">단일 A4, Display 크기 + 우측 정렬 저자·날짜 + 넉넉한 여백 (xl/2xl)</td></tr>
+      <tr><td class="task">데이터 카드</td><td class="how">이보리 bg + <code>8pt</code> 모서리 + 명조 800 큰 숫자(<code>color: var(--brand)</code>) + 돋움 작은 라벨</td></tr>
+      <tr><td class="task">한자(漢字) 인장</td><td class="how">22×22pt 사각 · 명조 800 · 카테고리 색 (먹/무궁화/취색/금박) 중 하나</td></tr>
+    </table>
+  </section>
+
+  <!-- ============ 09 ANTI ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">09 · 피할 것</p>
+      <h2 class="section-title">피해야 할 것</h2>
+      <p class="section-lede">예외는 허용되지만, 이유는 명시적이어야 합니다.</p>
+    </div>
+
+    <div class="anti">
+      <div class="no">
+        <h5>하지 마세요</h5>
+        <p><code>#ffffff</code> 순백이나 <code>#f3f4f6</code> 푸른빛 회색을 페이지 본바탕으로 두지 마세요. 한지의 따뜻함이 사라지고 한국말이 차갑게 떠 보입니다.</p>
+      </div>
+      <div class="yes">
+        <h5>하세요</h5>
+        <p>본바탕은 한지 <code>#F5F2EA</code>로, 인쇄 시 흰 테두리가 안 생기게 <code>@page</code> 배경도 같이 한지로 묶어 두세요.</p>
+      </div>
+      <div class="no">
+        <h5>하지 마세요</h5>
+        <p>태그·배지에 <code>rgba(185,28,92,0.18)</code> 같은 반투명을 쓰지 마세요. 브라우저 인쇄에서 패딩과 글리프가 다른 농도로 찍혀 결이 어긋납니다.</p>
+      </div>
+      <div class="yes">
+        <h5>하세요</h5>
+        <p>한지 위 단청 tint를 미리 계산한 solid hex 5단계 (<code>#FAE5EA</code>부터 <code>#D996AE</code>까지)를 쓰세요. 인쇄도 화면도 동일한 결.</p>
+      </div>
+      <div class="no">
+        <h5>하지 마세요</h5>
+        <p>제목에 합성 볼드 <code>font-weight: 600</code> 가짜 굵기를 쓰지 마세요. 한자(漢字)와 한글 모두 획이 흐려지고 명조의 골격이 무너집니다.</p>
+      </div>
+      <div class="yes">
+        <h5>하세요</h5>
+        <p>본문 400(Gowun Batang), 제목 800(Nanum Myeongjo) — 실제 weight로만. 더 강한 존재감은 크기·무궁화 hairline·여백으로 만드세요.</p>
+      </div>
+      <div class="no">
+        <h5>하지 마세요</h5>
+        <p>하드 드롭 그림자 <code>0 2px 8px rgba(0,0,0,0.3)</code>를 한지 위에 떨어뜨리지 마세요. 종이 위 얼룩처럼 보이고 시선을 빼앗습니다.</p>
+      </div>
+      <div class="yes">
+        <h5>하세요</h5>
+        <p>가는 테 <code>0 0 0 1pt var(--brand)</code> 또는 옅은 whisper <code>0 4pt 24pt rgba(28,25,22,0.05)</code>. 또는 단순히 한지 ↔ 먹 명암 교차로 깊이를 만드세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 BACKGROUND ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">10 · 기원(起源)</p>
+      <h2 class="section-title">디자인 기원</h2>
+    </div>
+    <div class="background-text">
+      <p>한국에서 문서를 만든다는 일은 늘 조용한 좌절이었습니다. 워드를 켜면 영문 디자인이 깔리고, 한컴은 90년대 양식에 묶여 있고, 노션은 한국 인쇄에 맞지 않습니다. 이력서 하나를 정성껏 만들려 해도 결국 같은 회색 평면 위에 같은 시스템 폰트가 떨어졌습니다. 한국에서 만든 문서인데, 한국이 보이지 않았습니다.</p>
+      <p>그래서 한지(韓紙) 위에 먹(墨)으로 옮겨 적는 작업을 시작했습니다. 조선왕실의 단청(丹靑)을 강조색으로 모으고, 무료 한국 명조와 바탕을 한 벌의 시스템으로 짜고, 8가지 한국 문서를 그 위에 올렸습니다. 이력서·자기소개서·명함·청첩장·연하장·제안서·뉴스레터·포트폴리오 — 모두 같은 한 벌의 규칙(規) 위에 자기 인장(印章)으로 구별됩니다.</p>
+      <p>삿갓은 영문 디자인 시스템을 베껴 한국어 번역한 도구가 아닙니다. 한지 위에서 한국말이 가장 자연스럽게 읽히도록, 처음부터 새로 짠 한국형 시스템입니다. AI가 자연어를 받아 한지 위에 옮겨 적는 동안, 사용자는 자기 이야기를 풀어 적기만 하면 됩니다.</p>
+    </div>
+  </section>
+
+  <!-- ============ 11 사계(四季) ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">11 · 사계(四季)</p>
+      <h2 class="section-title">계절을 입은 색</h2>
+      <p class="section-lede">한국 회화는 사계(四季)로 시간을 옮깁니다. 봄의 새순, 여름의 청죽, 가을의 단풍, 겨울의 먹 — 단청 한 점만으로 부족할 때 계절을 입혀 강조를 뉘앙스로 옮길 수 있습니다.</p>
+    </div>
+    <div class="season-grid">
+      <div class="season-card spring">
+        <div class="season-chip" style="background:#8BA888"></div>
+        <div class="season-meta">
+          <p class="season-hanja">春</p>
+          <p class="season-name">봄 · 새순</p>
+          <p class="season-hex">#8BA888</p>
+          <p class="season-note">매(梅)가 피는 새순의 연녹. 첫 시작·인내의 색.</p>
+        </div>
+      </div>
+      <div class="season-card summer">
+        <div class="season-chip" style="background:#2E6B5E"></div>
+        <div class="season-meta">
+          <p class="season-hanja">夏</p>
+          <p class="season-name">여름 · 청죽</p>
+          <p class="season-hex">#2E6B5E</p>
+          <p class="season-note">난(蘭)과 죽(竹)의 청. 고결·곧음의 깊이.</p>
+        </div>
+      </div>
+      <div class="season-card autumn">
+        <div class="season-chip" style="background:#B8593A"></div>
+        <div class="season-meta">
+          <p class="season-hanja">秋</p>
+          <p class="season-name">가을 · 단풍</p>
+          <p class="season-hex">#B8593A</p>
+          <p class="season-note">국(菊)의 다홍. 단청보다 부드러운 가을의 정.</p>
+        </div>
+      </div>
+      <div class="season-card winter">
+        <div class="season-chip" style="background:#1C1916"></div>
+        <div class="season-meta light">
+          <p class="season-hanja">冬</p>
+          <p class="season-name">겨울 · 먹</p>
+          <p class="season-hex">#1C1916</p>
+          <p class="season-note">사군자의 죽(竹)이 가장 푸른 계절. 응축된 먹.</p>
+        </div>
+      </div>
+    </div>
+    <p class="section-lede" style="font-size:13px; margin-top:24px; color:var(--olive); max-width:680px;">
+      한 페이지에 한 계절만. 무궁화 단심에 가을 다홍을 섞으면 두 적색이 충돌합니다 — 한 페이지에 무궁화 또는 사계 한 색, 둘 중 하나만 고릅니다.
+    </p>
+  </section>
+
+  <!-- ============ 12 사군자(四君子) ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">12 · 사군자(四君子)</p>
+      <h2 class="section-title">네 가지 인격</h2>
+      <p class="section-lede">한국·중국 회화의 사군자(四君子) — 매(梅)·란(蘭)·국(菊)·죽(竹). 각자 계절과 인격을 가집니다. 인장이나 카테고리 표지로 한자(漢字) 한 글자만 빌려 씁니다.</p>
+    </div>
+    <div class="sagunja-grid">
+      <div class="sagunja-card">
+        <span class="sagunja-seal" style="background:var(--season-spring); color:var(--parchment)">梅</span>
+        <p class="sagunja-name">매(梅) · 봄</p>
+        <p class="sagunja-virtue">인내(忍耐)</p>
+        <p class="sagunja-note">눈 속에서 가장 먼저 꽃을 피웁니다. 추위를 이긴 첫 향기.<br>사용: 시작·도전·신년 자료에.</p>
+      </div>
+      <div class="sagunja-card">
+        <span class="sagunja-seal" style="background:var(--season-summer); color:var(--parchment)">蘭</span>
+        <p class="sagunja-name">란(蘭) · 여름</p>
+        <p class="sagunja-virtue">고결(高潔)</p>
+        <p class="sagunja-note">깊은 산 속에 홀로 핍니다. 알아주지 않아도 향을 지닙니다.<br>사용: 작가·예술가 자료에.</p>
+      </div>
+      <div class="sagunja-card">
+        <span class="sagunja-seal" style="background:var(--season-autumn); color:var(--parchment)">菊</span>
+        <p class="sagunja-name">국(菊) · 가을</p>
+        <p class="sagunja-virtue">기품(氣品)</p>
+        <p class="sagunja-note">서리 내려도 흩어지지 않습니다. 늦가을 꼿꼿한 기품.<br>사용: 학자·연구·장년의 자료에.</p>
+      </div>
+      <div class="sagunja-card">
+        <span class="sagunja-seal" style="background:var(--season-winter); color:var(--parchment)">竹</span>
+        <p class="sagunja-name">죽(竹) · 사철</p>
+        <p class="sagunja-virtue">곧음(直)</p>
+        <p class="sagunja-note">속이 비었으되 흔들리지 않습니다. 한 마디씩 곧게 자랍니다.<br>사용: 기업·신뢰·꾸준함 자료에.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 13 시조(時調) ============ -->
+  <section class="sijo-section">
+    <div class="section-head">
+      <p class="section-num">13 · 시조(時調)</p>
+      <h2 class="section-title">한 폭의 글</h2>
+      <p class="section-lede">시조(時調)는 초장·중장·종장 세 마디로 짠 한국 정형시입니다. 삿갓의 매니페스토를 시조의 결로 다시 적습니다 — 세 줄 안에 디자인 시스템 전체가 담깁니다.</p>
+    </div>
+    <article class="sijo">
+      <p class="sijo-jang">
+        <span class="jang-mark">초장(初章)</span>
+        한지 위에 먹으로 옮긴다,<br>
+        순백(純白)은 두지 않으니
+      </p>
+      <p class="sijo-jang">
+        <span class="jang-mark">중장(中章)</span>
+        단청(丹靑) 한 점이 시선을 모으되,<br>
+        다섯 푼을 넘지 아니하고
+      </p>
+      <p class="sijo-jang sijo-final">
+        <span class="jang-mark">종장(終章)</span>
+        여백(餘白)이 곧 디자인이라,<br>
+        그리지 않은 그림으로 답한다.
+      </p>
+    </article>
+    <p class="section-lede" style="font-size:13px; margin-top:32px; color:var(--olive); max-width:680px;">
+      시조 형식은 데이터 카드에도 응용 가능합니다 — 초장(문제) · 중장(해결) · 종장(귀결) 세 줄로 한 사실을 짓습니다.
+    </p>
+  </section>
+
+  <!-- ============ 14 정서(情緖) ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">14 · 정서(情緖)</p>
+      <h2 class="section-title">네 결의 마음</h2>
+      <p class="section-lede">한국 정서를 한 어휘로 옮길 수 없습니다. 한(恨)·정(情)·기(氣)·결(結) 네 결로 나눠 디자인 표현에 끌어옵니다 — 색·간격·서체로 마음의 결을 옮깁니다.</p>
+    </div>
+    <div class="emotion-grid">
+      <div class="emotion-card">
+        <span class="emotion-glyph">恨</span>
+        <p class="emotion-name">한(恨)</p>
+        <p class="emotion-en">deep sorrow · unresolved longing</p>
+        <p class="emotion-note">응축된 슬픔. 풀리지 않은 그리움. 회색이 깊을수록·여백이 클수록 한이 머뭅니다.</p>
+        <p class="emotion-token">color: var(--emotion-han) · #4D4B46 / spacing: <code>2xl</code> / weight: 400</p>
+      </div>
+      <div class="emotion-card">
+        <span class="emotion-glyph">情</span>
+        <p class="emotion-name">정(情)</p>
+        <p class="emotion-en">warmth · attachment · staying mind</p>
+        <p class="emotion-note">따뜻한 다홍. 머무는 마음. 인사·연하장·청첩장에 깃듭니다.</p>
+        <p class="emotion-token">color: var(--emotion-jeong) · #B8593A / spacing: <code>lg</code> / weight: 700</p>
+      </div>
+      <div class="emotion-card">
+        <span class="emotion-glyph">氣</span>
+        <p class="emotion-name">기(氣)</p>
+        <p class="emotion-en">vital flow · breath</p>
+        <p class="emotion-note">흐르는 생기. 청죽의 푸름. 제안서·뉴스레터의 도입 단락에.</p>
+        <p class="emotion-token">color: var(--emotion-gi) · #2E6B5E / spacing: <code>md</code> / weight: 500</p>
+      </div>
+      <div class="emotion-card">
+        <span class="emotion-glyph">結</span>
+        <p class="emotion-name">결(結)</p>
+        <p class="emotion-en">grain · pattern · composure</p>
+        <p class="emotion-note">먹의 결. 무늬와 단정함. 본문·인용·구분선의 기본 톤.</p>
+        <p class="emotion-token">color: var(--emotion-gyeol) · #1C1916 / spacing: <code>xl</code> / weight: 800</p>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* ─── 사계(四季) ───────────────────────────────────────────────── */
+    .season-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .season-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--ivory);
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .season-chip {
+      height: 80px;
+      width: 100%;
+    }
+    .season-meta {
+      padding: 16px 18px 18px;
+    }
+    .season-meta.light .season-hanja,
+    .season-meta.light .season-name {
+      color: var(--near-black);
+    }
+    .season-hanja {
+      font-family: var(--serif-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--near-black);
+      margin: 0 0 2px;
+      letter-spacing: -0.012em;
+    }
+    .season-name {
+      font-family: var(--serif);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--near-black);
+      margin: 0 0 6px;
+    }
+    .season-hex {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--olive);
+      margin: 0 0 8px;
+      letter-spacing: 0.04em;
+    }
+    .season-note {
+      font-family: var(--serif);
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: var(--olive);
+      margin: 0;
+      word-break: keep-all;
+    }
+
+    /* ─── 사군자(四君子) ───────────────────────────────────────────── */
+    .sagunja-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .sagunja-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 28px 22px 26px;
+      background: var(--ivory);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      transition: box-shadow 0.18s ease, transform 0.18s ease;
+    }
+    .sagunja-card:hover {
+      box-shadow: 0 12pt 28pt rgba(28, 25, 22, 0.08);
+      transform: translateY(-3px);
+    }
+    .sagunja-seal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      font-family: var(--serif-display);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 0;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      box-shadow: inset 0 0 0 1.2px rgba(255,255,255,0.18), 0 1px 2px rgba(28,25,22,0.1);
+    }
+    .sagunja-name {
+      font-family: var(--serif-display);
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--near-black);
+      margin: 0 0 4px;
+      letter-spacing: -0.012em;
+    }
+    .sagunja-virtue {
+      font-family: var(--serif-latin);
+      font-style: italic;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--brand);
+      margin: 0 0 12px;
+      letter-spacing: 0.04em;
+    }
+    .sagunja-note {
+      font-family: var(--serif);
+      font-size: 12.5px;
+      line-height: 1.72;
+      color: var(--olive);
+      margin: 0;
+      word-break: keep-all;
+    }
+
+    /* ─── 시조(時調) ───────────────────────────────────────────────── */
+    .sijo-section {
+      position: relative;
+    }
+    .sijo {
+      max-width: 640px;
+      margin: 32px auto 0;
+      padding: 48px 56px;
+      background-color: var(--parchment);
+      background-image: var(--texture-changsal-light, none);
+      border-top: 2pt solid var(--near-black);
+      border-bottom: 2pt solid var(--near-black);
+      position: relative;
+    }
+    .sijo-jang {
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.92;
+      color: var(--near-black);
+      margin: 0 0 32px;
+      letter-spacing: -0.008em;
+      word-break: keep-all;
+      position: relative;
+      padding-left: 28px;
+    }
+    .sijo-jang:last-child { margin-bottom: 0; }
+    .sijo-final { padding-bottom: 4px; }
+    .jang-mark {
+      display: block;
+      position: absolute;
+      left: -8px;
+      top: 6px;
+      font-family: var(--serif-display);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--brand);
+      letter-spacing: 0.18em;
+      text-orientation: mixed;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      padding-bottom: 0;
+    }
+    @supports not (writing-mode: vertical-rl) {
+      .jang-mark {
+        writing-mode: horizontal-tb;
+        transform: none;
+        position: static;
+        margin-bottom: 6px;
+        padding: 0;
+      }
+      .sijo-jang { padding-left: 0; }
+    }
+
+    /* ─── 정서(情緖) ───────────────────────────────────────────────── */
+    .emotion-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .emotion-card {
+      padding: 26px 24px 24px;
+      background: var(--ivory);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      position: relative;
+    }
+    .emotion-glyph {
+      display: inline-block;
+      font-family: var(--serif-display);
+      font-size: 56px;
+      font-weight: 800;
+      line-height: 0.9;
+      color: var(--near-black);
+      margin-bottom: 8px;
+      letter-spacing: 0;
+      text-shadow: 0 0 0.3px rgba(28,25,22,0.18), 0 0 1px rgba(28,25,22,0.08);
+    }
+    .emotion-card:nth-child(1) .emotion-glyph { color: var(--emotion-han); }
+    .emotion-card:nth-child(2) .emotion-glyph { color: var(--emotion-jeong); }
+    .emotion-card:nth-child(3) .emotion-glyph { color: var(--emotion-gi); }
+    .emotion-card:nth-child(4) .emotion-glyph { color: var(--emotion-gyeol); }
+    .emotion-name {
+      font-family: var(--serif-display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--near-black);
+      margin: 0 0 2px;
+      letter-spacing: -0.012em;
+    }
+    .emotion-en {
+      font-family: var(--serif-latin);
+      font-style: italic;
+      font-size: 12.5px;
+      color: var(--olive);
+      margin: 0 0 12px;
+    }
+    .emotion-note {
+      font-family: var(--serif);
+      font-size: 13px;
+      line-height: 1.72;
+      color: var(--dark-warm);
+      margin: 0 0 14px;
+      word-break: keep-all;
+    }
+    .emotion-token {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--stone);
+      margin: 0;
+      padding-top: 10px;
+      border-top: 0.5pt solid var(--border-soft);
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+    }
+    .emotion-token code {
+      font-family: var(--mono);
+      background: var(--warm-sand);
+      padding: 1px 5px;
+      border-radius: 2px;
+      color: var(--near-black);
+    }
+
+    @media (max-width: 720px) {
+      .sijo { padding: 36px 28px; }
+      .sijo-jang { font-size: 15px; }
+    }
+  </style>
+
+  <!-- ============ 15 묻고 답하기 ============ -->
+  <section>
+    <div class="section-head">
+      <p class="section-num">15 · 묻고 답하기</p>
+      <h2 class="section-title">자주 묻는 것들</h2>
+    </div>
+    <dl class="faq">
+      <div class="faq-pair">
+        <dt>삿갓이 무엇인가요?</dt>
+        <dd>한국 사람이 자주 만드는 문서 여덟 종을, AI가 한지(韓紙) 위에 옮겨 적어 주는 웹앱입니다. 이력서·자기소개서·명함·청첩장·연하장·제안서·뉴스레터·포트폴리오 — 각자 자기 자리에서 자기 인장(印章)으로 구별됩니다. 양식을 칸칸이 채울 필요 없이, 자기 이야기를 자연어로 풀어 적으면 슬롯이 채워집니다.</dd>
+      </div>
+      <div class="faq-pair">
+        <dt>한글 디자인 도구는 이미 많은데, 왜 또 만들었나요?</dt>
+        <dd>워드는 영문이 기본이고, 한컴은 90년대 양식에 묶여 있고, 노션은 인쇄에 약합니다. 한국에서 만든 문서인데 정작 한국이 보이지 않았습니다. 삿갓은 한지·먹·단청을 디자인 토큰으로 가져와, 한글이 한지 위에서 가장 자연스럽게 읽히도록 처음부터 다시 짠 시스템입니다.</dd>
+      </div>
+      <div class="faq-pair">
+        <dt>어떻게 시작하나요?</dt>
+        <dd>설치도 가입도 결제도 필요 없습니다. <a href="/ko/new" style="color:var(--brand); text-decoration:none; font-weight:600;">satgat.fun → 새 문서 생성</a>에서 종이를 고르고, 담을 이야기를 풀어 적으면 됩니다. 평균 10초 안에 한지 위에 옮겨 적힙니다. 셀프 호스팅이 필요하면 <a href="https://github.com/EungjePark/satgat" style="color:var(--brand); text-decoration:none; font-weight:600;">GitHub repo</a>를 클론하세요(MIT).</dd>
+      </div>
+      <div class="faq-pair">
+        <dt>어떤 폰트를 쓰나요? 라이선스는요?</dt>
+        <dd>전부 무료 OFL 한국 폰트입니다. 명조는 <b>Nanum Myeongjo 800</b>(나눔명조), 본문은 <b>Gowun Batang 400/700</b>(고운 바탕), 라벨은 <b>Gowun Dodum</b>(고운 돋움), 라틴 보조는 <b>Cormorant Garamond italic</b>. 한자(漢字) 인장은 한글 폰트에 포함된 한자 글리프를 그대로 씁니다. 상업 라이선스 걱정 없습니다.</dd>
+      </div>
+      <div class="faq-pair">
+        <dt>왜 단청(丹靑) 적색인가요? 잉크 블루가 아니라.</dt>
+        <dd>잉크 블루는 영국 신문·미국 학술지의 색입니다. 한국의 단일 강조색은 조선왕실 단청(丹靑)에서 왔습니다 — 절제된 적갈로, 한지의 따뜻한 황갈과 같은 톤대 위에서 어우러집니다. 한 페이지의 5% 이내로 씁니다. 그 이상은 절제가 아니라 혼잡입니다.</dd>
+      </div>
+      <div class="faq-pair">
+        <dt>배경이 어떻게 Kami랑 다른가요?</dt>
+        <dd>Kami의 양피지(<code>#F5F4ED</code>)는 노란 크림 — 영국 vellum의 따뜻한 톤입니다. 삿갓의 분청 한지는 <code>#F5F2EA</code> — 회색 한 점이 깔린 한반도 도자 톤. 그 위에 <b>색동(色동) 5색 띠</b>가 페이지 상단에, <b>단청(丹靑) 처마 띠</b>가 하단에, <b>무궁화(無窮花) watermark</b>가 본문 사이에 분명히 핍니다. 색·textures가 아니라 한국 ornament 자체를 깔았기 때문에 Kami와는 다른 페이지입니다.</dd>
+      </div>
+      <div class="faq-pair">
+        <dt>인쇄해도 색이 안 깨지나요?</dt>
+        <dd>네. 한지 배경은 <code>@page background</code>에도 같이 묶어 두어 인쇄 시 흰 테두리가 생기지 않습니다. 모든 태그·배지는 solid hex만 씁니다(rgba 금지) — WeasyPrint나 브라우저 인쇄에서 패딩과 글리프 농도가 어긋나는 문제를 피하기 위함입니다.</dd>
+      </div>
+      <div class="faq-pair">
+        <dt>외국어도 지원하나요?</dt>
+        <dd>현재 한국어 전용입니다. 영문/중문/일문 멀티 lang은 의도적으로 빼두었습니다 — 한국 사용자가 한국 문서를 한국말로 만드는 데 집중하기 위해서입니다. 다국어가 정말 필요하면 한국형 폰트 페어링을 지키며 향후 확장합니다.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="mark">
+      <svg width="56" height="56" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-label="삿갓 mark">
+        <rect x="6" y="6" width="68" height="68" rx="10" fill="var(--ivory, #FAF8F1)" stroke="var(--brand, #9B1B1B)" stroke-width="1.25"/>
+        <line x1="16" y1="26" x2="64" y2="26" stroke="var(--brand, #9B1B1B)" stroke-width="1.25"/>
+        <text x="40" y="58" font-family="Nanum Myeongjo, Georgia, serif" font-size="38" font-weight="800" fill="var(--near-black, #1C1916)" text-anchor="middle">笠</text>
+      </svg>
+      <div>
+        <p class="wm-name">삿갓 · 笠</p>
+        <p class="wm-sub">한지(韓紙) 위에 먹(墨)글씨. AI가 옮겨 적는 한국 문서 생성기.</p>
+      </div>
+    </div>
+    <div class="colophon">
+      <div><a href="/ko/new" style="color:var(--brand); text-decoration:none; font-weight:500;">새 문서 생성</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/EungjePark/satgat" style="color:var(--brand); text-decoration:none; font-weight:500;">GitHub</a>&nbsp;&nbsp;·&nbsp;&nbsp;이력서 · 자기소개서 · 명함 · 청첩장 · 연하장 · 제안서 · 뉴스레터 · 포트폴리오</div>
+      <div style="margin-top:8px; color: var(--olive); font-family: var(--serif);">
+        명조가 위계를, 돋움이 라벨을, 한지가 캔버스를, 무궁화가 초점을 담당합니다.
+      </div>
+    </div>
+  </footer>
+
+</main>
+<script>
+(function(){
+  var sw=document.querySelector('[data-lang-switch]');
+  if(!sw)return;
+  var trigger=sw.querySelector('[data-lang-trigger]');
+  function setOpen(open){
+    sw.classList.toggle('is-open',open);
+    trigger.setAttribute('aria-expanded',open);
+  }
+  trigger.addEventListener('click',function(e){
+    e.stopPropagation();
+    setOpen(!sw.classList.contains('is-open'));
+  });
+  sw.querySelectorAll('[data-lang-menu] a').forEach(function(a){
+    a.addEventListener('click',function(){
+      localStorage.setItem('kami-lang',a.getAttribute('data-lang'));
+    });
+  });
+  document.addEventListener('click',function(e){
+    if(!sw.contains(e.target))setOpen(false);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape')setOpen(false);
+  });
+})();
+</script>
+</body>
+</html>

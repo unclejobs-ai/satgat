@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  /* 한지 캔버스 v3 */
+  --color-parchment: #F5F2EA;
+  --color-canvas: #F5F2EA;
+  --color-canvas-dark: #E8E1CC;
+  --color-ivory: #F8F4E8;
+  --color-warm-sand: #E8E1CC;
+
+  /* 먹(墨) 계열 */
+  --color-ink: #1C1916;
+  --color-ink-light: #3A3833;
+  --color-ink-muted: #4D4B46;
+  --color-stone: #6B6862;
+
+  /* 강조 */
+  --color-dancheong: #9B1B1B;
+  --color-dancheong-light: #B53030;
+  --color-jade: #2E6B5E;
+  --color-gold: #B8954F;
+
+  /* 보더 */
+  --color-hairline: #D2CAB5;
+  --color-border: #DDD6C4;
+  --color-border-soft: #E8E2D0;
+  --color-muted: #6B6862;
+
+  /* 폰트 */
+  --font-myeongjo: "Nanum Myeongjo", "Noto Serif KR", "Batang", Georgia, serif;
+  --font-batang: "Gowun Batang", "Nanum Myeongjo", "Noto Serif KR", "Batang", Georgia, serif;
+  --font-dodum: "Gowun Dodum", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-latin: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F5F2EA;
+  color: #1C1916;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;
+}
+
+/* 한글 텍스트 선택 — 단청 옅은 강조 */
+::selection {
+  background: rgba(155, 27, 27, 0.18);
+  color: #1C1916;
+}
+
+@media print {
+  html, body {
+    background: #F5F2EA !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
