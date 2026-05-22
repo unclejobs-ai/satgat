@@ -177,17 +177,17 @@ ${body}
 
 function baseCss() {
   return `
-    @page { size: A4; margin: 0; background: #f5f2ea; }
+    @page { size: A4; margin: 0; background: #f7f7f2; }
     @page deck { size: 16in 9in; margin: 0; }
     * { box-sizing: border-box; }
     :root {
-      --paper: #f5f2ea;
-      --ivory: #fbf7ee;
+      --paper: #f7f7f2;
+      --ivory: #fffffb;
       --ink: #1c1916;
-      --muted: #5e5a51;
-      --stone: #7a7468;
-      --line: #d8cfba;
-      --soft: #ebe4d4;
+      --muted: #565b53;
+      --stone: #73786f;
+      --line: #d2d6cb;
+      --soft: #e6e8de;
       --dan: #9b1b1b;
       --jade: #2e6b5e;
       --gold: #b8954f;
@@ -203,8 +203,8 @@ function baseCss() {
       margin: 28px auto;
       padding: 22mm 20mm;
       background:
-        radial-gradient(circle at 20% 12%, rgba(184,149,79,.08), transparent 28%),
-        linear-gradient(135deg, rgba(155,27,27,.04), transparent 34%),
+        radial-gradient(circle at 20% 12%, rgba(46,107,94,.055), transparent 28%),
+        linear-gradient(135deg, rgba(155,27,27,.032), transparent 34%),
         var(--paper);
       border: 1px solid var(--line);
       box-shadow: 0 18px 60px rgba(28,25,22,.1);

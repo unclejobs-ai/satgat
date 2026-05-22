@@ -40,7 +40,7 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
       style={{
         width: '90mm',
         height: '55mm',
-        background: '#F8F4E8',
+        background: '#FFFFFB',
         border: `0.4pt solid ${HAIRLINE}`,
         padding: `${5 * scale}mm ${6 * scale}mm`,
         display: 'flex',

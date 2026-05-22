@@ -14,10 +14,10 @@ interface SatgatSealProps {
 }
 
 const variantMap = {
-  dancheong: { bg: satgatTheme.colors.dancheong, color: '#F3EFE6' },
-  jade: { bg: satgatTheme.colors.jade, color: '#F3EFE6' },
+  dancheong: { bg: satgatTheme.colors.dancheong, color: '#F7F7F2' },
+  jade: { bg: satgatTheme.colors.jade, color: '#F7F7F2' },
   gold: { bg: satgatTheme.colors.gold, color: '#1C1C1C' },
-  ink: { bg: satgatTheme.colors.ink, color: '#F3EFE6' },
+  ink: { bg: satgatTheme.colors.ink, color: '#F7F7F2' },
 };
 
 /**

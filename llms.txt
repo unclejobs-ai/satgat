@@ -1,6 +1,6 @@
 # satgat
 
-satgat is a Korean AI document generator. The Korean name is 삿갓. It turns natural-language briefs into structured Korean documents rendered with hanji-toned paper, ink typography, seals, restrained dancheong accents, and print/PDF-aware layout rules.
+satgat is a Korean AI document generator. The Korean name is 삿갓. It turns natural-language briefs into structured Korean documents rendered with clean baekjaji/dak paper tones, ink typography, seals, restrained dancheong accents, and print/PDF-aware layout rules.
 
 Repository: https://github.com/unclejobs-ai/satgat
 Public origin: https://github.com/unclejobs-ai/satgat.git
@@ -33,7 +33,7 @@ Korean demo pack:
 
 Design rules:
 - Avoid pure white document backgrounds.
-- Use warm hanji/parchment surfaces.
+- Use clean baekjaji/dak-paper surfaces, not yellow parchment.
 - Use ink-black body text, restrained dancheong red, jade, and gold accents.
 - Prefer Korean serif hierarchy for document pages.
 - Avoid generic SaaS document styling, fake traditional decoration, and translated-template tone.

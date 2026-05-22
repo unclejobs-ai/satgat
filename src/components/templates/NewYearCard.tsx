@@ -35,7 +35,7 @@ export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData
           style={{
             width: '180mm',
             aspectRatio: '148 / 105', // 엽서 가로
-            background: '#F8F4E8',
+            background: '#FFFFFB',
             border: `0.5pt solid ${HAIRLINE}`,
             borderRadius: 4,
             padding: '48px 56px',

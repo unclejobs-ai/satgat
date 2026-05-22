@@ -37,7 +37,7 @@ export default function NotFound() {
           max-width: 520px;
           text-align: center;
           padding: 64px 40px;
-          background: var(--ivory, #F8F4E8);
+          background: var(--ivory, #FFFFFB);
           border: 1px solid var(--border, #DDD6C4);
           border-radius: 12px;
           box-shadow: 0 12pt 32pt rgba(28, 25, 22, 0.06);
@@ -49,7 +49,7 @@ export default function NotFound() {
           width: 64px;
           height: 64px;
           background: var(--near-black, #1C1916);
-          color: var(--parchment, #F5F2EA);
+          color: var(--parchment, #F7F7F2);
           font-family: var(--serif-display, 'Nanum Myeongjo');
           font-size: 32px;
           font-weight: 800;

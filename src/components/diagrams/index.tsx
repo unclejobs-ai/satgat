@@ -53,7 +53,7 @@ export function ArchitectureDiagram({ nodes, edges }: { nodes: string[]; edges: 
             width={96}
             height={32}
             rx={4}
-            fill="#F3EFE6"
+            fill="#F7F7F2"
             stroke={INK}
             strokeWidth={1.5}
           />
@@ -183,7 +183,7 @@ export function LineChart({ data }: { data: { label: string; value: number }[] }
       <path d={pathD} fill="none" stroke={DANCHEONG} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
       {points.map((p, i) => (
         <g key={i}>
-          <circle cx={p.x} cy={p.y} r={4} fill={DANCHEONG} stroke={"#F3EFE6"} strokeWidth={2} />
+          <circle cx={p.x} cy={p.y} r={4} fill={DANCHEONG} stroke={"#F7F7F2"} strokeWidth={2} />
           <text x={p.x} y={pad.t + chartH + 16} textAnchor="middle" fontSize={9} fill={INK_MUTED} fontFamily="'Gowun Dodum', sans-serif">{data[i].label}</text>
         </g>
       ))}
@@ -259,7 +259,7 @@ export function StateMachine({ states, transitions }: { states: string[]; transi
       </defs>
       {states.map((s, i) => (
         <g key={i}>
-          <circle cx={positions[i].x} cy={positions[i].y} r={24} fill="#F3EFE6" stroke={i === 0 ? DANCHEONG : INK} strokeWidth={i === 0 ? 2.5 : 1.5} />
+          <circle cx={positions[i].x} cy={positions[i].y} r={24} fill="#F7F7F2" stroke={i === 0 ? DANCHEONG : INK} strokeWidth={i === 0 ? 2.5 : 1.5} />
           <text x={positions[i].x} y={positions[i].y + 4} textAnchor="middle" fontSize={10} fill={INK} fontFamily="'Gowun Dodum', sans-serif">{s}</text>
         </g>
       ))}
@@ -278,7 +278,7 @@ export function Timeline({ events }: { events: { year: string; title: string }[]
         const top = i % 2 === 0;
         return (
           <g key={i}>
-            <circle cx={x} cy={h / 2} r={5} fill={top ? DANCHEONG : JADE} stroke="#F3EFE6" strokeWidth={2} />
+            <circle cx={x} cy={h / 2} r={5} fill={top ? DANCHEONG : JADE} stroke="#F7F7F2" strokeWidth={2} />
             <text x={x} y={top ? h / 2 - 16 : h / 2 + 28} textAnchor="middle" fontSize={11} fontWeight={700} fill={INK} fontFamily="'Nanum Myeongjo', serif">{e.year}</text>
             <text x={x} y={top ? h / 2 - 32 : h / 2 + 44} textAnchor="middle" fontSize={10} fill={INK_MUTED} fontFamily="'Gowun Dodum', sans-serif">{e.title}</text>
           </g>
@@ -333,7 +333,7 @@ export function TreeDiagram({ root, children }: { root: string; children: { name
         return (
           <g key={i}>
             <line x1={cx} y1={48} x2={x} y2={96} stroke={HAIRLINE} strokeWidth={1.5} />
-            <rect x={x - 44} y={96} width={88} height={28} rx={4} fill="#F3EFE6" stroke={INK} strokeWidth={1.5} />
+            <rect x={x - 44} y={96} width={88} height={28} rx={4} fill="#F7F7F2" stroke={INK} strokeWidth={1.5} />
             <text x={x} y={114} textAnchor="middle" fontSize={10} fill={INK} fontFamily="'Gowun Dodum', sans-serif">{c.name}</text>
             {c.sub?.map((s, j) => (
               <g key={j}>
@@ -405,7 +405,7 @@ export function CandlestickChart({ data }: { data: { label: string; open: number
         return (
           <g key={i}>
             <line x1={x} y1={highY} x2={x} y2={lowY} stroke={color} strokeWidth={1} />
-            <rect x={x - bw / 2} y={bodyTop} width={bw} height={Math.max(bodyBot - bodyTop, 1)} fill={up ? color : "#F3EFE6"} stroke={color} strokeWidth={1} />
+            <rect x={x - bw / 2} y={bodyTop} width={bw} height={Math.max(bodyBot - bodyTop, 1)} fill={up ? color : "#F7F7F2"} stroke={color} strokeWidth={1} />
             <text x={x} y={h - 8} textAnchor="middle" fontSize={9} fill={INK_MUTED} fontFamily="'Gowun Dodum', sans-serif">{d.label}</text>
           </g>
         );

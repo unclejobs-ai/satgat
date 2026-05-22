@@ -14,7 +14,7 @@ export function SatgatPrintStyles() {
       @media print {
         html,
         body {
-          background: #F8F4E8 !important;
+          background: #F7F7F2 !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }

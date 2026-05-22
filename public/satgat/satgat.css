@@ -7,9 +7,9 @@
     font-display: swap;
   }
   :root {
-    --parchment:    #f5f4ed;
-    --ivory:        #faf9f5;
-    --warm-sand:    #e8e6dc;
+    --parchment:    #f7f7f2;
+    --ivory:        #fffffb;
+    --warm-sand:    #e7e8dd;
     --dark-surface: #30302e;
     --deep-dark:    #141413;
 
@@ -17,12 +17,12 @@
     --brand-light:  #2D5A8A;
 
     --near-black:   #141413;
-    --dark-warm:    #3d3d3a;
-    --olive:        #504e49;
-    --stone:        #6b6a64;
+    --dark-warm:    #383b36;
+    --olive:        #565b53;
+    --stone:        #73786f;
 
-    --border:       #e8e6dc;
-    --border-soft:  #e5e3d8;
+    --border:       #d8dbd1;
+    --border-soft:  #e6e8de;
 
     /* Slide-scale spacing */
     --slide-pad:    80px;
@@ -171,9 +171,9 @@
   html, body { margin: 0; padding: 0; }
 
   /* Print rules: keep warm background, avoid harsh page breaks */
-  @page { size: A4; margin: 14mm 16mm; background: #f5f4ed; }
+  @page { size: A4; margin: 14mm 16mm; background: #f7f7f2; }
   @media print {
-    body { background: #f5f4ed; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: #f7f7f2; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .page { padding: 0 !important; max-width: 100% !important; }
     section { page-break-inside: auto; margin-bottom: 36px; }
     .hero, .section-head, .family, .comp, .shadow-demo, .tint, .swatch, .radius, blockquote, pre, tr, .anti > div { break-inside: avoid; page-break-inside: avoid; }

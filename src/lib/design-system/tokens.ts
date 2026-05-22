@@ -11,10 +11,10 @@
 // ─── Color Tokens ───────────────────────────────────────────────────────────
 
 export const colors = {
-  /** 한지(韓紙) — 담황 머금은 따뜻한 오프화이트. #FFF 금지 */
-  parchment: '#F3EFE6',
-  ivory: '#FAF8F1',
-  warmSand: '#E8E3D4',
+  /** 백자지(白瓷紙) — 누런 양피지 대신 맑은 닥종이. #FFF 금지 */
+  parchment: '#F7F7F2',
+  ivory: '#FFFFFB',
+  warmSand: '#E7E8DD',
 
   /** 단청(丹靑) — 조선왕실 적색. 단 하나의 강조색, 5% 이내 */
   brand: '#9B1B1B',
@@ -35,20 +35,20 @@ export const colors = {
   stone: '#6B6862',
 
   /** 엷음(淡) — 구분선·테두리 */
-  border: '#D9D4C8',
-  borderSoft: '#E3DDD1',
+  border: '#D2D6CB',
+  borderSoft: '#E6E8DE',
 
   // ── Legacy 별칭 (기존 컴포넌트 호환) ─────────────────────────────────────
-  canvas: '#F3EFE6',
-  canvasDark: '#EBE5D9',
+  canvas: '#F7F7F2',
+  canvasDark: '#E7E8DD',
   ink: '#1C1916',
   inkLight: '#3A3833',
   inkMuted: '#5C5C5C',
   dancheong: '#9B1B1B',
   dancheongLight: '#B53030',
-  hairline: '#D9D4C8',
-  muted: '#8A8478',
-  placeholder: '#A39E92',
+  hairline: '#D2D6CB',
+  muted: '#73786F',
+  placeholder: '#969B91',
   shadow: 'rgba(28, 25, 22, 0.04)',
   shadowMedium: 'rgba(28, 25, 22, 0.08)',
   shadowDeep: 'rgba(28, 25, 22, 0.12)',

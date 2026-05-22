@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-gen_slides.py - parchment design system slide deck generator
+gen_slides.py - baekjaji design system slide deck generator
 
 用法：
   pip install python-pptx --break-system-packages
   python3 gen_slides.py
 
 输出：
-  output.pptx (16:9 宽屏, parchment 风格)
+  output.pptx (16:9 宽屏, baekjaji 风格)
 
 这是一个模板脚本 - 填充自己的内容后直接运行。
 """

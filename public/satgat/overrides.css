@@ -1,9 +1,9 @@
 /* ═════════════════════════════════════════════════════════════════════════
- *  삿갓 — 우리만의 디자인 시스템 (한지·먹·단청)
+ *  삿갓 — 우리만의 디자인 시스템 (백자지·먹·단청)
  *  v2 · 2026-05-16
  *
  *  핵심 원칙
- *   ① 한지(韓紙) — 따뜻한 크림. Kami의 누리끼리 #F5F4ED 가 아니다.
+ *   ① 백자지(白瓷紙) — 누런 크림이 아니라 맑은 닥종이 표면.
  *   ② 닥섬유(楮纖維) 질감 — 단순 노이즈가 아닌 결을 가진 종이
  *   ③ 단청(丹靑) — 단 하나의 강조색, 5% 이내
  *   ④ 명조(明朝)가 위계 — 굵기와 크기로 위계, 장식 금지
@@ -24,29 +24,23 @@
  *  토큰 — html[lang='ko']
  * ═══════════════════════════════════════════════════════════════════════ */
 html[lang='ko'] {
-  /* ── 한지(韓紙) — 우리의 캔버스 v3 ────────────────────────────────────
-   *  Kami parchment #F5F4ED (누리끼리, yellow-tan) 폐기.
-   *  v2: #F4F0E4 (담황 → 크림) — 너무 균질
-   *  v3: #F1ECDF (살짝 깊이) — 한국 백한지 실측값
-   *      hex 분해 R241 G236 B223 — H≈45° S≈25% L≈91%
-   *      Kami(R245 G244 B237) 대비 적·녹 비중 미세 조정으로
-   *      한국 한지 특유의 약간 차분한 따스함 구현.
+  /* ── 백자지(白瓷紙) — 우리의 캔버스 v11 ───────────────────────────────
+   *  Kami parchment #F5F4ED (yellow-tan) 폐기.
+   *  v11: #F7F7F2 — 밝은 백자 표면에 회녹 undertone을 아주 얇게 둔다.
+   *  종이 질감은 누런 톤이 아니라 닥섬유 선과 옅은 회녹 shadow로 만든다.
    * ─────────────────────────────────────────────────────────────────── */
-  /* v10 — 진짜 백한지(白韓紙). 노란기 제거 near-white.
-   *  사진 reference 백한지 close-up = near-white + tan fibers.
-   *  v9 (#F2EDDF) 아직 노란기 — 폐기.
-   *  v10 (#F5F2EA) 진짜 백한지. R245 G242 B234 — H42° S22% L94%.
-   *  거의 white이되 살짝 따스함. 닥섬유 tan #a89776 위에 얹힌다.
+  /* v11 — 백자지(白瓷紙). 노란기 제거 near-white.
+   *  거의 white이되 pure white는 아니고, 닥섬유는 회녹 #7f8a79로 얹힌다.
    * ─────────────────────────────────────────────────────────────────── */
-  --parchment: #f5f2ea;       /* 백한지 v10 — 진짜 한지 톤 */
-  --hanji: #f5f2ea;            /* alias */
-  --baekja: #f5f2ea;           /* 백자(白磁) */
-  --buncheong: #ebe6d8;        /* 분청 짙은 톤 — 카드 음영 */
-  --ivory: #faf7f0;            /* 이보리 — 한지 위 한 톤 밝은 surface */
-  --warm-sand: #ddd6c3;        /* 황지(黃紙) — 인터랙티브 표면 */
-  --hanji-shadow: #d8d2bf;     /* 한지 그늘 — 카드 음영 */
-  --hanji-bright: #fbf8f0;     /* 한지 결 밝은 부분 */
-  --hanji-deep: #d8d1bd;       /* 닥섬유 클러스터 진한 영역 */
+  --parchment: #f7f7f2;       /* 백자지 v11 — 맑은 닥종이 톤 */
+  --hanji: #f7f7f2;            /* alias */
+  --baekja: #f7f7f2;           /* 백자(白磁) */
+  --buncheong: #e7e8dd;        /* 접힌 닥종이 — 카드 음영 */
+  --ivory: #fffffb;            /* 이보리 — 백자지 위 한 톤 밝은 surface */
+  --warm-sand: #e7e8dd;        /* 닥종이 음영 — 인터랙티브 표면 */
+  --hanji-shadow: #d2d6cb;     /* 백자지 그늘 — 카드 음영 */
+  --hanji-bright: #fffffb;     /* 백자지 결 밝은 부분 */
+  --hanji-deep: #bec5ba;       /* 닥섬유 클러스터 진한 영역 */
   --sumuk-ink: #0a0907;        /* 수묵 먹 — 가장 진한 brush stroke */
 
   /* ── 색동(色동) 오방색 — 한국 전통 무지개 ───────────────────────────── */
@@ -95,9 +89,9 @@ html[lang='ko'] {
   --olive-soft: #807c75;       /* 옅은 이끼 */
 
   /* ── 엷음(淡) — 보더·구분선 ─────────────────────────────────────────── */
-  --border: #ddd6c4;
-  --border-soft: #e8e2d0;
-  --hairline: #d2cab5;
+  --border: #d8dbd1;
+  --border-soft: #e6e8de;
+  --hairline: #d2d6cb;
 
   /* ═══════════════════════════════════════════════════════════════════
    *  사계(四季) — 한국 절기 색
@@ -113,7 +107,7 @@ html[lang='ko'] {
    *  한국 전통 우주관 색채. 단청은 五方 중 남(南) 적색에 해당.
    * ═══════════════════════════════════════════════════════════════════ */
   --obangsaek-blue: #2d4e7a;   /* 동방(東) 청(靑) */
-  --obangsaek-white: #f1ecdf;  /* 서방(西) 백(白) — 한지 */
+  --obangsaek-white: #f7f7f2;  /* 서방(西) 백(白) — 백자지 */
   --obangsaek-red: #b91c5c;    /* 남방(南) 적(赤) — 무궁화 단심 */
   --obangsaek-black: #1c1916;  /* 북방(北) 흑(黑) — 먹 */
   --obangsaek-yellow: #b8954f; /* 중앙(中) 황(黃) — 금박 */
@@ -140,7 +134,7 @@ html[lang='ko'] {
 
   /* ═══════════════════════════════════════════════════════════════════
    *  문창살(門窓) 격자 — 한옥 창살 9궁 SVG 패턴
-   *  한지 위 옅게 깔리는 배경 보조. 정보 영역에는 사용 금지.
+   *  백자지 위 옅게 깔리는 배경 보조. 정보 영역에는 사용 금지.
    * ═══════════════════════════════════════════════════════════════════ */
   --texture-changsal-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg stroke='%231c1916' stroke-width='0.5' fill='none' opacity='0.06'%3E%3Cline x1='0' y1='40' x2='120' y2='40'/%3E%3Cline x1='0' y1='80' x2='120' y2='80'/%3E%3Cline x1='40' y1='0' x2='40' y2='120'/%3E%3Cline x1='80' y1='0' x2='80' y2='120'/%3E%3C/g%3E%3C/svg%3E");
   --texture-changsal-strong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg stroke='%231c1916' stroke-width='0.8' fill='none' opacity='0.12'%3E%3Cline x1='0' y1='40' x2='120' y2='40'/%3E%3Cline x1='0' y1='80' x2='120' y2='80'/%3E%3Cline x1='40' y1='0' x2='40' y2='120'/%3E%3Cline x1='80' y1='0' x2='80' y2='120'/%3E%3C/g%3E%3C/svg%3E");
@@ -166,8 +160,8 @@ html[lang='ko'] {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
- *  한지 캔버스 v6 — 분청 톤 + 한국 시각 어휘
- *  Kami parchment 완전 단절. 단순 cream 평면이 아닌 한국 도자 + 색동 + 무궁화.
+ *  백자지 캔버스 v11 — 회녹 닥종이 + 한국 시각 어휘
+ *  Kami parchment 완전 단절. 단순 cream 평면이 아닌 백자지 + 색동 + 무궁화.
  *  9층 합성:
  *   ① 분청 베이스 #EAE4D0 (회색 머금은 한국 도자색)
  *   ② 중앙 가마 빛 — 백자 유백 살짝 밝게
@@ -186,9 +180,9 @@ html[lang='ko'] body {
   background-color: var(--parchment);
   background-image:
     /* ① 닥섬유 stroke 큰 결 — 30 strokes per 720px tile, 길게 흩어진 */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720' viewBox='0 0 720 720'%3E%3Cg stroke='%23a89776' fill='none' stroke-linecap='round'%3E%3Cline x1='30' y1='50' x2='220' y2='45' stroke-width='0.7' opacity='0.5'/%3E%3Cline x1='180' y1='90' x2='420' y2='95' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='450' y1='40' x2='680' y2='55' stroke-width='0.6' opacity='0.4'/%3E%3Cline x1='50' y1='120' x2='280' y2='128' stroke-width='0.4' opacity='0.5'/%3E%3Cline x1='320' y1='140' x2='560' y2='135' stroke-width='0.55' opacity='0.42'/%3E%3Cline x1='600' y1='115' x2='710' y2='125' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='80' y1='180' x2='200' y2='178' stroke-width='0.45' opacity='0.45'/%3E%3Cline x1='240' y1='190' x2='480' y2='198' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='510' y1='180' x2='700' y2='190' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='30' y1='240' x2='180' y2='248' stroke-width='0.55' opacity='0.45'/%3E%3Cline x1='220' y1='260' x2='440' y2='255' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='470' y1='250' x2='680' y2='258' stroke-width='0.45' opacity='0.48'/%3E%3Cline x1='60' y1='310' x2='240' y2='318' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='290' y1='320' x2='510' y2='312' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='540' y1='310' x2='710' y2='320' stroke-width='0.55' opacity='0.45'/%3E%3Cline x1='40' y1='380' x2='220' y2='388' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='260' y1='390' x2='480' y2='385' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='520' y1='378' x2='700' y2='386' stroke-width='0.4' opacity='0.42'/%3E%3Cline x1='30' y1='440' x2='250' y2='448' stroke-width='0.55' opacity='0.46'/%3E%3Cline x1='290' y1='460' x2='510' y2='455' stroke-width='0.45' opacity='0.4'/%3E%3Cline x1='540' y1='448' x2='710' y2='458' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='80' y1='510' x2='240' y2='518' stroke-width='0.6' opacity='0.48'/%3E%3Cline x1='280' y1='520' x2='460' y2='515' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='500' y1='510' x2='680' y2='518' stroke-width='0.45' opacity='0.4'/%3E%3Cline x1='40' y1='570' x2='200' y2='578' stroke-width='0.55' opacity='0.5'/%3E%3Cline x1='240' y1='580' x2='460' y2='572' stroke-width='0.6' opacity='0.46'/%3E%3Cline x1='500' y1='570' x2='700' y2='580' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='30' y1='630' x2='220' y2='640' stroke-width='0.45' opacity='0.45'/%3E%3Cline x1='260' y1='648' x2='480' y2='638' stroke-width='0.55' opacity='0.48'/%3E%3Cline x1='520' y1='640' x2='700' y2='648' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='100' y1='690' x2='280' y2='698' stroke-width='0.6' opacity='0.45'/%3E%3Cline x1='320' y1='700' x2='540' y2='692' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='580' y1='698' x2='710' y2='708' stroke-width='0.45' opacity='0.43'/%3E%3C/g%3E%3Cg fill='%23a89776'%3E%3Ccircle cx='150' cy='75' r='1.2' opacity='0.42'/%3E%3Ccircle cx='380' cy='110' r='0.9' opacity='0.38'/%3E%3Ccircle cx='580' cy='160' r='1.3' opacity='0.4'/%3E%3Ccircle cx='110' cy='285' r='1' opacity='0.45'/%3E%3Ccircle cx='350' cy='340' r='0.8' opacity='0.35'/%3E%3Ccircle cx='620' cy='400' r='1.4' opacity='0.42'/%3E%3Ccircle cx='180' cy='495' r='1.1' opacity='0.4'/%3E%3Ccircle cx='450' cy='600' r='0.9' opacity='0.38'/%3E%3Ccircle cx='640' cy='660' r='1.2' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='720' viewBox='0 0 720 720'%3E%3Cg stroke='%237f8a79' fill='none' stroke-linecap='round'%3E%3Cline x1='30' y1='50' x2='220' y2='45' stroke-width='0.7' opacity='0.5'/%3E%3Cline x1='180' y1='90' x2='420' y2='95' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='450' y1='40' x2='680' y2='55' stroke-width='0.6' opacity='0.4'/%3E%3Cline x1='50' y1='120' x2='280' y2='128' stroke-width='0.4' opacity='0.5'/%3E%3Cline x1='320' y1='140' x2='560' y2='135' stroke-width='0.55' opacity='0.42'/%3E%3Cline x1='600' y1='115' x2='710' y2='125' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='80' y1='180' x2='200' y2='178' stroke-width='0.45' opacity='0.45'/%3E%3Cline x1='240' y1='190' x2='480' y2='198' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='510' y1='180' x2='700' y2='190' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='30' y1='240' x2='180' y2='248' stroke-width='0.55' opacity='0.45'/%3E%3Cline x1='220' y1='260' x2='440' y2='255' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='470' y1='250' x2='680' y2='258' stroke-width='0.45' opacity='0.48'/%3E%3Cline x1='60' y1='310' x2='240' y2='318' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='290' y1='320' x2='510' y2='312' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='540' y1='310' x2='710' y2='320' stroke-width='0.55' opacity='0.45'/%3E%3Cline x1='40' y1='380' x2='220' y2='388' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='260' y1='390' x2='480' y2='385' stroke-width='0.6' opacity='0.5'/%3E%3Cline x1='520' y1='378' x2='700' y2='386' stroke-width='0.4' opacity='0.42'/%3E%3Cline x1='30' y1='440' x2='250' y2='448' stroke-width='0.55' opacity='0.46'/%3E%3Cline x1='290' y1='460' x2='510' y2='455' stroke-width='0.45' opacity='0.4'/%3E%3Cline x1='540' y1='448' x2='710' y2='458' stroke-width='0.5' opacity='0.45'/%3E%3Cline x1='80' y1='510' x2='240' y2='518' stroke-width='0.6' opacity='0.48'/%3E%3Cline x1='280' y1='520' x2='460' y2='515' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='500' y1='510' x2='680' y2='518' stroke-width='0.45' opacity='0.4'/%3E%3Cline x1='40' y1='570' x2='200' y2='578' stroke-width='0.55' opacity='0.5'/%3E%3Cline x1='240' y1='580' x2='460' y2='572' stroke-width='0.6' opacity='0.46'/%3E%3Cline x1='500' y1='570' x2='700' y2='580' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='30' y1='630' x2='220' y2='640' stroke-width='0.45' opacity='0.45'/%3E%3Cline x1='260' y1='648' x2='480' y2='638' stroke-width='0.55' opacity='0.48'/%3E%3Cline x1='520' y1='640' x2='700' y2='648' stroke-width='0.5' opacity='0.42'/%3E%3Cline x1='100' y1='690' x2='280' y2='698' stroke-width='0.6' opacity='0.45'/%3E%3Cline x1='320' y1='700' x2='540' y2='692' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='580' y1='698' x2='710' y2='708' stroke-width='0.45' opacity='0.43'/%3E%3C/g%3E%3Cg fill='%237f8a79'%3E%3Ccircle cx='150' cy='75' r='1.2' opacity='0.42'/%3E%3Ccircle cx='380' cy='110' r='0.9' opacity='0.38'/%3E%3Ccircle cx='580' cy='160' r='1.3' opacity='0.4'/%3E%3Ccircle cx='110' cy='285' r='1' opacity='0.45'/%3E%3Ccircle cx='350' cy='340' r='0.8' opacity='0.35'/%3E%3Ccircle cx='620' cy='400' r='1.4' opacity='0.42'/%3E%3Ccircle cx='180' cy='495' r='1.1' opacity='0.4'/%3E%3Ccircle cx='450' cy='600' r='0.9' opacity='0.38'/%3E%3Ccircle cx='640' cy='660' r='1.2' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E"),
     /* ② 닥섬유 짧은 다발 — 더 진한 cluster 작게 흩뿌림 */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'%3E%3Cg stroke='%238a7656' fill='none' stroke-linecap='round'%3E%3Cline x1='40' y1='80' x2='95' y2='85' stroke-width='0.4' opacity='0.45'/%3E%3Cline x1='45' y1='84' x2='90' y2='88' stroke-width='0.3' opacity='0.4'/%3E%3Cline x1='220' y1='180' x2='280' y2='178' stroke-width='0.35' opacity='0.42'/%3E%3Cline x1='225' y1='184' x2='275' y2='182' stroke-width='0.3' opacity='0.38'/%3E%3Cline x1='100' y1='280' x2='160' y2='284' stroke-width='0.4' opacity='0.45'/%3E%3Cline x1='105' y1='284' x2='155' y2='288' stroke-width='0.3' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'%3E%3Cg stroke='%236f796b' fill='none' stroke-linecap='round'%3E%3Cline x1='40' y1='80' x2='95' y2='85' stroke-width='0.4' opacity='0.45'/%3E%3Cline x1='45' y1='84' x2='90' y2='88' stroke-width='0.3' opacity='0.4'/%3E%3Cline x1='220' y1='180' x2='280' y2='178' stroke-width='0.35' opacity='0.42'/%3E%3Cline x1='225' y1='184' x2='275' y2='182' stroke-width='0.3' opacity='0.38'/%3E%3Cline x1='100' y1='280' x2='160' y2='284' stroke-width='0.4' opacity='0.45'/%3E%3Cline x1='105' y1='284' x2='155' y2='288' stroke-width='0.3' opacity='0.4'/%3E%3C/g%3E%3C/svg%3E"),
     /* ③ 한지 안개띠 — 가로결 옅게 */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cfilter id='hanjiMist'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.42' numOctaves='4' seed='29' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.22 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23hanjiMist)' opacity='0.08'/%3E%3C/svg%3E"),
     /* ④ 미세 grain — 종이 입자 */
@@ -287,7 +281,7 @@ html[lang='ko'] dd {
   color: var(--dark-warm);
 }
 
-/* 코드 블록 — mono 그대로, 한지 위 부드러운 cream bg */
+/* 코드 블록 — mono 그대로, 백자지 위 부드러운 cream bg */
 html[lang='ko'] pre.code,
 html[lang='ko'] code {
   font-family: var(--mono);
@@ -331,7 +325,7 @@ html[lang='ko'] .rules .n {
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  카드 / 패널 미세 조정
- *  Kami의 카드 ivory 대신 한지 위 살짝 밝은 cream + ring shadow
+ *  Kami의 카드 ivory 대신 백자지 위 살짝 밝은 cream + ring shadow
  * ═══════════════════════════════════════════════════════════════════════ */
 html[lang='ko'] .demo-card,
 html[lang='ko'] .landing-card,
@@ -447,7 +441,7 @@ html[lang='ko'] .usage-link:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
- *  카드 hover depth 폴리싱 — 한지 위 부드러운 부상
+ *  카드 hover depth 폴리싱 — 백자지 위 부드러운 부상
  * ═══════════════════════════════════════════════════════════════════════ */
 html[lang='ko'] .demo-card,
 html[lang='ko'] .landing-card {

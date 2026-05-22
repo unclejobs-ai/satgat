@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-slides-en.py - parchment design system, English slide deck generator.
+slides-en.py - baekjaji design system, English slide deck generator.
 
 Usage:
   pip install python-pptx --break-system-packages
   python3 slides-en.py
 
 Output:
-  output.pptx (16:9, parchment aesthetic, Charter serif)
+  output.pptx (16:9, baekjaji aesthetic, Charter serif)
 
 This is a template. Fill in your content and run it directly.
 """

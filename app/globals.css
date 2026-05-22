@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  /* 한지 캔버스 v3 */
-  --color-parchment: #F5F2EA;
-  --color-canvas: #F5F2EA;
-  --color-canvas-dark: #E8E1CC;
-  --color-ivory: #F8F4E8;
-  --color-warm-sand: #E8E1CC;
+  /* 백자지 캔버스 v4: 누런 parchment 대신 맑은 닥종이 톤 */
+  --color-parchment: #F7F7F2;
+  --color-canvas: #F7F7F2;
+  --color-canvas-dark: #E7E8DD;
+  --color-ivory: #FFFFFB;
+  --color-warm-sand: #E7E8DD;
 
   /* 먹(墨) 계열 */
   --color-ink: #1C1916;
@@ -21,10 +21,10 @@
   --color-gold: #B8954F;
 
   /* 보더 */
-  --color-hairline: #D2CAB5;
-  --color-border: #DDD6C4;
-  --color-border-soft: #E8E2D0;
-  --color-muted: #6B6862;
+  --color-hairline: #D2D6CB;
+  --color-border: #D8DBD1;
+  --color-border-soft: #E6E8DE;
+  --color-muted: #63675F;
 
   /* 폰트 */
   --font-myeongjo: "Nanum Myeongjo", "Noto Serif KR", "Batang", Georgia, serif;
@@ -38,7 +38,7 @@ html {
 }
 
 body {
-  background-color: #F5F2EA;
+  background-color: #F7F7F2;
   color: #1C1916;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -54,7 +54,7 @@ body {
 
 @media print {
   html, body {
-    background: #F5F2EA !important;
+    background: #F7F7F2 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

@@ -12,8 +12,8 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --parchment:  #f5f4ed;
-    --ivory:      #faf9f5;
+    --parchment:  #f7f7f2;
+    --ivory:      #fffffb;
     --near-black: #141413;
     --olive:      #504e49;
     --stone:      #6b6a64;
@@ -80,7 +80,7 @@
         </pattern>
       </defs>
 
-      <rect width="100%" height="100%" fill="#f5f4ed"/>
+      <rect width="100%" height="100%" fill="#f7f7f2"/>
       <rect width="100%" height="100%" fill="url(#dots)" opacity="0.55"/>
 
       <!-- ── Connector lines (drawn behind nodes) ── -->
@@ -125,9 +125,9 @@
             fill="none" stroke="#1B365D" stroke-width="1.5" stroke-linecap="round"/>
 
       <!-- ── Root node ── -->
-      <rect x="408" y="40" width="144" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="408" y="40" width="144" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="408" y="40" width="144" height="48" rx="6"
-            fill="#faf9f5" stroke="#141413" stroke-width="1"/>
+            fill="#fffffb" stroke="#141413" stroke-width="1"/>
       <text x="430" y="56" fill="#141413" font-size="7" font-family="'JetBrains Mono', monospace"
             letter-spacing="0.15em">ROOT</text>
       <text x="480" y="72" fill="#141413" font-size="12" font-weight="500"
@@ -136,7 +136,7 @@
       <!-- ── Child nodes ── -->
 
       <!-- C1: left branch -->
-      <rect x="176" y="152" width="144" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="176" y="152" width="144" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="176" y="152" width="144" height="48" rx="6"
             fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>
       <text x="198" y="168" fill="#6b6a64" font-size="7" font-family="'JetBrains Mono', monospace"
@@ -145,7 +145,7 @@
             font-family="inherit" text-anchor="middle">{{Module A}}</text>
 
       <!-- C2: right branch (FOCAL) -->
-      <rect x="640" y="152" width="144" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="640" y="152" width="144" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="640" y="152" width="144" height="48" rx="6"
             fill="#EEF2F7" stroke="#1B365D" stroke-width="1"/>
       <text x="662" y="168" fill="#1B365D" font-size="7" font-family="'JetBrains Mono', monospace"
@@ -156,7 +156,7 @@
       <!-- ── Leaf nodes (C1 branch) ── -->
 
       <!-- L1 -->
-      <rect x="48" y="280" width="128" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="48" y="280" width="128" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="48" y="280" width="128" height="48" rx="6"
             fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>
       <text x="112" y="300" fill="#141413" font-size="11" font-weight="500"
@@ -165,7 +165,7 @@
             text-anchor="middle">service</text>
 
       <!-- L2 -->
-      <rect x="204" y="280" width="128" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="204" y="280" width="128" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="204" y="280" width="128" height="48" rx="6"
             fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>
       <text x="268" y="300" fill="#141413" font-size="11" font-weight="500"
@@ -176,7 +176,7 @@
       <!-- ── Leaf nodes (C2 branch, focal) ── -->
 
       <!-- L3 -->
-      <rect x="488" y="280" width="128" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="488" y="280" width="128" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="488" y="280" width="128" height="48" rx="6"
             fill="#EEF2F7" stroke="#1B365D" stroke-width="0.8"/>
       <text x="552" y="300" fill="#141413" font-size="11" font-weight="500"
@@ -185,7 +185,7 @@
             text-anchor="middle">component</text>
 
       <!-- L4 -->
-      <rect x="648" y="280" width="128" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="648" y="280" width="128" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="648" y="280" width="128" height="48" rx="6"
             fill="#EEF2F7" stroke="#1B365D" stroke-width="0.8"/>
       <text x="712" y="300" fill="#141413" font-size="11" font-weight="500"
@@ -194,7 +194,7 @@
             text-anchor="middle">component</text>
 
       <!-- L5 -->
-      <rect x="808" y="280" width="128" height="48" rx="6" fill="#f5f4ed"/>
+      <rect x="808" y="280" width="128" height="48" rx="6" fill="#f7f7f2"/>
       <rect x="808" y="280" width="128" height="48" rx="6"
             fill="#EEF2F7" stroke="#1B365D" stroke-width="0.8"/>
       <text x="872" y="300" fill="#141413" font-size="11" font-weight="500"
@@ -210,7 +210,7 @@
       <rect x="40" y="406" width="14" height="10" rx="2" fill="#EEF2F7" stroke="#1B365D" stroke-width="1"/>
       <text x="60" y="414" fill="#504e49" font-size="8.5" font-family="inherit">Focal sub-tree</text>
 
-      <rect x="190" y="406" width="14" height="10" rx="2" fill="#faf9f5" stroke="#141413" stroke-width="1"/>
+      <rect x="190" y="406" width="14" height="10" rx="2" fill="#fffffb" stroke="#141413" stroke-width="1"/>
       <text x="210" y="414" fill="#504e49" font-size="8.5" font-family="inherit">Root</text>
 
       <rect x="280" y="406" width="14" height="10" rx="2" fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>

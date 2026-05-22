@@ -46,7 +46,7 @@ export default async function SatgatLayout({
           padding: 14px 32px;
           max-width: 1080px;
           margin: 0 auto;
-          background-color: rgba(245, 242, 234, 0.88);
+          background-color: rgba(247, 247, 242, 0.9);
           backdrop-filter: saturate(180%) blur(12px);
           -webkit-backdrop-filter: saturate(180%) blur(12px);
           border-bottom: 0.5px solid var(--border, #DDD6C4);
@@ -65,7 +65,7 @@ export default async function SatgatLayout({
           width: 36px;
           height: 36px;
           background: var(--near-black, #1C1916);
-          color: var(--parchment, #F5F2EA);
+          color: var(--parchment, #F7F7F2);
           font-family: var(--serif-display, 'Nanum Myeongjo');
           font-size: 20px;
           font-weight: 800;

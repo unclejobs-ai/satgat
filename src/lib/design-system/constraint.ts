@@ -9,11 +9,11 @@
  */
 
 // ─── 1. CANVAS ──────────────────────────────────────────────────────────────
-// 한지(韓紙). 한국 백한지 톤. 절대 pure white 금지.
-// v10: #F5F2EA 백한지 (Kami parchment #F5F4ED 누리끼리 폐기, 한국 백한지 톤)
-export const CANVAS = '#F5F2EA';
-export const CANVAS_DARK = '#E8E1CC';  // 황지(黃紙)
-export const IVORY = '#F8F4E8';        // 이보리(象牙)
+// 백자지(白瓷紙). 누런 양피지 대신 회녹 undertone의 맑은 닥종이.
+// v11: #F7F7F2 백자지 (Kami parchment #F5F4ED와 분리)
+export const CANVAS = '#F7F7F2';
+export const CANVAS_DARK = '#E7E8DD';  // 접힌 닥종이 음영
+export const IVORY = '#FFFFFB';        // 백자 흰빛, pure white보다 낮춤
 
 // ─── 2. INK ─────────────────────────────────────────────────────────────────
 // 먹(墨). 따뜻한 흑. cool gray 금지.
@@ -44,10 +44,10 @@ export const GOLD_LIGHT = '#D4B76A';
 
 // ─── 6. NEUTRALS ────────────────────────────────────────────────────────────
 // Warm gray 계열. cool blue-gray 절대 금지.
-export const HAIRLINE = '#D9D4C8';
-export const BORDER = '#C9C3B4';
-export const MUTED = '#8A8478';
-export const PLACEHOLDER = '#A39E92';
+export const HAIRLINE = '#D2D6CB';
+export const BORDER = '#BEC5BA';
+export const MUTED = '#73786F';
+export const PLACEHOLDER = '#969B91';
 
 // ─── 7. SERIF HIERARCHY ─────────────────────────────────────────────────────
 // 나눔명조(장중함) → 고울바탕(따뜻함) → 고울돋움(깔끔함)

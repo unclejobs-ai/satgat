@@ -154,7 +154,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
                 key={i}
                 style={{
                   padding: '16px 14px',
-                  background: '#F8F4E8',
+                  background: '#FFFFFB',
                   border: `0.5pt solid ${HAIRLINE}`,
                   borderRadius: 6,
                   textAlign: 'left',

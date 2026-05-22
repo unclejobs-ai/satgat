@@ -397,7 +397,7 @@ export default function NewPage({ params }: { params: Promise<{ lang: string }> 
           display: flex;
           flex-direction: column;
           padding: 16px 16px 14px;
-          background: var(--ivory, #F8F4E8);
+          background: var(--ivory, #FFFFFB);
           border-radius: 8px;
           box-shadow: 0 0 0 1pt var(--border-soft, #E8E2D0), 0 1pt 2pt rgba(28,25,22,0.04);
           transition: box-shadow 0.18s ease, transform 0.18s ease, background-color 0.18s ease;
@@ -416,7 +416,7 @@ export default function NewPage({ params }: { params: Promise<{ lang: string }> 
           position: relative;
           display: block;
           aspect-ratio: 210 / 297;
-          background: var(--hanji, #F5F2EA);
+          background: var(--hanji, #F7F7F2);
           background-image:
             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.25' numOctaves='2' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.25 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E");
           background-size: auto, 160px 160px;

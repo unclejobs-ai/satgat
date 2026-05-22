@@ -43,7 +43,7 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
           style={{
             width: '148mm',
             minHeight: '210mm',
-            background: '#F8F4E8',
+            background: '#FFFFFB',
             border: `0.5pt solid ${HAIRLINE}`,
             borderRadius: 4,
             padding: '64px 48px',
