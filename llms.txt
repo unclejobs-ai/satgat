@@ -1,0 +1,45 @@
+# satgat
+
+satgat is a Korean AI document generator. The Korean name is 삿갓. It turns natural-language briefs into structured Korean documents rendered with hanji-toned paper, ink typography, seals, restrained dancheong accents, and print/PDF-aware layout rules.
+
+Repository: https://github.com/unclejobs-ai/satgat
+Public origin: https://github.com/unclejobs-ai/satgat.git
+License: MIT
+
+Primary audience:
+- Korean users writing documents for hiring, proposals, company profiles, newsletters, invitations, portfolios, product brochures, brand pages, and investor decks.
+
+Core workflow:
+1. User writes a Korean natural-language brief.
+2. The generator selects a document type and fills structured JSON slots.
+3. satgat templates render the output as HTML using Korean document design rules.
+4. The result can be previewed, captured as PNG, or saved as PDF.
+
+Important paths:
+- README.md: project overview and visual examples.
+- public/satgat/satgat-ko.html: static Korean landing/specimen page.
+- public/satgat/assets/examples/ko/: Korean demo pack with HTML, PDF, PNG, and manifest files.
+- scripts/generate-korean-demo-pack.mjs: regenerates Korean demo HTML and manifest.
+- src/lib/templates/: runtime template definitions and registry.
+- references/: Korean writing and design guidance.
+
+Korean demo pack:
+- resume-kim-sumin: Korean resume.
+- self-intro-yoon-hajin: Korean self-introduction letter.
+- proposal-hanji-retail: Korean business proposal.
+- company-profile-dalbit: Korean company profile.
+- investor-deck-maruai: Korean investor deck.
+- invitation-jisoo-minho: Korean wedding invitation.
+
+Design rules:
+- Avoid pure white document backgrounds.
+- Use warm hanji/parchment surfaces.
+- Use ink-black body text, restrained dancheong red, jade, and gold accents.
+- Prefer Korean serif hierarchy for document pages.
+- Avoid generic SaaS document styling, fake traditional decoration, and translated-template tone.
+
+Commands:
+- npm run dev
+- npm run demo:ko
+- npm run build
+- npm run lint

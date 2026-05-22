@@ -11,6 +11,7 @@
   "homepage": "https://satgat.fun",
   "scripts": {
     "dev": "next dev",
+    "demo:ko": "node scripts/generate-korean-demo-pack.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

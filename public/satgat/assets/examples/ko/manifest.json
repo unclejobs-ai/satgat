@@ -1,0 +1,68 @@
+[
+  {
+    "id": "resume-kim-sumin",
+    "type": "이력서",
+    "title": "김수민 이력서",
+    "meta": "한국어 · A4 · 2p",
+    "prompt": "7년차 프론트엔드 개발자 김수민의 이력서를 한국 스타트업 채용 담당자가 빠르게 읽을 수 있게 만들어줘. React, 디자인 시스템, 결제 전환율 개선 경험을 중심으로.",
+    "layout": "resume",
+    "html": "resume-kim-sumin.html",
+    "pdf": "resume-kim-sumin.pdf",
+    "png": "resume-kim-sumin.png"
+  },
+  {
+    "id": "self-intro-yoon-hajin",
+    "type": "자기소개서",
+    "title": "윤하진 자기소개서",
+    "meta": "한국어 · A4 · 4문항",
+    "prompt": "AI 서비스 기획자 윤하진이 B2B SaaS 회사에 지원하는 자기소개서를 써줘. 과장하지 말고, 고객 인터뷰와 제품 실험을 통해 배운 점이 보이게.",
+    "layout": "essay",
+    "html": "self-intro-yoon-hajin.html",
+    "pdf": "self-intro-yoon-hajin.pdf",
+    "png": "self-intro-yoon-hajin.png"
+  },
+  {
+    "id": "proposal-hanji-retail",
+    "type": "제안서",
+    "title": "한지 리테일 전환 제안서",
+    "meta": "한국어 · A4 · 3p",
+    "prompt": "지역 공예 브랜드의 온라인 매출을 높이기 위한 3개월 제안서를 만들어줘. 상세페이지, 뉴스레터, 명절 선물 기획을 하나의 실행안으로 묶어줘.",
+    "layout": "proposal",
+    "html": "proposal-hanji-retail.html",
+    "pdf": "proposal-hanji-retail.pdf",
+    "png": "proposal-hanji-retail.png"
+  },
+  {
+    "id": "company-profile-dalbit",
+    "type": "회사 소개서",
+    "title": "달빛식품 회사 소개서",
+    "meta": "한국어 · A4 · 4p",
+    "prompt": "프리미엄 전통 간편식 브랜드 달빛식품의 회사 소개서를 만들어줘. 투자자와 유통 MD가 함께 볼 문서라서 브랜드 철학과 숫자가 균형 있게 보여야 해.",
+    "layout": "profile",
+    "html": "company-profile-dalbit.html",
+    "pdf": "company-profile-dalbit.pdf",
+    "png": "company-profile-dalbit.png"
+  },
+  {
+    "id": "investor-deck-maruai",
+    "type": "투자 IR 덱",
+    "title": "마루AI 투자 IR 덱",
+    "meta": "한국어 · 16:9 · 5 slides",
+    "prompt": "한국 중소기업을 위한 문서 자동화 SaaS 마루AI의 Seed 투자 IR 덱을 만들어줘. 문제, 해결책, 시장, traction, 요청 금액이 한눈에 보이게.",
+    "layout": "deck",
+    "html": "investor-deck-maruai.html",
+    "pdf": "investor-deck-maruai.pdf",
+    "png": "investor-deck-maruai.png"
+  },
+  {
+    "id": "invitation-jisoo-minho",
+    "type": "청첩장",
+    "title": "지수와 민호 청첩장",
+    "meta": "한국어 · A5 · 모바일 공유",
+    "prompt": "지수와 민호의 청첩장을 만들어줘. 과하게 화려하지 않고, 가족 어른들이 읽기 편한 한글 중심의 따뜻한 문장으로.",
+    "layout": "invitation",
+    "html": "invitation-jisoo-minho.html",
+    "pdf": "invitation-jisoo-minho.pdf",
+    "png": "invitation-jisoo-minho.png"
+  }
+]

@@ -12,21 +12,38 @@
 
 <img src="public/satgat/assets/readme/satgat-home.png" alt="satgat 한국형 문서 생성 화면" width="100%">
 
-## 예시 갤러리
+## 한국어 데모팩
 
-아래 예시는 satgat이 목표로 하는 출력 범위를 보여 주는 번들 샘플입니다. 긴 문서, 리포트, 덱처럼 서로 다른 밀도와 판형을 한 디자인 시스템 안에서 다룹니다.
+satgat 전용 데모팩은 자연어 입력 예시, HTML 원본, PDF, PNG 미리보기를 한 묶음으로 제공합니다. 전체 갤러리는 [한국어 데모팩](public/satgat/assets/examples/ko/index.html)에서 볼 수 있습니다.
 
-| 이력서형 장문 문서 | 리포트형 문서 | 발표 덱 |
+| 이력서 | 자기소개서 | 제안서 |
 | --- | --- | --- |
-| <img src="public/satgat/assets/demos/demo-musk-resume.png" alt="이력서형 장문 문서 예시" width="260"> | <img src="public/satgat/assets/demos/demo-tesla.png" alt="리포트형 문서 예시" width="260"> | <img src="public/satgat/assets/demos/demo-agent-slides.png" alt="발표 덱 예시" width="260"> |
-| [HTML](public/satgat/assets/demos/demo-musk-resume.html) · [PDF](public/satgat/assets/demos/demo-musk-resume.pdf) | [HTML](public/satgat/assets/demos/demo-tesla.html) · [PDF](public/satgat/assets/demos/demo-tesla.pdf) | [HTML](public/satgat/assets/demos/demo-agent-slides.html) · [PDF](public/satgat/assets/demos/demo-agent-slides.pdf) |
+| <img src="public/satgat/assets/examples/ko/resume-kim-sumin.png" alt="김수민 이력서 예시" width="260"> | <img src="public/satgat/assets/examples/ko/self-intro-yoon-hajin.png" alt="윤하진 자기소개서 예시" width="260"> | <img src="public/satgat/assets/examples/ko/proposal-hanji-retail.png" alt="한지 리테일 전환 제안서 예시" width="260"> |
+| 한국어 · A4 · 이력서<br>[HTML](public/satgat/assets/examples/ko/resume-kim-sumin.html) · [PDF](public/satgat/assets/examples/ko/resume-kim-sumin.pdf) | 한국어 · A4 · 4문항<br>[HTML](public/satgat/assets/examples/ko/self-intro-yoon-hajin.html) · [PDF](public/satgat/assets/examples/ko/self-intro-yoon-hajin.pdf) | 한국어 · A4 · 제안서<br>[HTML](public/satgat/assets/examples/ko/proposal-hanji-retail.html) · [PDF](public/satgat/assets/examples/ko/proposal-hanji-retail.pdf) |
+
+| 회사 소개서 | 투자 IR 덱 | 청첩장 |
+| --- | --- | --- |
+| <img src="public/satgat/assets/examples/ko/company-profile-dalbit.png" alt="달빛식품 회사 소개서 예시" width="260"> | <img src="public/satgat/assets/examples/ko/investor-deck-maruai.png" alt="마루AI 투자 IR 덱 예시" width="260"> | <img src="public/satgat/assets/examples/ko/invitation-jisoo-minho.png" alt="지수와 민호 청첩장 예시" width="260"> |
+| 한국어 · A4 · 회사 소개서<br>[HTML](public/satgat/assets/examples/ko/company-profile-dalbit.html) · [PDF](public/satgat/assets/examples/ko/company-profile-dalbit.pdf) | 한국어 · 16:9 · 5 slides<br>[HTML](public/satgat/assets/examples/ko/investor-deck-maruai.html) · [PDF](public/satgat/assets/examples/ko/investor-deck-maruai.pdf) | 한국어 · A5 감성 · 청첩장<br>[HTML](public/satgat/assets/examples/ko/invitation-jisoo-minho.html) · [PDF](public/satgat/assets/examples/ko/invitation-jisoo-minho.pdf) |
+
+## 예시 프롬프트
+
+```text
+7년차 프론트엔드 개발자 김수민의 이력서를 한국 스타트업 채용 담당자가 빠르게 읽을 수 있게 만들어줘.
+
+AI 서비스 기획자 윤하진이 B2B SaaS 회사에 지원하는 자기소개서를 써줘. 과장하지 말고 고객 인터뷰와 제품 실험을 통해 배운 점이 보이게.
+
+지역 공예 브랜드의 온라인 매출을 높이기 위한 3개월 제안서를 만들어줘. 상세페이지, 뉴스레터, 명절 선물 기획을 하나의 실행안으로 묶어줘.
+
+한국 중소기업을 위한 문서 자동화 SaaS의 Seed 투자 IR 덱을 만들어줘. 문제, 해결책, 시장, traction, 요청 금액이 한눈에 보이게.
+```
 
 ## 동작 흐름
 
-1. 만들 문서의 종류를 고릅니다.
-2. 자연어로 목적, 대상, 핵심 내용, 분위기를 적습니다.
-3. AI가 구조화된 문서 데이터를 만들고 satgat 템플릿이 브라우저에서 미리보기 가능한 문서로 렌더링합니다.
-4. 결과를 검토한 뒤 인쇄하거나 PDF로 저장합니다.
+1. 자연어 brief로 목적, 독자, 핵심 내용, 분위기를 적습니다.
+2. AI가 문서 유형을 고르고 구조화 JSON으로 슬롯을 채웁니다.
+3. satgat 템플릿이 한지 톤 캔버스, 먹색 타이포그래피, 인장, 여백 규칙으로 렌더링합니다.
+4. 결과를 HTML로 검토하고 PNG 미리보기와 PDF 산출물로 저장합니다.
 
 ## 만들 수 있는 문서
 
@@ -90,6 +107,7 @@ npm run dev
 
 ```bash
 npm run dev      # 로컬 개발 서버
+npm run demo:ko  # 한국어 데모팩 HTML/manifest 생성
 npm run build    # 프로덕션 빌드
 npm run start    # 프로덕션 서버 실행
 npm run lint     # ESLint 검사
@@ -100,6 +118,8 @@ npm run lint     # ESLint 검사
 ```text
 app/                    Next.js 라우트와 API 핸들러
 public/satgat/          정적 specimen 페이지와 디자인 시스템 자산
+public/satgat/assets/examples/ko/
+                        한국어 데모팩 HTML/PDF/PNG/manifest
 src/components/         문서/템플릿 React 컴포넌트
 src/lib/design-system/  한지, 먹색, 단청, 취색, 금박 토큰
 src/lib/templates/      문서 템플릿 정의와 registry
@@ -116,6 +136,8 @@ docs/                   아키텍처 문서
 ```text
 https://github.com/unclejobs-ai/satgat
 ```
+
+AI/에이전트가 프로젝트를 빠르게 읽을 수 있도록 [llms.txt](llms.txt)에 목적, 핵심 경로, 데모팩, 명령어를 요약해 두었습니다.
 
 ## 라이선스
 
