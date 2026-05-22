@@ -10,6 +10,24 @@
 
 워드 기본 양식, 흰 배경 SaaS 문서, 해외 템플릿 번역체 대신 한국어 문서가 자연스럽게 읽히는 종이, 여백, 글꼴, 인장, 색을 기준으로 설계했습니다.
 
+<img src="public/satgat/assets/readme/satgat-home.png" alt="satgat 한국형 문서 생성 화면" width="100%">
+
+## 예시 갤러리
+
+아래 예시는 satgat이 목표로 하는 출력 범위를 보여 주는 번들 샘플입니다. 긴 문서, 리포트, 덱처럼 서로 다른 밀도와 판형을 한 디자인 시스템 안에서 다룹니다.
+
+| 이력서형 장문 문서 | 리포트형 문서 | 발표 덱 |
+| --- | --- | --- |
+| <img src="public/satgat/assets/demos/demo-musk-resume.png" alt="이력서형 장문 문서 예시" width="260"> | <img src="public/satgat/assets/demos/demo-tesla.png" alt="리포트형 문서 예시" width="260"> | <img src="public/satgat/assets/demos/demo-agent-slides.png" alt="발표 덱 예시" width="260"> |
+| [HTML](public/satgat/assets/demos/demo-musk-resume.html) · [PDF](public/satgat/assets/demos/demo-musk-resume.pdf) | [HTML](public/satgat/assets/demos/demo-tesla.html) · [PDF](public/satgat/assets/demos/demo-tesla.pdf) | [HTML](public/satgat/assets/demos/demo-agent-slides.html) · [PDF](public/satgat/assets/demos/demo-agent-slides.pdf) |
+
+## 동작 흐름
+
+1. 만들 문서의 종류를 고릅니다.
+2. 자연어로 목적, 대상, 핵심 내용, 분위기를 적습니다.
+3. AI가 구조화된 문서 데이터를 만들고 satgat 템플릿이 브라우저에서 미리보기 가능한 문서로 렌더링합니다.
+4. 결과를 검토한 뒤 인쇄하거나 PDF로 저장합니다.
+
 ## 만들 수 있는 문서
 
 - 이력서
@@ -49,7 +67,7 @@
 ## 시작하기
 
 ```bash
-git clone https://github.com/EungjePark/satgat.git
+git clone https://github.com/unclejobs-ai/satgat.git
 cd satgat
 npm install
 ```
