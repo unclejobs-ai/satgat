@@ -1,45 +1,82 @@
 # satgat
 
-satgat is a Korean AI document generator. The Korean name is 삿갓. It turns natural-language briefs into structured Korean documents rendered with clean baekjaji/dak paper tones, ink typography, seals, restrained dancheong accents, and print/PDF-aware layout rules.
+satgat is a Korean AI document generator. Korean name 삿갓. Turns natural-language briefs into structured Korean documents on baekjaji canvas with ink typography, single dancheong accent (≤ 5%/page), Korean serif hierarchy, and print/PDF-aware layouts. 13 document templates.
 
-Repository: https://github.com/unclejobs-ai/satgat
-Public origin: https://github.com/unclejobs-ai/satgat.git
+Repository: https://github.com/EungjePark/satgat
 License: MIT
+Live: https://satgat.fun
 
 Primary audience:
 - Korean users writing documents for hiring, proposals, company profiles, newsletters, invitations, portfolios, product brochures, brand pages, and investor decks.
+- AI agents (Claude Code, Codex, Gemini CLI) needing Korean document design constraints.
+
+Install (any AI agent):
+- npx satgat skill ~/.claude/skills/satgat   # AI agent skill
+- npx satgat init my-satgat                  # full Next.js workspace
+- git clone https://github.com/EungjePark/satgat && npm install
+
+Invoke via natural language:
+- "이력서 한 장 만들어 주세요. 7년차 프론트엔드, 카카오·무신사·29CM."
+- "신년 연하장 — 박상세 가족, 단정한 톤으로."
+- "스타트업 IR 덱 한 벌, 시드 단계, 단청 강조."
 
 Core workflow:
 1. User writes a Korean natural-language brief.
-2. The generator selects a document type and fills structured JSON slots.
-3. satgat templates render the output as HTML using Korean document design rules.
-4. The result can be previewed, captured as PNG, or saved as PDF.
+2. Selected template guides generator to fill type-aware JSON slots (list/table/image preserved as structured shapes).
+3. satgat renderer renders the output as HTML on baekjaji canvas with Korean serif hierarchy.
+4. Browser print → PDF, or PNG preview, or HTML save.
 
 Important paths:
-- README.md: project overview and visual examples.
-- public/satgat/satgat-ko.html: static Korean landing/specimen page.
-- public/satgat/assets/examples/ko/: Korean demo pack with HTML, PDF, PNG, and manifest files.
+- bin/satgat.mjs: npx CLI entry (init / skill / dev / build / start).
+- skills/satgat/SKILL.md: single-file design brief for AI agents.
+- README.md: project overview, install paths, demo gallery, design rules.
+- public/satgat/satgat-ko.html: static Korean landing/specimen page (kami-inspired editorial).
+- public/satgat/assets/examples/ko/: Korean demo pack with HTML, PDF, PNG, manifest.
 - scripts/generate-korean-demo-pack.mjs: regenerates Korean demo HTML and manifest.
+- scripts/verify-template-catalog.mjs: contract verification (definitions × renderers × landing × fixtures).
+- scripts/template-preview-fixtures.mjs: realistic slot payloads for all 13 runtime templates.
 - src/lib/templates/: runtime template definitions and registry.
-- references/: Korean writing and design guidance.
+- src/lib/design-system/constraint.ts: tokens (palette, fonts, ink bleed shadows).
+- src/lib/bridge/prompt-builder.ts: type-aware AI generation contract.
+- src/lib/generation/document-generator.ts: normalizes and validates AI-generated slot data.
+- src/lib/engine/slot-list.ts + slot-image.ts: shape-tolerant slot normalizers.
+- references/: Korean writing, design, anti-pattern, resume guides.
+
+Runtime template catalog (13):
+- resume, self-intro, business-card, brand-onepager, product-brochure, company-profile, investor-deck, brand-storybook, invitation, new-year-card, proposal, newsletter, portfolio.
 
 Korean demo pack:
 - resume-kim-sumin: Korean resume.
-- self-intro-yoon-hajin: Korean self-introduction letter.
+- self-intro-yoon-hajin: Korean self-introduction.
 - proposal-hanji-retail: Korean business proposal.
 - company-profile-dalbit: Korean company profile.
 - investor-deck-maruai: Korean investor deck.
 - invitation-jisoo-minho: Korean wedding invitation.
 
-Design rules:
-- Avoid pure white document backgrounds.
-- Use clean baekjaji/dak-paper surfaces, not yellow parchment.
-- Use ink-black body text, restrained dancheong red, jade, and gold accents.
-- Prefer Korean serif hierarchy for document pages.
-- Avoid generic SaaS document styling, fake traditional decoration, and translated-template tone.
+Design rules (8조):
+1. Canvas: baekjaji #F7F7F2. No pure white. No warm parchment.
+2. Single accent: dancheong #9B1B1B, ≤ 5%/page.
+3. Secondary accent: jade #2E6B5E or gold #B8954F. Not both with dancheong.
+4. All grays warm baekjaji-toned. No cool blue-gray.
+5. Heading 600-700 myeongjo, body 400 batang. Hierarchy by size, not weight.
+6. Solid hex tags only. No rgba (print fails). Shadows ring or whisper.
+7. Whitespace is design. Don't fear xl/2xl gaps.
+8. No synthetic bold. Hanja only as small parenthetical, never large display.
+
+Fonts (all free OFL, Korean):
+- Nanum Myeongjo (display, h1, seals)
+- Gowun Batang (body, quote, numbers)
+- Gowun Dodum (labels, meta, mono labels)
+- Pretendard (UI sans, optional)
+- Noto Serif KR, Noto Sans KR, Hahmlet, IBM Plex Sans KR (alternates)
+- Cormorant Garamond italic (Latin emphasis)
+- JetBrains Mono (code, tables)
 
 Commands:
+- npx satgat help
 - npm run dev
-- npm run demo:ko
 - npm run build
+- npm run start
 - npm run lint
+- npm run verify:templates
+- npm run demo:ko

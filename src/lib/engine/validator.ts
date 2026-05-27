@@ -1,21 +1,19 @@
 import { z } from 'zod';
 import type { SatgatTemplate, SatgatDocumentData } from '@/lib/templates/types';
 
-const SlotTypeSchema = z.enum([
-  'text',
-  'textarea',
-  'image',
-  'image-list',
-  'list',
-  'markdown',
-  'table',
-]);
-
 const DocumentDataSchema = z.object({
   templateId: z.string(),
   title: z.string().optional(),
   slots: z.record(z.string(), z.unknown()),
 });
+
+function isMissingRequiredSlot(value: unknown): boolean {
+  if (value == null) return true;
+  if (typeof value === 'string') return value.trim().length === 0;
+  if (Array.isArray(value)) return value.length === 0 || value.every(isMissingRequiredSlot);
+  if (typeof value === 'object') return Object.values(value).every(isMissingRequiredSlot);
+  return false;
+}
 
 /**
  * 문서 데이터가 템플릿의 slot 정의를 만족하는지 검증
@@ -40,16 +38,8 @@ export function validateDocumentData(
 
   // 3. required slot 존재 여부
   for (const slot of template.slots) {
-    if (slot.required && !(slot.id in data.slots)) {
+    if (slot.required && (!(slot.id in data.slots) || isMissingRequiredSlot(data.slots[slot.id]))) {
       errors.push(`Missing required slot: "${slot.id}" (${slot.label})`);
-    }
-  }
-
-  // 4. 알 수 없는 slot 경고 (error 아님)
-  const knownSlotIds = new Set(template.slots.map((s) => s.id));
-  for (const slotId of Object.keys(data.slots)) {
-    if (!knownSlotIds.has(slotId)) {
-      errors.push(`Unknown slot: "${slotId}" (will be ignored)`);
     }
   }
 

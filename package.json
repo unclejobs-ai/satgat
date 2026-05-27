@@ -1,17 +1,49 @@
 {
   "name": "satgat",
   "version": "0.6.0",
-  "description": "satgat은 자연어를 한지 감성의 한국형 문서로 옮겨 적는 AI 문서 생성기입니다.",
+  "description": "satgat은 자연어를 한지 감성의 한국형 문서로 옮겨 적는 AI 문서 생성기입니다. 13종 한국 문서, 단청 단일 강조, 명조 위계.",
   "private": false,
   "license": "MIT",
+  "keywords": [
+    "korean",
+    "korean-typography",
+    "design-system",
+    "ai-document",
+    "한국",
+    "한지",
+    "단청",
+    "명조",
+    "claude",
+    "nextjs",
+    "skill"
+  ],
+  "author": "EungjePark",
   "repository": {
     "type": "git",
-    "url": "https://github.com/unclejobs-ai/satgat.git"
+    "url": "https://github.com/EungjePark/satgat.git"
   },
   "homepage": "https://satgat.fun",
+  "bugs": {
+    "url": "https://github.com/EungjePark/satgat/issues"
+  },
+  "bin": {
+    "satgat": "./bin/satgat.mjs"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "references",
+    "README.md",
+    "LICENSE",
+    "llms.txt"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "next dev",
     "demo:ko": "node scripts/generate-korean-demo-pack.mjs",
+    "verify:templates": "node scripts/verify-template-catalog.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

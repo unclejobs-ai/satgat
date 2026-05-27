@@ -1,144 +1,197 @@
-# satgat
+<div align="center">
 
-> 자연어를 한지(韓紙) 감성의 한국형 문서로 옮겨 적는 AI 문서 생성기.
+# 삿갓 · satgat
+
+**한지 위에 먹글씨. AI가 옮겨 적는 한국형 문서 디자인 시스템.**
+
+좋은 콘텐츠는 좋은 종이를 만날 자격이 있습니다.
+자연어 한 문장이면, 한국 문서가 한 장의 인쇄물로 완성됩니다.
+
+[웹앱](https://satgat.fun) · [데모팩](public/satgat/assets/examples/ko/) · [skill 설치](#설치) · [라이브 미리보기](https://satgat.fun)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-9B1B1B.svg)](LICENSE)
+[![npm](https://img.shields.io/badge/npm-satgat-1C1916.svg)](https://www.npmjs.com/package/satgat)
 [![Next.js](https://img.shields.io/badge/Next.js-16-1C1916.svg)](https://nextjs.org)
-[![React](https://img.shields.io/badge/React-19-2E6B5E.svg)](https://react.dev)
 
-`satgat`은 한국 이름으로 **삿갓**입니다. 사용자가 하고 싶은 이야기를 자연어로 적으면, AI가 문서 구조를 잡고 한지 위에 먹글씨를 얹은 듯한 시각 언어로 완성 문서를 렌더링합니다.
+<img src="public/satgat/assets/readme/satgat-home.png" alt="삿갓 홈" width="92%">
 
-워드 기본 양식, 흰 배경 SaaS 문서, 해외 템플릿 번역체 대신 한국어 문서가 자연스럽게 읽히는 종이, 여백, 글꼴, 인장, 색을 기준으로 설계했습니다.
+</div>
 
-<img src="public/satgat/assets/readme/satgat-home.png" alt="satgat 한국형 문서 생성 화면" width="100%">
+---
 
-## 한국어 데모팩
+## 설치
 
-satgat 전용 데모팩은 자연어 입력 예시, HTML 원본, PDF, PNG 미리보기를 한 묶음으로 제공합니다. 전체 갤러리는 [한국어 데모팩](public/satgat/assets/examples/ko/index.html)에서 볼 수 있습니다.
-
-| 이력서 | 자기소개서 | 제안서 |
-| --- | --- | --- |
-| <img src="public/satgat/assets/examples/ko/resume-kim-sumin.png" alt="김수민 이력서 예시" width="260"> | <img src="public/satgat/assets/examples/ko/self-intro-yoon-hajin.png" alt="윤하진 자기소개서 예시" width="260"> | <img src="public/satgat/assets/examples/ko/proposal-hanji-retail.png" alt="한지 리테일 전환 제안서 예시" width="260"> |
-| 한국어 · A4 · 이력서<br>[HTML](public/satgat/assets/examples/ko/resume-kim-sumin.html) · [PDF](public/satgat/assets/examples/ko/resume-kim-sumin.pdf) | 한국어 · A4 · 4문항<br>[HTML](public/satgat/assets/examples/ko/self-intro-yoon-hajin.html) · [PDF](public/satgat/assets/examples/ko/self-intro-yoon-hajin.pdf) | 한국어 · A4 · 제안서<br>[HTML](public/satgat/assets/examples/ko/proposal-hanji-retail.html) · [PDF](public/satgat/assets/examples/ko/proposal-hanji-retail.pdf) |
-
-| 회사 소개서 | 투자 IR 덱 | 청첩장 |
-| --- | --- | --- |
-| <img src="public/satgat/assets/examples/ko/company-profile-dalbit.png" alt="달빛식품 회사 소개서 예시" width="260"> | <img src="public/satgat/assets/examples/ko/investor-deck-maruai.png" alt="마루AI 투자 IR 덱 예시" width="260"> | <img src="public/satgat/assets/examples/ko/invitation-jisoo-minho.png" alt="지수와 민호 청첩장 예시" width="260"> |
-| 한국어 · A4 · 회사 소개서<br>[HTML](public/satgat/assets/examples/ko/company-profile-dalbit.html) · [PDF](public/satgat/assets/examples/ko/company-profile-dalbit.pdf) | 한국어 · 16:9 · 5 slides<br>[HTML](public/satgat/assets/examples/ko/investor-deck-maruai.html) · [PDF](public/satgat/assets/examples/ko/investor-deck-maruai.pdf) | 한국어 · A5 감성 · 청첩장<br>[HTML](public/satgat/assets/examples/ko/invitation-jisoo-minho.html) · [PDF](public/satgat/assets/examples/ko/invitation-jisoo-minho.pdf) |
-
-## 예시 프롬프트
-
-```text
-7년차 프론트엔드 개발자 김수민의 이력서를 한국 스타트업 채용 담당자가 빠르게 읽을 수 있게 만들어줘.
-
-AI 서비스 기획자 윤하진이 B2B SaaS 회사에 지원하는 자기소개서를 써줘. 과장하지 말고 고객 인터뷰와 제품 실험을 통해 배운 점이 보이게.
-
-지역 공예 브랜드의 온라인 매출을 높이기 위한 3개월 제안서를 만들어줘. 상세페이지, 뉴스레터, 명절 선물 기획을 하나의 실행안으로 묶어줘.
-
-한국 중소기업을 위한 문서 자동화 SaaS의 Seed 투자 IR 덱을 만들어줘. 문제, 해결책, 시장, traction, 요청 금액이 한눈에 보이게.
-```
-
-## 동작 흐름
-
-1. 자연어 brief로 목적, 독자, 핵심 내용, 분위기를 적습니다.
-2. AI가 문서 유형을 고르고 구조화 JSON으로 슬롯을 채웁니다.
-3. satgat 템플릿이 백자지 톤 캔버스, 먹색 타이포그래피, 인장, 여백 규칙으로 렌더링합니다.
-4. 결과를 HTML로 검토하고 PNG 미리보기와 PDF 산출물로 저장합니다.
-
-## 만들 수 있는 문서
-
-- 이력서
-- 자기소개서
-- 명함
-- 청첩장
-- 연하장
-- 회사 제안서
-- 뉴스레터
-- 포트폴리오
-- 회사 소개서
-- 제품 소개서
-- 브랜드 원페이지
-- 브랜드 스토리북
-- 투자 IR 덱
-
-종이를 고르고 담을 이야기를 적으면, AI가 템플릿 슬롯을 채운 뒤 브라우저에서 미리보기와 인쇄/PDF 저장이 가능한 문서로 보여 줍니다.
-
-## 디자인 원칙
-
-- 순백 배경이나 누런 양피지 대신 맑은 백자지/닥종이 톤 캔버스 사용
-- 먹색 본문과 따뜻한 황갈 계열 회색 사용
-- 무궁화, 단청, 취색, 금박을 절제된 강조색으로 사용
-- Nanum Myeongjo, Gowun Batang, Gowun Dodum 중심의 한국어 글꼴 위계
-- A4, A5, 명함, 16:9 덱까지 인쇄를 고려한 레이아웃
-- 합성 볼드와 유료 폰트 의존을 피하고 OFL 무료 폰트 중심으로 구성
-
-## 기술 스택
-
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- AI SDK + `@ai-sdk/google`
-- Zod 런타임 검증
-- CSS 디자인 토큰 + Tailwind 4 도구 체인
-
-## 시작하기
+### Claude Code · Codex · Gemini CLI 등 AI 에이전트용 skill
 
 ```bash
-git clone https://github.com/unclejobs-ai/satgat.git
-cd satgat
+npx satgat skill ~/.claude/skills/satgat
+```
+
+`SKILL.md`와 한국어 디자인 brief가 그대로 풀립니다. 이후 자연어로 호출하면 끝.
+
+### 새 워크스페이스 (Next.js 풀스택)
+
+```bash
+npx satgat init my-satgat
+cd my-satgat
 npm install
-```
-
-`.env.local`을 만들고 Gemini API 키를 넣습니다.
-
-```bash
-GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
-```
-
-개발 서버를 실행합니다.
-
-```bash
+echo "GOOGLE_GENERATIVE_AI_API_KEY=<키>" > .env.local
 npm run dev
 ```
 
-브라우저에서 `http://localhost:3000`을 엽니다.
+`http://localhost:3000` 열림. 13종 한국 문서 즉시 생성 가능.
+
+### 원본 저장소에서
+
+```bash
+git clone https://github.com/EungjePark/satgat.git
+cd satgat
+npm install
+npm run dev
+```
+
+---
+
+## 호출 예시
+
+자연어 한 문장. AI 에이전트(Claude/GPT/Gemini)에 그대로 던집니다.
+
+```text
+이력서 한 장 만들어 주세요. 7년차 프론트엔드, 카카오·무신사·29CM.
+
+신년 연하장 — 박상세 가족, 단정한 톤으로.
+
+스타트업 IR 덱 한 벌, 시드 단계, 단청 강조.
+
+회사 소개서 — 북촌랩스, 로컬 문화 공간 SaaS. 비전·미션·핵심 가치·연혁·팀.
+
+청첩장 — 민호와 지수, 2026년 10월 17일, 정동 예식당.
+```
+
+13종 문서: 이력서 · 자기소개서 · 명함 · 브랜드 원페이지 · 제품 소개서 · 회사 소개서 · 투자 IR 덱 · 브랜드 스토리북 · 청첩장 · 연하장 · 제안서 · 뉴스레터 · 포트폴리오.
+
+---
+
+## 디자인 한 줄
+
+| 항목 | 값 |
+|---|---|
+| Canvas | 백자지 `#F7F7F2` |
+| Accent | 단청 `#9B1B1B` (≤ 5%/page) |
+| Ink | 먹 `#1C1916` |
+| Serif | 나눔명조 · 고운바탕 |
+| Sans | 고운돋움 · Pretendard |
+
+규칙 8개: `references/design.ko.md` 또는 `skills/satgat/SKILL.md` 참조.
+
+---
+
+## 한글 무료 폰트 (OFL)
+
+satgat에 묶여 들어가는 한글 폰트. 모두 무료, 상업 사용 가능.
+
+| 폰트 | 역할 | 출처 |
+|---|---|---|
+| **나눔명조** | 표지 · H1 · 인장 | Google Fonts |
+| **고운바탕** | 본문 · 인용 | Google Fonts |
+| **고운돋움** | 라벨 · 메타 | Google Fonts |
+| **Pretendard** | UI · sans 본문 | orioncactus/pretendard |
+| **Noto Serif KR** | 명조 fallback | Google Fonts |
+| **Noto Sans KR** | 다국어 페어링 | Google Fonts |
+| **Hahmlet** | 두꺼운 명조 디스플레이 | Google Fonts |
+| **IBM Plex Sans KR** | 기술 문서 sans | Google Fonts |
+| **Black Han Sans** | 강한 헤드라인 (선택) | Google Fonts |
+
+Latin 페어링: Cormorant Garamond italic, JetBrains Mono.
+
+---
+
+## 데모팩
+
+자연어 입력 → satgat 렌더 결과 한 묶음. HTML · PDF · PNG 동시 제공.
+
+| 이력서 | 자기소개서 | 제안서 |
+|---|---|---|
+| <img src="public/satgat/assets/examples/ko/resume-kim-sumin.png" width="240"> | <img src="public/satgat/assets/examples/ko/self-intro-yoon-hajin.png" width="240"> | <img src="public/satgat/assets/examples/ko/proposal-hanji-retail.png" width="240"> |
+| [HTML](public/satgat/assets/examples/ko/resume-kim-sumin.html) · [PDF](public/satgat/assets/examples/ko/resume-kim-sumin.pdf) | [HTML](public/satgat/assets/examples/ko/self-intro-yoon-hajin.html) · [PDF](public/satgat/assets/examples/ko/self-intro-yoon-hajin.pdf) | [HTML](public/satgat/assets/examples/ko/proposal-hanji-retail.html) · [PDF](public/satgat/assets/examples/ko/proposal-hanji-retail.pdf) |
+
+| 회사 소개서 | 투자 IR 덱 | 청첩장 |
+|---|---|---|
+| <img src="public/satgat/assets/examples/ko/company-profile-dalbit.png" width="240"> | <img src="public/satgat/assets/examples/ko/investor-deck-maruai.png" width="240"> | <img src="public/satgat/assets/examples/ko/invitation-jisoo-minho.png" width="240"> |
+| [HTML](public/satgat/assets/examples/ko/company-profile-dalbit.html) · [PDF](public/satgat/assets/examples/ko/company-profile-dalbit.pdf) | [HTML](public/satgat/assets/examples/ko/investor-deck-maruai.html) · [PDF](public/satgat/assets/examples/ko/investor-deck-maruai.pdf) | [HTML](public/satgat/assets/examples/ko/invitation-jisoo-minho.html) · [PDF](public/satgat/assets/examples/ko/invitation-jisoo-minho.pdf) |
+
+전체 갤러리: [한국어 데모팩](public/satgat/assets/examples/ko/index.html).
+
+---
 
 ## 스크립트
 
 ```bash
-npm run dev      # 로컬 개발 서버
-npm run demo:ko  # 한국어 데모팩 HTML/manifest 생성
-npm run build    # 프로덕션 빌드
-npm run start    # 프로덕션 서버 실행
-npm run lint     # ESLint 검사
+npm run dev               # 로컬 개발 서버
+npm run build             # 프로덕션 빌드
+npm run start             # 프로덕션 서버
+npm run lint              # ESLint
+npm run verify:templates  # 13종 템플릿·렌더러·UI 일치 검증
+npm run demo:ko           # 한국어 데모팩 HTML/manifest 재생성
 ```
+
+또는 CLI 직접:
+
+```bash
+npx satgat help           # 도움말
+npx satgat dev            # next dev wrap
+npx satgat init <dir>     # 새 워크스페이스
+npx satgat skill <dir>    # AI agent용 skill 폴더 내보내기
+```
+
+---
 
 ## 프로젝트 구조
 
 ```text
-app/                    Next.js 라우트와 API 핸들러
-public/satgat/          정적 specimen 페이지와 디자인 시스템 자산
-public/satgat/assets/examples/ko/
-                        한국어 데모팩 HTML/PDF/PNG/manifest
-src/components/         문서/템플릿 React 컴포넌트
-src/lib/design-system/  한지, 먹색, 단청, 취색, 금박 토큰
-src/lib/templates/      문서 템플릿 정의와 registry
-src/lib/engine/         렌더러와 검증 계층
-src/lib/generation/     AI 문서 생성 로직
-references/             한국어 문서 작성과 디자인 브리프
-docs/                   아키텍처 문서
+app/                          Next.js App Router · API · 페이지
+bin/satgat.mjs                npx CLI 엔트리
+src/components/               13종 문서 React 렌더러
+src/lib/design-system/        한지·먹·단청·취색·금박 토큰 (constraint.ts)
+src/lib/templates/            슬롯·section·registry
+src/lib/engine/               렌더 + 검증 + 슬롯 정규화
+src/lib/generation/           AI 프롬프트 → 슬롯 데이터
+src/lib/bridge/prompt-builder.ts  type-aware 생성 프롬프트
+scripts/verify-template-catalog.mjs   계약 검증
+scripts/template-preview-fixtures.mjs 13종 미리보기 fixture
+public/satgat/                정적 specimen + 한국어 데모팩
+skills/satgat/SKILL.md        AI agent용 brief
+references/                   디자인·글쓰기·이력서·안티패턴 가이드
 ```
 
-## 공개 저장소
+---
 
-이 프로젝트의 단독 public origin은 아래 주소를 기준으로 합니다.
+## 동작 흐름
 
-```text
-https://github.com/unclejobs-ai/satgat
-```
+1. **brief** — 자연어로 목적·독자·핵심 사실 적기.
+2. **slot fill** — AI가 type-aware JSON 스켈레톤을 채움. 모든 list/table/image 슬롯은 구조화 데이터로.
+3. **render** — satgat 렌더러가 백자지 캔버스 위에 명조 위계로 옮겨 적음.
+4. **export** — 브라우저 인쇄 → PDF, PNG 미리보기, HTML 그대로 저장 가능.
 
-AI/에이전트가 프로젝트를 빠르게 읽을 수 있도록 [llms.txt](llms.txt)에 목적, 핵심 경로, 데모팩, 명령어를 요약해 두었습니다.
+---
+
+## 디자인 8조
+
+1. 백자지 `#F7F7F2`. 양피지 누런 크림 금지.
+2. 단청 `#9B1B1B`. 한 페이지의 5% 이내.
+3. 모든 회색은 회녹빛. 푸른 회색 금지.
+4. 제목은 명조(600-700), 본문은 바탕(400). 위계는 크기로.
+5. 한글 본문 행간 1.7–1.8.
+6. 태그·배지는 solid hex. rgba 금지.
+7. 여백은 디자인. xl/2xl 간격 두려워하지 말 것.
+8. 합성 볼드 금지. 폰트 정의 weight만.
+
+전문: `skills/satgat/SKILL.md`, `references/design.ko.md`.
+
+---
 
 ## 라이선스
 
-MIT © 2026 EungjePark
+MIT © 2026 [EungjePark](https://github.com/EungjePark).
+
+번들된 폰트는 각 폰트의 OFL · MIT 라이선스를 따릅니다. 상업 사용 가능.

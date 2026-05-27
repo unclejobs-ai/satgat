@@ -18,7 +18,6 @@ export interface BrandProfile {
   body?: string;
 }
 
-const BRAND_MD_PATH = '~/.config/satgat/brand.md';
 const STORAGE_KEY = 'satgat-brand-profile';
 
 /**

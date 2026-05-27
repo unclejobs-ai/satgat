@@ -1,27 +1,137 @@
 import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
-import type { SatgatTemplate, SatgatDocumentData } from '@/lib/templates/types';
+import type { SatgatTemplate, SatgatDocumentData, TemplateSlot } from '@/lib/templates/types';
 import type { BrandProfile } from '@/lib/design-system/brand-resolver';
 import { buildGenerationPrompt } from '@/lib/bridge/prompt-builder';
+import { validateDocumentData } from '@/lib/engine/validator';
+import { normalizeImageSlot } from '@/lib/engine/slot-image';
 
 /**
  * AI 응답에서 JSON 객체를 추출
  */
 function extractJsonObject(text: string): Record<string, unknown> {
-  // 1. 코드 블록 낶의 JSON 추출
-  const codeBlockMatch = text.match(/```(?:json)?\n([\s\S]*?)\n```/);
+  // 1. 코드 블록 안의 JSON 추출
+  const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
   if (codeBlockMatch) {
     return JSON.parse(codeBlockMatch[1]);
   }
 
-  // 2. 중괄호로 감싸진 첫 번째 JSON 객체 추출
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (jsonMatch) {
-    return JSON.parse(jsonMatch[0]);
+  // 2. 텍스트 안의 첫 JSON object를 bracket depth로 추출
+  const start = text.indexOf('{');
+  if (start >= 0) {
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let index = start; index < text.length; index += 1) {
+      const char = text[index];
+
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (char === '\\') {
+        escaped = true;
+        continue;
+      }
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
+      if (inString) continue;
+
+      if (char === '{') depth += 1;
+      if (char === '}') depth -= 1;
+
+      if (depth === 0) {
+        return JSON.parse(text.slice(start, index + 1));
+      }
+    }
   }
 
   // 3. 전체 텍스트를 JSON으로 파싱 시도
   return JSON.parse(text);
+}
+
+function isEmptySlotValue(value: unknown): boolean {
+  if (value == null) return true;
+  if (typeof value === 'string') return value.trim().length === 0;
+  if (Array.isArray(value)) return value.length === 0;
+  if (typeof value === 'object') return Object.values(value).every(isEmptySlotValue);
+  return false;
+}
+
+function compactPromptSummary(userPrompt: string): string {
+  return userPrompt
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 120);
+}
+
+function fallbackForRequiredSlot(slot: TemplateSlot, userPrompt: string): unknown {
+  const summary = compactPromptSummary(userPrompt);
+  const textFallback = slot.placeholder || summary || slot.label;
+
+  switch (slot.type) {
+    case 'list':
+      return [
+        {
+          title: slot.label,
+          description: summary || slot.placeholder || slot.label,
+        },
+      ];
+    case 'image':
+      return undefined;
+    case 'image-list':
+      return [];
+    case 'table':
+      return {
+        headers: [slot.label],
+        rows: [[summary || slot.placeholder || slot.label]],
+      };
+    case 'text':
+    case 'textarea':
+    case 'markdown':
+    default:
+      return textFallback;
+  }
+}
+
+function stringifySlotValue(value: unknown): string {
+  if (value == null) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return '';
+  }
+}
+
+function parseMaybeJson(value: string): unknown {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
+}
+
+function normalizeListItem(value: unknown): unknown {
+  if (typeof value === 'string') {
+    const parsed = parseMaybeJson(value);
+    if (typeof parsed === 'number' || typeof parsed === 'boolean') return String(parsed);
+    return parsed;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return value;
+}
+
+function normalizeListArray(value: unknown[]): unknown[] {
+  return value.flatMap((item) => {
+    const normalized = normalizeListItem(item);
+    return Array.isArray(normalized) ? normalizeListArray(normalized) : [normalized];
+  });
 }
 
 /**
@@ -30,24 +140,42 @@ function extractJsonObject(text: string): Record<string, unknown> {
 function normalizeSlotValue(value: unknown, slotType: string): unknown {
   switch (slotType) {
     case 'list':
-      if (Array.isArray(value)) return value.map((v) => (typeof v === 'string' ? v : JSON.stringify(v)));
+      if (Array.isArray(value)) return normalizeListArray(value);
       if (typeof value === 'string') {
-        try {
-          const parsed = JSON.parse(value);
-          if (Array.isArray(parsed)) return parsed.map((v) => (typeof v === 'string' ? v : JSON.stringify(v)));
-        } catch {
-          return [value];
-        }
+        const parsed = parseMaybeJson(value);
+        if (Array.isArray(parsed)) return normalizeListArray(parsed);
+        if (parsed && typeof parsed === 'object') return [parsed];
+        if (typeof parsed === 'string' && parsed.trim()) return [parsed.trim()];
+        if (typeof parsed === 'number' || typeof parsed === 'boolean') return [String(parsed)];
       }
+      if (typeof value === 'number' || typeof value === 'boolean') return [String(value)];
+      if (value && typeof value === 'object') return [value];
       return [];
 
     case 'image':
-      if (typeof value === 'string') return { url: value, alt: '' };
-      if (value && typeof value === 'object') return value;
+      {
+        const image = normalizeImageSlot(value);
+        if (image) return { url: image.src, alt: image.alt };
+      }
       return undefined;
 
+    case 'image-list':
+      if (Array.isArray(value)) {
+        return value
+          .map((item) => normalizeSlotValue(item, 'image'))
+          .filter((item) => item !== undefined);
+      }
+      return [];
+
     case 'table':
-      if (value && typeof value === 'object' && 'headers' in (value as object) && 'rows' in (value as object)) {
+      if (
+        value &&
+        typeof value === 'object' &&
+        'headers' in (value as object) &&
+        'rows' in (value as object) &&
+        Array.isArray((value as { rows?: unknown }).rows) &&
+        (value as { rows: unknown[] }).rows.length > 0
+      ) {
         return value;
       }
       return undefined;
@@ -56,7 +184,7 @@ function normalizeSlotValue(value: unknown, slotType: string): unknown {
     case 'textarea':
     case 'markdown':
     default:
-      return typeof value === 'string' ? value : String(value);
+      return stringifySlotValue(value);
   }
 }
 
@@ -83,12 +211,30 @@ export async function generateDocumentData(
   const slots: Record<string, unknown> = {};
   for (const slot of template.slots) {
     if (slot.id in rawSlots) {
-      slots[slot.id] = normalizeSlotValue(rawSlots[slot.id], slot.type);
+      const normalized = normalizeSlotValue(rawSlots[slot.id], slot.type);
+      if (!isEmptySlotValue(normalized)) {
+        slots[slot.id] = normalized;
+        continue;
+      }
+    }
+
+    if (slot.required) {
+      const fallback = fallbackForRequiredSlot(slot, userPrompt);
+      if (!isEmptySlotValue(fallback)) {
+        slots[slot.id] = fallback;
+      }
     }
   }
 
-  return {
+  const data = {
     templateId: template.id,
     slots,
   };
+
+  const validation = validateDocumentData(template, data);
+  if (!validation.valid) {
+    throw new Error(`Generated document failed validation: ${validation.errors.join('; ')}`);
+  }
+
+  return data;
 }

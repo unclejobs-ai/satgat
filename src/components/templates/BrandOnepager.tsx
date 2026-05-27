@@ -2,45 +2,25 @@
 
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
-import { SatgatSeal } from '@/components/document/SatgatSeal';
-import { SatgatDivider } from '@/components/document/SatgatDivider';
+import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
   FONT_MYEONGJO,
   FONT_BATANG,
   FONT_DODUM,
   INK,
+  INK_LIGHT,
   INK_MUTED,
   DANCHEONG,
+  JADE,
+  GOLD,
   HAIRLINE,
-  LH_DISPLAY,
-  LH_BODY,
-  LH_CAPTION,
   INK_BLEED,
   INK_BLEED_STRONG,
-  SHADOW_PAPER,
 } from '@/lib/design-system/constraint';
 
 /**
- * 브랜드 원페이지 — "선언문"
- *
- * 페이지 구조:
- *  ┌─────────────────────────────┐
- *  │  label                      │  8%
- *  │  DISPLAY TITLE              │  18%
- *  │  tagline                    │  8%
- *  │  [도장]                     │  6%
- *  ├─────────────────────────────┤
- *  │  먹구름 구분선              │  4%
- *  │  본문 (핵심 가치)           │  24%
- *  │  먹구름 구분선              │  4%
- *  ├─────────────────────────────┤
- *  │  제품/서비스 (3열)          │  18%
- *  │  연락처                     │  10%
- *  └─────────────────────────────┘
- *
- * 철학: 한 장의 종이에 브랜드의 정수를 담는다.
- * 여백이 말한다. 글자는 적게, 여백은 많게.
+ * 브랜드 원페이지 - 브랜드 선언과 상품 단서가 한 장에서 읽히는 편집형 시트.
  */
 
 export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentData }) {
@@ -52,202 +32,327 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
   const website = String(s['website'] ?? '');
   const contact = String(s['contact'] ?? '');
 
-  const products = parseList(s['products']);
+  const products = normalizeListItems(s['products'], {
+    titleKeys: ['title', 'name', 'product_name', 'service'],
+    descriptionKeys: ['description', 'summary', 'overview', 'value'],
+  });
+
+  const monogram = brandName.trim().slice(0, 1) || '上';
+  const primaryProducts = products.slice(0, 3);
 
   return (
     <SatgatDocument format="a4">
-      {/* ─── 상단: 선언 ───────────────────────────────────────────────── */}
-      <header style={{ marginBottom: 48 }}>
-        <p
-          style={{
-            fontFamily: FONT_DODUM,
-            fontSize: 12,
-            letterSpacing: '0.08em',
-            color: INK_MUTED,
-            textTransform: 'uppercase',
-            marginBottom: 24,
-          }}
-        >
-          BRAND ONE-PAGER
-        </p>
-
-        <h1
-          style={{
-            fontFamily: FONT_MYEONGJO,
-            fontSize: 44,
-            fontWeight: 800,
-            lineHeight: LH_DISPLAY,
-            color: INK,
-            textShadow: INK_BLEED_STRONG,
-            margin: '0 0 16px 0',
-            wordBreak: 'keep-all',
-          }}
-        >
-          {brandName}
-        </h1>
-
-        {tagline && (
-          <p
-            style={{
-              fontFamily: FONT_BATANG,
-              fontSize: 18,
-              fontWeight: 400,
-              lineHeight: 1.5,
-              color: INK_MUTED,
-              margin: '0 0 24px 0',
-              wordBreak: 'keep-all',
-            }}
-          >
-            {tagline}
-          </p>
-        )}
-
-        <SatgatSeal shape="circle" variant="dancheong" size={48}>
-          上
-        </SatgatSeal>
-      </header>
-
-      {/* ─── 중간: 핵심 가치 ───────────────────────────────────────────── */}
-      <SatgatDivider variant="ink" weight="thin" inkWash />
-
-      <section style={{ margin: '36px 0' }}>
-        <p
-          style={{
-            fontFamily: FONT_BATANG,
-            fontSize: 16,
-            lineHeight: LH_BODY,
-            color: INK,
-            textShadow: INK_BLEED,
-            margin: 0,
-            wordBreak: 'keep-all',
-            textAlign: 'justify',
-          }}
-        >
-          {description}
-        </p>
-      </section>
-
-      <SatgatDivider variant="ink" weight="thin" inkWash />
-
-      {/* ─── 하단: 제품/서비스 ─────────────────────────────────────────── */}
-      {products.length > 0 && (
-        <section style={{ marginTop: 36 }}>
-          <h2
-            style={{
-              fontFamily: FONT_MYEONGJO,
-              fontSize: 20,
-              fontWeight: 700,
-              lineHeight: 1.3,
-              color: INK,
-              textShadow: INK_BLEED,
-              margin: '0 0 24px 0',
-              wordBreak: 'keep-all',
-            }}
-          >
-            제품과 서비스
-          </h2>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 24,
-            }}
-          >
-            {products.slice(0, 3).map((item, i) => (
-              <div
-                key={i}
-                style={{
-                  padding: '20px 0',
-                  borderTop: `2px solid ${DANCHEONG}`,
-                }}
-              >
-                <h3
-                  style={{
-                    fontFamily: FONT_MYEONGJO,
-                    fontSize: 16,
-                    fontWeight: 700,
-                    lineHeight: 1.4,
-                    color: INK,
-                    margin: '0 0 8px 0',
-                    wordBreak: 'keep-all',
-                  }}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: FONT_BATANG,
-                    fontSize: 14,
-                    lineHeight: 1.65,
-                    color: INK_MUTED,
-                    margin: 0,
-                    wordBreak: 'keep-all',
-                  }}
-                >
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ─── 푸터: 연락처 ──────────────────────────────────────────────── */}
-      <footer
+      <section
+        className="brand-onepager-sheet"
         style={{
-          marginTop: 48,
-          paddingTop: 24,
-          borderTop: `1px solid ${HAIRLINE}`,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
+          minHeight: 760,
+          display: 'grid',
+          gridTemplateColumns: '1.08fr 0.92fr',
+          gap: 44,
+          alignItems: 'stretch',
         }}
       >
-        <span
+        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          <p
+            style={{
+              fontFamily: FONT_DODUM,
+              fontSize: 11,
+              letterSpacing: '0.14em',
+              color: INK_MUTED,
+              textTransform: 'uppercase',
+              margin: '0 0 18px',
+            }}
+          >
+            BRAND ONE-PAGER
+          </p>
+
+          <h1
+            className="brand-onepager-title"
+            style={{
+              fontFamily: FONT_MYEONGJO,
+              fontSize: 56,
+              fontWeight: 800,
+              lineHeight: 1.08,
+              color: INK,
+              textShadow: INK_BLEED_STRONG,
+              margin: '0 0 14px',
+              wordBreak: 'keep-all',
+            }}
+          >
+            {brandName}
+          </h1>
+
+          {tagline && (
+            <p
+              style={{
+                maxWidth: 420,
+                fontFamily: FONT_BATANG,
+                fontSize: 20,
+                lineHeight: 1.5,
+                color: INK_LIGHT,
+                textShadow: INK_BLEED,
+                margin: '0 0 32px',
+                wordBreak: 'keep-all',
+              }}
+            >
+              {tagline}
+            </p>
+          )}
+
+          <div style={{ width: 78, height: 3, background: DANCHEONG, marginBottom: 44 }} />
+
+          {description && (
+            <section
+              style={{
+                marginTop: 'auto',
+                paddingTop: 30,
+                borderTop: `1px solid ${HAIRLINE}`,
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: FONT_DODUM,
+                  fontSize: 11,
+                  letterSpacing: '0.12em',
+                  color: DANCHEONG,
+                  margin: '0 0 10px',
+                }}
+              >
+                ESSENCE
+              </p>
+              <p
+                style={{
+                  fontFamily: FONT_BATANG,
+                  fontSize: 17,
+                  lineHeight: 1.82,
+                  color: INK,
+                  textShadow: INK_BLEED,
+                  margin: 0,
+                  wordBreak: 'keep-all',
+                }}
+              >
+                {description}
+              </p>
+            </section>
+          )}
+        </div>
+
+        <aside
+          className="brand-onepager-aside"
           style={{
-            fontFamily: FONT_DODUM,
-            fontSize: 12,
-            letterSpacing: '0.04em',
-            color: INK_MUTED,
+            borderLeft: `1px solid ${HAIRLINE}`,
+            paddingLeft: 30,
+            display: 'flex',
+            flexDirection: 'column',
+            minWidth: 0,
           }}
         >
-          {website}
-        </span>
-        <span
-          style={{
-            fontFamily: FONT_DODUM,
-            fontSize: 12,
-            letterSpacing: '0.04em',
-            color: INK_MUTED,
-          }}
-        >
-          {contact}
-        </span>
-      </footer>
+          <div
+            aria-hidden="true"
+            style={{
+              alignSelf: 'flex-end',
+              width: 78,
+              height: 78,
+              border: `1px solid ${GOLD}`,
+              display: 'grid',
+              placeItems: 'center',
+              fontFamily: FONT_MYEONGJO,
+              fontSize: 38,
+              fontWeight: 800,
+              lineHeight: 1,
+              color: INK,
+              textShadow: INK_BLEED,
+              marginBottom: 44,
+            }}
+          >
+            {monogram}
+          </div>
+
+          {primaryProducts.length > 0 && (
+            <section>
+              <h2
+                style={{
+                  fontFamily: FONT_MYEONGJO,
+                  fontSize: 20,
+                  fontWeight: 700,
+                  lineHeight: 1.35,
+                  color: INK,
+                  textShadow: INK_BLEED,
+                  margin: '0 0 18px',
+                  wordBreak: 'keep-all',
+                }}
+              >
+                제품과 서비스
+              </h2>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {primaryProducts.map((item, index) => (
+                  <article
+                    key={`${item.title}-${index}`}
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '34px 1fr',
+                      gap: 12,
+                      padding: '16px 0',
+                      borderTop: `1px solid ${index === 0 ? INK : HAIRLINE}`,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: FONT_DODUM,
+                        fontSize: 11,
+                        letterSpacing: '0.08em',
+                        color: DANCHEONG,
+                      }}
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <div>
+                      <h3
+                        style={{
+                          fontFamily: FONT_MYEONGJO,
+                          fontSize: 16,
+                          fontWeight: 700,
+                          lineHeight: 1.35,
+                          color: INK,
+                          margin: '0 0 5px',
+                          wordBreak: 'keep-all',
+                        }}
+                      >
+                        {item.title}
+                      </h3>
+                      <p
+                        style={{
+                          fontFamily: FONT_BATANG,
+                          fontSize: 13,
+                          lineHeight: 1.62,
+                          color: INK_MUTED,
+                          margin: 0,
+                          wordBreak: 'keep-all',
+                        }}
+                      >
+                        {item.description}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section
+            style={{
+              marginTop: 'auto',
+              paddingTop: 22,
+              borderTop: `1px solid ${HAIRLINE}`,
+            }}
+          >
+            <p
+              style={{
+                fontFamily: FONT_DODUM,
+                fontSize: 10,
+                letterSpacing: '0.14em',
+                color: JADE,
+                margin: '0 0 10px',
+              }}
+            >
+              CONNECT
+            </p>
+            <dl style={{ margin: 0 }}>
+              {website && (
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '70px 1fr',
+                    gap: 12,
+                    padding: '8px 0',
+                  }}
+                >
+                  <dt
+                    style={{
+                      fontFamily: FONT_DODUM,
+                      fontSize: 10,
+                      letterSpacing: '0.08em',
+                      color: INK_MUTED,
+                    }}
+                  >
+                    WEB
+                  </dt>
+                  <dd
+                    style={{
+                      fontFamily: FONT_DODUM,
+                      fontSize: 12,
+                      lineHeight: 1.5,
+                      color: INK_LIGHT,
+                      margin: 0,
+                      overflowWrap: 'anywhere',
+                    }}
+                  >
+                    {website}
+                  </dd>
+                </div>
+              )}
+              {contact && (
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '70px 1fr',
+                    gap: 12,
+                    padding: '8px 0',
+                    borderTop: website ? `1px solid ${HAIRLINE}` : undefined,
+                  }}
+                >
+                  <dt
+                    style={{
+                      fontFamily: FONT_DODUM,
+                      fontSize: 10,
+                      letterSpacing: '0.08em',
+                      color: INK_MUTED,
+                    }}
+                  >
+                    CONTACT
+                  </dt>
+                  <dd
+                    style={{
+                      fontFamily: FONT_DODUM,
+                      fontSize: 12,
+                      lineHeight: 1.5,
+                      color: INK_LIGHT,
+                      margin: 0,
+                      overflowWrap: 'anywhere',
+                    }}
+                  >
+                    {contact}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </section>
+        </aside>
+      </section>
+
+      <style jsx global>{`
+        @media (max-width: 760px) {
+          .brand-onepager-sheet {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 30px !important;
+            min-height: 0 !important;
+          }
+
+          .brand-onepager-title {
+            font-size: 40px !important;
+            line-height: 1.12 !important;
+          }
+
+          .brand-onepager-aside {
+            border-left: 0 !important;
+            border-top: 1px solid ${HAIRLINE} !important;
+            padding-left: 0 !important;
+            padding-top: 24px !important;
+          }
+        }
+      `}</style>
     </SatgatDocument>
   );
-}
-
-function parseList(raw: unknown): Array<{ title: string; description: string }> {
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .map((item) => {
-      if (typeof item === 'string') {
-        try {
-          const parsed = JSON.parse(item);
-          return { title: String(parsed.title ?? ''), description: String(parsed.description ?? '') };
-        } catch {
-          return { title: item, description: '' };
-        }
-      }
-      if (item && typeof item === 'object') {
-        return {
-          title: String((item as Record<string, unknown>).title ?? ''),
-          description: String((item as Record<string, unknown>).description ?? ''),
-        };
-      }
-      return { title: '', description: '' };
-    })
-    .filter((i) => i.title);
 }

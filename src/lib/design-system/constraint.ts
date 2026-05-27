@@ -120,8 +120,10 @@ export const INK_BLEED = '0 0 0.3px rgba(28,28,28,0.12), 0 0 0.6px rgba(28,28,28
 export const INK_BLEED_STRONG = '0 0 0.5px rgba(28,28,28,0.18), 0 0 1px rgba(28,28,28,0.09)';
 
 // ─── TEXTURE ────────────────────────────────────────────────────────────────
+// 종이결: 거의 안 보이는 미세 노이즈. 한지 흉내가 아닌 인쇄물의 톤 정돈.
 export const TEXTURE_PAPER_NOISE =
-  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E\")";
+  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.018'/%3E%3C/svg%3E\")";
 
+// 캔버스 분위기: 따뜻한 누런/녹색 얼룩 제거. 종이 가장자리만 살짝 가라앉히는 중성 vignette.
 export const TEXTURE_CANVAS_GRADIENT =
-  'radial-gradient(ellipse at 20% 30%, rgba(184,149,79,0.03) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(46,107,94,0.02) 0%, transparent 50%)';
+  'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.55) 0%, transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(28,25,22,0.03) 0%, transparent 55%)';

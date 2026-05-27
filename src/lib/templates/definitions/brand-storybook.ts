@@ -3,7 +3,7 @@ import type { SatgatTemplate } from '../types';
 export const brandStorybook: SatgatTemplate = {
   id: 'brand-storybook',
   name: '브랜드 스토리북',
-  description: '브랜드 난러티브 · 비주얼 · 톤앤매너. A4 세로 4-8p',
+  description: '브랜드 내러티브 · 비주얼 · 톤앤매너. A4 세로 4-8p',
   format: 'a4',
   slots: [
     { id: 'brand_name', type: 'text', required: true, label: '브랜드명' },

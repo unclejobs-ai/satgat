@@ -3,7 +3,6 @@
 import React from 'react';
 import {
   CANVAS,
-  CANVAS_DARK,
   TEXTURE_CANVAS_GRADIENT,
   TEXTURE_PAPER_NOISE,
   SHADOW_BOOK,
@@ -101,9 +100,9 @@ export function SatgatDocument({
           }
 
           .satgat-document {
-            position: absolute;
-            left: 0;
-            top: 0;
+            position: relative;
+            left: auto;
+            top: auto;
             width: 100% !important;
             min-height: 100vh !important;
             margin: 0 !important;

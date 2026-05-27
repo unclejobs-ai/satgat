@@ -33,13 +33,14 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
   const email = String(s['email'] ?? '');
   const phone = String(s['phone'] ?? '');
   const website = String(s['website'] ?? '');
+  const address = String(s['address'] ?? '');
 
   return (
     <div
       className="satgat-card-face"
       style={{
-        width: '90mm',
-        height: '55mm',
+        width: `${90 * scale}mm`,
+        height: `${55 * scale}mm`,
         background: '#FFFFFB',
         border: `0.4pt solid ${HAIRLINE}`,
         padding: `${5 * scale}mm ${6 * scale}mm`,
@@ -127,6 +128,20 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
             {website}
           </span>
         )}
+        {address && (
+          <span
+            style={{
+              fontFamily: FONT_DODUM,
+              fontSize: `${1.65 * scale}mm`,
+              lineHeight: 1.35,
+              color: INK_MUTED,
+              letterSpacing: '0.02em',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {address}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -139,14 +154,23 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
       <div className="card-preview-screen">
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '30mm' }}>
           <div
+            className="card-preview-large"
             style={{
-              transform: 'scale(2)',
-              transformOrigin: 'center top',
               boxShadow: '0 8pt 24pt rgba(28,25,22,0.08)',
               borderRadius: 4,
             }}
           >
-            <CardFace data={data} scale={1} />
+            <CardFace data={data} scale={1.58} />
+          </div>
+          <div
+            className="card-preview-compact"
+            style={{
+              display: 'none',
+              boxShadow: '0 6pt 18pt rgba(28,25,22,0.08)',
+              borderRadius: 4,
+            }}
+          >
+            <CardFace data={data} scale={0.78} />
           </div>
         </div>
 
@@ -161,7 +185,7 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
             textTransform: 'uppercase',
           }}
         >
-          90 × 55 mm · 인쇄 시 A4 한 장에 8 매 자동 배치 · 절취선 표시
+          90 × 55 mm · 인쇄 시 A4 한 장에 8매 자동 배치 · 절취선 표시
         </p>
       </div>
 
@@ -196,6 +220,26 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
         @media screen {
           .card-print-grid { display: none !important; }
           .card-preview-screen { display: block; }
+        }
+        @media screen and (max-width: 760px) {
+          .card-preview-screen {
+            overflow: hidden;
+          }
+          .card-preview-screen > div {
+            padding-top: 10mm !important;
+          }
+          .card-preview-large {
+            display: none !important;
+          }
+          .card-preview-compact {
+            display: block !important;
+          }
+          .card-preview-screen p {
+            margin-top: 24mm !important;
+            font-size: 8px !important;
+            line-height: 1.6 !important;
+            letter-spacing: 0.08em !important;
+          }
         }
         @media print {
           .card-preview-screen { display: none !important; }

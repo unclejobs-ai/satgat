@@ -45,26 +45,26 @@ html[lang='ko'] {
 
   /* ── 색동(色동) 오방색 — 한국 전통 무지개 ───────────────────────────── */
   --saekdong-blue: #2d4e7a;    /* 청(靑) — 색동 첫 줄 */
-  --saekdong-red: #b91c5c;     /* 적(赤) — 무궁화 단심 */
+  --saekdong-red: #9B1B1B;     /* 적(赤) — 단청홍 */
   --saekdong-yellow: #d4a737;  /* 황(黃) — 색동 셋째 줄 */
   --saekdong-green: #2e6b5e;   /* 녹(綠) — 청죽 */
   --saekdong-black: #1c1916;   /* 흑(黑) — 먹 */
 
   /* ═══════════════════════════════════════════════════════════════════
-   *  무궁화(無窮花) — 메인 브랜드 색
-   *  한국 국화(國花). 단심(丹心) 진한 자주가 페이지의 시선을 모은다.
-   *  단청 적색보다 분홍이 살아 있어, 한국 정체성을 더 직접 환기.
+   *  단청(丹靑) — 메인 브랜드 색
+   *  v12: 핫핑크 무궁화(#b91c5c) 폐기. constraint DANCHEONG #9B1B1B로 통일.
+   *  한 페이지 안에서 chromatic accent는 단청 하나로 절제.
    * ═══════════════════════════════════════════════════════════════════ */
-  --brand: #b91c5c;            /* 무궁화 단심(丹心) — 메인 강조 */
-  --brand-light: #d03f7a;      /* hover · 다크 위 링크 */
-  --brand-deep: #8e1242;       /* 강조 진하기 — h2 borderbar 등 */
-  --brand-tint: #f6d5de;       /* 무궁화 꽃잎 — tag 배경 light */
+  --brand: #9B1B1B;            /* 단청홍 — 메인 강조 */
+  --brand-light: #B92D2D;      /* hover · 다크 위 링크 */
+  --brand-deep: #7A1313;       /* 강조 진하기 — h2 borderbar 등 */
+  --brand-tint: #F3DCDC;       /* 옅은 단청 — tag 배경 light */
 
-  --mugunghwa: #b91c5c;        /* alias */
-  --mugunghwa-petal: #f6d5de;  /* 꽃잎 색 — 가장 옅은 tint */
-  --mugunghwa-pale: #fae5ea;   /* 가장자리 흰빛 */
-  --mugunghwa-mid: #e889a4;    /* 중간 분홍 */
-  --mugunghwa-deep: #8e1242;   /* 단심 가장 진하기 */
+  --mugunghwa: #9B1B1B;        /* alias (legacy 호환) */
+  --mugunghwa-petal: #F3DCDC;
+  --mugunghwa-pale: #F8EAEA;
+  --mugunghwa-mid: #C97474;
+  --mugunghwa-deep: #7A1313;
 
   /* ── 단청(丹靑) — 조선왕실 적색, 보조 액센트로 보존 ─────────────────── */
   --dancheong: #9b1b1b;        /* 단청 — 사군자 매(梅)·인장·전통 표지 */
@@ -108,7 +108,7 @@ html[lang='ko'] {
    * ═══════════════════════════════════════════════════════════════════ */
   --obangsaek-blue: #2d4e7a;   /* 동방(東) 청(靑) */
   --obangsaek-white: #f7f7f2;  /* 서방(西) 백(白) — 백자지 */
-  --obangsaek-red: #b91c5c;    /* 남방(南) 적(赤) — 무궁화 단심 */
+  --obangsaek-red: #9B1B1B;    /* 남방(南) 적(赤) — 단청홍 */
   --obangsaek-black: #1c1916;  /* 북방(北) 흑(黑) — 먹 */
   --obangsaek-yellow: #b8954f; /* 중앙(中) 황(黃) — 금박 */
 
@@ -172,11 +172,24 @@ html[lang='ko'] {
  *   ⑦ 도자기 grain — 입자감
  * ═══════════════════════════════════════════════════════════════════════ */
 html[lang='ko'] body {
-  /* 진짜 한지 — 사진 reference 기반 닥섬유 strokes.
-   * only-flower.tistory.com/82 백한지 close-up 참조.
-   * 30+ scattered 긴 fiber lines + 작은 spots + 안개띠 grain.
-   * 종이 자체로 보이도록 fiber visibility 우선.
+  /* 백자지 v12 — 한지 흉내 폐기. 모던 인쇄물 톤으로 정돈.
+   * 누런 안개띠/촘촘한 닥섬유 strokes 제거.
+   * 미세 grain 하나 + 옅은 top/bottom vignette만 남긴다.
    */
+  background-color: var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.55) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(28,25,22,0.04) 0%, transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23paperGrain)' opacity='0.02'/%3E%3C/svg%3E");
+  background-size:
+    100% 100%,
+    100% 100%,
+    320px 320px;
+  background-attachment: fixed, fixed, fixed;
+  background-repeat: no-repeat, no-repeat, repeat;
+}
+
+html[lang='ko'] body[data-satgat-legacy] {
   background-color: var(--parchment);
   background-image:
     /* ① 닥섬유 stroke 큰 결 — 30 strokes per 720px tile, 길게 흩어진 */
@@ -476,6 +489,91 @@ html[lang='ko'] .hero-tokens span {
 
 html[lang='ko'] .hero-tokens b {
   margin-right: 6pt;
+}
+
+/* 첫 진입점 CTA — specimen이 아니라 실제 생성기로 자연스럽게 이어지게 한다. */
+html[lang='ko'] .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10pt;
+  align-items: center;
+  margin-top: 22pt;
+}
+
+html[lang='ko'] .hero-cta {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  border-radius: 5pt;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1),
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+html[lang='ko'] .hero-cta-primary {
+  color: var(--parchment);
+  background: var(--brand);
+  border: 1px solid var(--brand);
+  box-shadow:
+    0 8pt 22pt rgba(185, 28, 92, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+html[lang='ko'] .hero-cta-secondary {
+  color: var(--near-black);
+  background: rgba(255, 255, 251, 0.62);
+  border: 1px solid var(--border);
+}
+
+html[lang='ko'] .hero-cta:hover {
+  transform: translateY(-1pt);
+}
+
+html[lang='ko'] .hero-cta-primary:hover {
+  background: var(--brand-deep);
+  border-color: var(--brand-deep);
+  box-shadow:
+    0 11pt 28pt rgba(142, 18, 66, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+html[lang='ko'] .hero-cta-secondary:hover {
+  color: var(--brand);
+  border-color: var(--brand-tint);
+  box-shadow: 0 5pt 14pt rgba(28, 25, 22, 0.045);
+}
+
+html[lang='ko'] .hero-cta:active {
+  transform: translateY(0) scale(0.985);
+}
+
+html[lang='ko'] .hero-cta:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+@media (max-width: 540px) {
+  html[lang='ko'] .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 18pt;
+  }
+
+  html[lang='ko'] .hero-cta {
+    width: 100%;
+    min-height: 44px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

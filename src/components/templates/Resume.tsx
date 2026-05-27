@@ -3,6 +3,7 @@
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
 import { SatgatDivider } from '@/components/document/SatgatDivider';
+import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
   FONT_MYEONGJO,
@@ -11,8 +12,6 @@ import {
   INK,
   INK_LIGHT,
   INK_MUTED,
-  HAIRLINE,
-  DANCHEONG,
   INK_BLEED,
   INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
@@ -318,30 +317,8 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
 }
 
 function parseRecordList(raw: unknown): Array<{ title: string; description: string }> {
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .map((item) => {
-      if (typeof item === 'string') {
-        try {
-          const parsed = JSON.parse(item);
-          return {
-            title: String(parsed.title ?? parsed.company ?? parsed.school ?? ''),
-            description: String(parsed.description ?? parsed.role ?? parsed.degree ?? parsed.period ?? ''),
-          };
-        } catch {
-          return { title: item, description: '' };
-        }
-      }
-      if (item && typeof item === 'object') {
-        const obj = item as Record<string, unknown>;
-        return {
-          title: String(obj.title ?? obj.company ?? obj.school ?? ''),
-          description: String(
-            obj.description ?? obj.role ?? obj.degree ?? obj.period ?? ''
-          ),
-        };
-      }
-      return { title: '', description: '' };
-    })
-    .filter((i) => i.title);
+  return normalizeListItems(raw, {
+    titleKeys: ['title', 'company', 'school', 'name'],
+    descriptionKeys: ['description', 'role', 'degree', 'period', 'summary'],
+  });
 }

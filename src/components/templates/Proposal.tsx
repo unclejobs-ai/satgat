@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '../document/SatgatDocument';
-import { SatgatDivider } from '../document/SatgatDivider';
+import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
   FONT_MYEONGJO,
@@ -22,32 +22,6 @@ import {
  * 문제 · 해결안 · 메트릭 · 일정 · 비용 · 담당
  */
 
-interface MetricItem {
-  label: string;
-  value: string;
-}
-
-interface TeamItem {
-  name: string;
-  role?: string;
-}
-
-function parseList<T>(raw: unknown): T[] {
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .map((item) => {
-      if (typeof item === 'string') {
-        try {
-          return JSON.parse(item) as T;
-        } catch {
-          return null;
-        }
-      }
-      return item as T;
-    })
-    .filter(Boolean) as T[];
-}
-
 export default function ProposalRenderer({ data }: { data: SatgatDocumentData }) {
   const s = data.slots;
   const title = String(s['title'] ?? '제안서');
@@ -58,8 +32,14 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
   const solution = String(s['solution'] ?? '');
   const timeline = String(s['timeline'] ?? '');
   const cost = String(s['cost'] ?? '');
-  const metrics = parseList<MetricItem>(s['metrics']);
-  const team = parseList<TeamItem>(s['team']);
+  const metrics = normalizeListItems(s['metrics'], {
+    titleKeys: ['label', 'metric', 'title', 'name'],
+    descriptionKeys: ['value', 'description', 'summary'],
+  });
+  const team = normalizeListItems(s['team'], {
+    titleKeys: ['name', 'title'],
+    descriptionKeys: ['role', 'background', 'description'],
+  });
 
   return (
     <SatgatDocument format="a4">
@@ -171,7 +151,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
                     letterSpacing: '-0.015em',
                   }}
                 >
-                  {m.value}
+                  {m.description || m.title}
                 </p>
                 <p
                   style={{
@@ -182,7 +162,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
                     letterSpacing: '0.04em',
                   }}
                 >
-                  {m.label}
+                  {m.description ? m.title : '핵심 지표'}
                 </p>
               </div>
             ))}
@@ -225,11 +205,11 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
                 }}
               >
                 <p style={{ fontFamily: FONT_MYEONGJO, fontSize: 14, fontWeight: 800, color: INK, margin: '0 0 2px' }}>
-                  {p.name}
+                  {p.title}
                 </p>
-                {p.role && (
+                {p.description && (
                   <p style={{ fontFamily: FONT_DODUM, fontSize: 10.5, color: INK_MUTED, margin: 0, letterSpacing: '0.04em' }}>
-                    {p.role}
+                    {p.description}
                   </p>
                 )}
               </div>
