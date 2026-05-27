@@ -7,7 +7,7 @@
 좋은 콘텐츠는 좋은 종이를 만날 자격이 있습니다.
 자연어 한 문장이면, 한국 문서가 한 장의 인쇄물로 완성됩니다.
 
-[웹앱](https://satgat.fun) · [데모팩](public/satgat/assets/examples/ko/) · [skill 설치](#설치) · [라이브 미리보기](https://satgat.fun)
+[웹앱](https://satgat.vercel.app) · [데모팩](public/satgat/assets/examples/ko/) · [skill 설치](#설치) · [라이브 미리보기](https://satgat.vercel.app)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-9B1B1B.svg)](LICENSE)
 [![npm](https://img.shields.io/badge/npm-satgat-1C1916.svg)](https://www.npmjs.com/package/satgat)

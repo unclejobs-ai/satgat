@@ -1,15 +1,14 @@
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>달빛식품 회사 소개서 · satgat</title>
-  <meta name="generator" content="satgat">
+// satgat 데모팩 공용 스타일시트.
+// 백자지 캔버스 · 단청 단일 강조 · 명조 위계. SKILL.md 디자인 8조를 그대로 따른다.
+// 폰트는 시스템 의존을 버리고 Google Fonts로 로드해 어느 브라우저에서나 동일하게 렌더한다.
 
+export const FONT_LINKS = `
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-  <style>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">`;
+
+export function baseCss() {
+  return `
     @page { size: A4; margin: 0; }
     @page land { size: A4 landscape; margin: 0; }
     @page deck { size: 297mm 167mm; margin: 0; }
@@ -171,7 +170,14 @@
     .colophon { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-family: var(--sans); font-size: 11px; color: var(--stone); letter-spacing: .04em; }
     .colophon .mark { color: var(--dan); font-weight: 700; letter-spacing: .12em; }
 
-    
+    ${layoutCss()}
+    ${chromeCss()}
+  `;
+}
+
+// 레이아웃별 전용 규칙 (덱·명함·엽서·뉴스레터·포트폴리오·스토리북·제품·원페이지)
+function layoutCss() {
+  return `
     /* 카드 블록 (제안서·제품·가치) */
     .block-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
     .block-grid.two { grid-template-columns: 1fr 1fr; }
@@ -266,8 +272,12 @@
     .sb-figure span { font-family: var(--sans); font-size: 11px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
     .sb-chapter { margin-top: 26px; }
     .sb-chapter .cno { font-family: var(--latin); font-style: italic; font-size: 22px; color: var(--gold); }
-  
-    
+  `;
+}
+
+// 화면 부속물(프롬프트 패널·갤러리)·반응형·인쇄 규칙
+function chromeCss() {
+  return `
     .prompt-panel {
       width: 210mm; max-width: 92vw; margin: -14px auto 36px; padding: 15px 20px;
       border: 1px solid var(--line); border-left: 3px solid var(--dan); background: var(--ivory);
@@ -308,21 +318,5 @@
       .card-sheet { margin: 0; border: 0; box-shadow: none; break-after: page; }
       .prompt-panel, .gallery { display: none; }
     }
-  
-  </style>
-</head>
-<body class="">
-<main class="sheet"><span class="seal jade">社</span><p class="eyebrow">satgat specimen · 회사 소개서</p>
-    <h1>달빛식품</h1>
-    <p class="subtitle">오늘의 식탁에 오래된 조리법을 다시 올립니다.</p>
-    <div class="rule"></div>
-    <div class="two"><div><p class="lead">달빛식품은 지역 장인과 협업해 전통 장류와 제철 재료를 현대 가정식으로 다시 설계하는 푸드 브랜드입니다. 느린 발효의 깊이는 지키되, 보관과 조리는 오늘의 생활 리듬에 맞춥니다.</p>
-      <div class="quote"><p>빠르게 먹더라도, 제대로 만든 것을 먹어야 한다고 믿습니다.</p></div></div><div class="metrics "><div class="metric"><b>38곳</b><span>지역 생산자 네트워크</span></div><div class="metric"><b>91%</b><span>정기구독 재구매율</span></div><div class="metric"><b>14종</b><span>대표 간편식 라인업</span></div></div></div>
-    <div class="two even" style="margin-top:26px">
-      <section><h2 class="bar">연혁</h2><div class="history"><div class="history-row"><b>2024</b><span>전통 장류 기반 밀키트 4종 출시, 첫 6개월 매출 3.2억 원</span></div><div class="history-row"><b>2025</b><span>새벽배송 채널 입점, 월 반복 구매 1만 건 돌파</span></div><div class="history-row"><b>2026</b><span>지역 생산자 공동 브랜드 프로그램 시작, 라인업 14종 확대</span></div></div></section>
-      <section><h2 class="bar jade">팀</h2><div class="history"><div class="history-row"><b>·</b><span><b style="color:var(--ink)">대표 · 한지우</b><br><span class="muted" style="font-size:13px">전 CJ제일제당 신제품 개발 9년</span></span></div><div class="history-row"><b>·</b><span><b style="color:var(--ink)">R&amp;D · 서민경</b><br><span class="muted" style="font-size:13px">발효학 박사 · 장류 명인 사사</span></span></div><div class="history-row"><b>·</b><span><b style="color:var(--ink)">운영 · 오태식</b><br><span class="muted" style="font-size:13px">전 마켓컬리 SCM 리드</span></span></div></div></section>
-    </div>
-    <section class="section"><h2 class="bar gold">브랜드 기준</h2><div class="chips"><span class="chip ">지역성</span><span class="chip ">느린 발효</span><span class="chip ">짧은 조리</span><span class="chip ">정직한 원재료</span></div></section>
-    <div class="colophon"><span class="mark">satgat · 笠</span><span>백자지에 단청 한 점 · 회사 소개서</span></div></main><aside class="prompt-panel "><b>입력 예시</b> 프리미엄 전통 간편식 브랜드 달빛식품의 회사 소개서를 만들어줘. 투자자와 유통 MD가 함께 볼 문서라서 브랜드 철학과 숫자가 균형 있게 보여야 해.</aside>
-</body>
-</html>
+  `;
+}

@@ -2,9 +2,9 @@
 name: 박상세
 role: 삿갓 · Founder
 company: 삿갓스튜디오
-email: hello@satgat.fun
+email: hello@satgat.vercel.app
 phone: 010-0000-0000
-website: satgat.fun
+website: satgat.vercel.app
 city: 서울
 language: ko
 tone: 단정하고 따뜻한, 과장 없는 한국어
@@ -28,5 +28,5 @@ accent: dancheong   # dancheong | jade | gold
 ## 자주 쓰는 정보
 
 - 깃허브: github.com/sangse
-- 블로그: blog.satgat.fun
+- 블로그: blog.satgat.vercel.app
 - 링크드인: linkedin.com/in/sangse

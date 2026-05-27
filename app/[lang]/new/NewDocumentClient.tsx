@@ -49,7 +49,7 @@ function TemplatePreview({ id }: { id: string }) {
             <span className="tp-name">박상세</span>
             <span className="tp-role">대표 · Founder</span>
             <span className="tp-divider" />
-            <span className="tp-tiny">satgat.fun</span>
+            <span className="tp-tiny">satgat.vercel.app</span>
             <span className="tp-tiny">@sangse_pjs · 010-0000-0000</span>
           </span>
         </span>

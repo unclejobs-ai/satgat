@@ -4,7 +4,7 @@ satgat is a Korean AI document generator. Korean name 삿갓. Turns natural-lang
 
 Repository: https://github.com/unclejobs-ai/satgat
 License: MIT
-Live: https://satgat.fun
+Live: https://satgat.vercel.app
 
 Primary audience:
 - Korean users writing documents for hiring, proposals, company profiles, newsletters, invitations, portfolios, product brochures, brand pages, and investor decks.

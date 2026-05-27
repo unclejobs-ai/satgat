@@ -29,9 +29,9 @@ export const previewFixtures = {
     hanja_name: '朴詳細',
     title: '대표',
     company: '삿갓스튜디오',
-    email: 'hello@satgat.fun',
+    email: 'hello@satgat.vercel.app',
     phone: '010-0000-0000',
-    website: 'satgat.fun',
+    website: 'satgat.vercel.app',
     address: '서울 종로구 북촌로 12\n2층',
   },
   'brand-onepager': {
@@ -107,7 +107,7 @@ export const previewFixtures = {
     date_hanja: '丙午年 十月 十七日',
     venue: '서울 정동 예식당 · 은행나무홀',
     message: '귀한 걸음으로 축복해 주시면 그 마음 오래 간직하겠습니다.',
-    rsvp_url: 'https://satgat.fun/rsvp',
+    rsvp_url: 'https://satgat.vercel.app/rsvp',
   },
   'new-year-card': {
     occasion: '신년',

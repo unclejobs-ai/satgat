@@ -111,9 +111,9 @@ Latin 페어링:
 name: 박상세
 role: 삿갓 · Founder
 company: 삿갓스튜디오
-email: hello@satgat.fun
+email: hello@satgat.vercel.app
 phone: 010-0000-0000
-website: satgat.fun
+website: satgat.vercel.app
 city: 서울
 language: ko
 tone: 단정하고 따뜻한, 과장 없는 한국어
@@ -127,5 +127,5 @@ accent: dancheong
 - 글쓰기 톤: `references/writing.ko.md`
 - 이력서 작성: `references/resume-writing.ko.md`
 - 안티 패턴: `references/anti-patterns.ko.md`
-- 라이브 미리보기: https://satgat.fun
+- 라이브 미리보기: https://satgat.vercel.app
 - 소스: https://github.com/unclejobs-ai/satgat
