@@ -14,7 +14,7 @@ export function nl2br(value) {
   return escapeHtml(value).replaceAll("\n", "<br>");
 }
 
-export function page(title, body, bodyClass = "") {
+export function page(title, body) {
   return `<!doctype html>
 <html lang="ko">
 <head>
@@ -25,7 +25,7 @@ export function page(title, body, bodyClass = "") {
 ${FONT_LINKS}
   <style>${baseCss()}</style>
 </head>
-<body class="${bodyClass}">
+<body>
 ${body}
 </body>
 </html>`;

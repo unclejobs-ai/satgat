@@ -68,9 +68,12 @@ function product(ex) {
         .map(([k, v]) => `<tr><td>${e(k)}</td><td class="num">${e(v)}</td></tr>`)
         .join("")}</tbody></table></section>
       <section><h2 class="bar jade">이런 분께</h2>${chips(p.uses, "dan")}
-        <div class="gold-div"><i></i></div>
-        <p class="meta">상담·구매 — 온정 공식 스토어 / 전국 백화점 입점 문의 가능</p></section>
+        ${p.kit ? `<h2 class="bar" style="margin-top:22px">구성품</h2><table class="data"><tbody>${p.kit
+          .map((k) => `<tr><td>${e(k)}</td></tr>`)
+          .join("")}</tbody></table>` : ""}</section>
     </div>
+    <div class="gold-div"><i></i></div>
+    <p class="meta" style="text-align:center">상담·구매 — 온정 공식 스토어 · 전국 백화점 입점 문의 · A/S 1588-0000</p>
     ${colophon(ex.type)}</main>${promptPanel(ex)}`;
 }
 
@@ -243,8 +246,7 @@ const LAYOUTS = { resume, essay, product, profile, proposal, storybook, newslett
 export function renderExample(ex) {
   const fn = LAYOUTS[ex.layout];
   if (!fn) throw new Error(`Unknown layout: ${ex.layout}`);
-  const bodyClass = ex.form === "deck" ? "deck-doc" : "";
-  return page(ex.title, fn(ex), bodyClass);
+  return page(ex.title, fn(ex));
 }
 
 export function renderIndex(examples) {
@@ -253,7 +255,7 @@ export function renderIndex(examples) {
     `<main class="gallery">
       <p class="eyebrow">satgat korean demo pack · 13 specimens</p>
       <h1>한국어 한 문장이 한국형 문서로 바뀌는 장면</h1>
-      <p class="gallery-lead">각 예시는 자연어 brief, 구조화된 문서 내용, HTML 원본, 인쇄용 PDF, 미리보기 PNG를 한 묶음으로 제공합니다. 백자지 캔버스 위 단청 한 점, 명조 위계 — satgat 디자인 8조를 그대로 따른 13종 전수 데모팩입니다.</p>
+      <p class="gallery-lead">각 예시는 자연어 brief, 구조화된 문서 내용, 인쇄 가능한 HTML 원본, 미리보기 PNG를 한 묶음으로 제공합니다. 백자지 캔버스 위 단청 한 점, 명조 위계 — satgat 디자인 8조를 그대로 따른 13종 전수 데모팩입니다.</p>
       <section class="cards">
         ${examples
           .map(

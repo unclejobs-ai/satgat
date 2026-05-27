@@ -24,9 +24,7 @@
       --muted: #565b53;
       --stone: #73786f;
       --line: #d6d9cd;
-      --soft: #e7e9df;
       --dan: #9b1b1b;
-      --dan-deep: #7d1414;
       --jade: #2e6b5e;
       --gold: #b8954f;
       --serif: "Nanum Myeongjo", "Gowun Batang", "Noto Serif KR", "AppleMyungjo", serif;
@@ -60,7 +58,7 @@
       box-shadow: 0 1px 0 #fff inset, 0 24px 70px -28px rgba(28,25,22,.34);
       overflow: hidden;
     }
-    .sheet.land { width: 297mm; min-height: 210mm; padding: 20mm 22mm; }
+    .sheet.land { width: 297mm; min-height: 210mm; padding: 15mm 22mm; }
     .sheet > * { position: relative; z-index: 1; }
     /* 모서리 단청 침묵 표식 — 무거운 전면 테두리 대신 네 귀의 가는 직각선 */
     .sheet:before, .sheet:after {
@@ -104,7 +102,6 @@
 
     /* ---------- 디바이더 ---------- */
     .rule { width: 64px; height: 3px; background: var(--dan); margin: 24px 0; border-radius: 2px; }
-    .rule.center { margin-left: auto; margin-right: auto; }
     .gold-div {
       display: flex; align-items: center; gap: 12px; margin: 26px 0; color: var(--gold);
     }
@@ -123,10 +120,8 @@
     p { margin: 0 0 11px; color: var(--body); font-size: 15px; }
     .lead { font-size: 16px; color: #322e29; line-height: 1.72; }
     .muted { color: var(--muted); }
-    .hl { color: var(--dan); font-weight: 700; }
     .two { display: grid; grid-template-columns: 1.12fr .88fr; gap: 30px; align-items: start; }
     .two.even { grid-template-columns: 1fr 1fr; }
-    .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
     /* ---------- 지표 타일 ---------- */
     .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 22px 0; }
@@ -134,7 +129,6 @@
     .metric { background: var(--ivory); border: 1px solid var(--line); border-radius: 7px; padding: 14px 14px 13px; }
     .metric b { display: block; font-family: var(--serif); color: var(--dan); font-size: 25px; font-weight: 800; line-height: 1.05; letter-spacing: -.01em; }
     .metric span { display: block; font-family: var(--sans); color: var(--muted); font-size: 11.5px; margin-top: 5px; }
-    .metric.jade b { color: var(--jade); }
 
     /* ---------- 타임라인 / 연혁 ---------- */
     .timeline { display: grid; gap: 15px; }
@@ -174,7 +168,6 @@
     
     /* 카드 블록 (제안서·제품·가치) */
     .block-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
-    .block-grid.two { grid-template-columns: 1fr 1fr; }
     .block { background: var(--ivory); border: 1px solid var(--line); border-radius: 9px; padding: 18px; }
     .block .n { font-family: var(--sans); font-size: 11px; letter-spacing: .18em; color: var(--gold); }
     .block h3 { margin: 4px 0 8px; color: var(--ink); font-size: 16.5px; font-weight: 700; }
@@ -218,7 +211,7 @@
     .card-sheet:before { content: ""; position: absolute; inset: 6mm; border: 1px solid rgba(184,149,79,.34); pointer-events: none; }
     .card-sheet.dan:before { border-color: rgba(155,27,27,.28); }
     .card-sheet > * { position: relative; z-index: 1; }
-    .card-sheet .seal { right: 11mm; top: 11mm; width: 13mm; height: 13mm; font-size: 18px; }
+    .card-sheet .seal { position: absolute; right: 11mm; top: 11mm; width: 13mm; height: 13mm; font-size: 18px; }
     .card-title { font-family: var(--serif); font-size: 15px; letter-spacing: .5em; color: var(--stone); margin: 6mm 0 0; padding-left: .5em; }
     .card-names { font-family: var(--serif); font-size: 30px; font-weight: 800; letter-spacing: .14em; margin: 7mm 0 2mm; }
     .card-msg { font-size: 13.5px; line-height: 1.95; color: var(--body); margin: 7mm auto; max-width: 74mm; }
@@ -243,13 +236,13 @@
 
     /* 포트폴리오 (가로) */
     .pf-head { display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px; align-items: end; }
-    .works { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+    .works { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; margin-top: 12px; }
     .work { background: var(--ivory); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
-    .work .thumb { aspect-ratio: 4/3; background:
+    .work .thumb { aspect-ratio: 7/3; background:
         repeating-linear-gradient(135deg, rgba(46,107,94,.05) 0 8px, transparent 8px 18px), var(--paper-2);
       border-bottom: 1px solid var(--line); display: grid; place-items: center; }
     .work .thumb b { font-family: var(--serif); font-size: 26px; font-weight: 800; color: rgba(155,27,27,.5); }
-    .work .wb { padding: 13px 14px; }
+    .work .wb { padding: 9px 13px 10px; }
     .work .wb h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
     .work .wb p { font-family: var(--sans); font-size: 11.5px; color: var(--muted); margin: 0; line-height: 1.5; }
 
@@ -260,11 +253,11 @@
     .op-pillar p { font-size: 13.5px; line-height: 1.6; margin: 0; }
 
     /* 브랜드 스토리북 */
-    .sb-figure { aspect-ratio: 16/9; margin: 22px 0; background:
+    .sb-figure { aspect-ratio: 21/9; margin: 18px 0; background:
         repeating-linear-gradient(135deg, rgba(184,149,79,.06) 0 9px, transparent 9px 20px), var(--paper-2);
       border: 1px solid var(--gold); display: grid; place-items: center; }
     .sb-figure span { font-family: var(--sans); font-size: 11px; letter-spacing: .16em; color: var(--gold); text-transform: uppercase; }
-    .sb-chapter { margin-top: 26px; }
+    .sb-chapter { margin-top: 19px; }
     .sb-chapter .cno { font-family: var(--latin); font-style: italic; font-size: 22px; color: var(--gold); }
   
     
@@ -297,7 +290,7 @@
       .sheet, .sheet.land, .deck-page, .prompt-panel, .prompt-panel.land, .prompt-panel.deck { width: calc(100vw - 24px); }
       .sheet, .sheet.land { min-height: auto; padding: 30px; }
       .deck-page { height: auto; min-height: 56vw; padding: 30px; }
-      .two, .two.even, .three, .nl-cols, .block-grid, .block-grid.two, .deck-grid, .works, .op-grid, .pf-head { grid-template-columns: 1fr; }
+      .two, .two.even, .nl-cols, .block-grid, .deck-grid, .works, .op-grid, .pf-head { grid-template-columns: 1fr; }
       .cards { grid-template-columns: 1fr; }
     }
     @media print {
@@ -311,7 +304,7 @@
   
   </style>
 </head>
-<body class="">
+<body>
 <main class="sheet"><span class="seal dan">案</span><p class="eyebrow">satgat specimen · 제안서</p>
     <h1>지역 공예 브랜드 온라인 전환 제안</h1>
     <p class="subtitle">상세페이지 · 뉴스레터 · 명절 선물 기획을 하나의 판매 흐름으로 연결합니다.</p>

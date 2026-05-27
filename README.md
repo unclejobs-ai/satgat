@@ -4,8 +4,8 @@
 
 **한지 위에 먹글씨. AI가 옮겨 적는 한국형 문서 디자인 시스템.**
 
-좋은 콘텐츠는 좋은 종이를 만날 자격이 있습니다.
-자연어 한 문장이면, 한국 문서가 한 장의 인쇄물로 완성됩니다.
+양피지의 누런 따뜻함이 아니라, 백자지의 맑은 단정함.
+자연어 한 문장이면, 한국 문서 한 장이 인쇄물로 완성됩니다.
 
 [웹앱](https://satgat.vercel.app) · [데모팩](public/satgat/assets/examples/ko/) · [skill 설치](#설치) · [라이브 미리보기](https://satgat.vercel.app)
 
@@ -88,7 +88,7 @@ npm run dev
 
 ## 한글 무료 폰트 (OFL)
 
-satgat에 묶여 들어가는 한글 폰트. 모두 무료, 상업 사용 가능.
+satgat이 쓰는 한글 폰트. 데모 문서는 Google Fonts로 로드해 어느 브라우저에서나 동일하게 렌더됩니다. 모두 무료, 상업 사용 가능.
 
 | 폰트 | 역할 | 출처 |
 |---|---|---|
@@ -106,21 +106,29 @@ Latin 페어링: Cormorant Garamond italic, JetBrains Mono.
 
 ---
 
-## 데모팩
+## 데모팩 — 13종 전수 specimen
 
-자연어 입력 → satgat 렌더 결과 한 묶음. HTML · PDF · PNG 동시 제공.
+자연어 한 문장이 한국형 문서가 되는 13개 장면. 모두 같은 디자인 8조에서 나왔습니다. 각 예시는 인쇄용 HTML 원본과 미리보기 PNG로 제공됩니다.
 
-| 이력서 | 자기소개서 | 제안서 |
+<a href="public/satgat/assets/examples/ko/index.html"><img src="public/satgat/assets/readme/demo-gallery.png" alt="satgat 한국어 데모팩 13종 갤러리" width="92%"></a>
+
+| 문서 | 폼팩터 | 미리보기 |
 |---|---|---|
-| <img src="public/satgat/assets/examples/ko/resume-kim-sumin.png" width="240"> | <img src="public/satgat/assets/examples/ko/self-intro-yoon-hajin.png" width="240"> | <img src="public/satgat/assets/examples/ko/proposal-hanji-retail.png" width="240"> |
-| [HTML](public/satgat/assets/examples/ko/resume-kim-sumin.html) · [PDF](public/satgat/assets/examples/ko/resume-kim-sumin.pdf) | [HTML](public/satgat/assets/examples/ko/self-intro-yoon-hajin.html) · [PDF](public/satgat/assets/examples/ko/self-intro-yoon-hajin.pdf) | [HTML](public/satgat/assets/examples/ko/proposal-hanji-retail.html) · [PDF](public/satgat/assets/examples/ko/proposal-hanji-retail.pdf) |
+| **이력서** · 김수민 | A4 세로 | [열기](public/satgat/assets/examples/ko/resume-kim-sumin.html) · [PNG](public/satgat/assets/examples/ko/resume-kim-sumin.png) |
+| **자기소개서** · 윤하진 | A4 세로 · 4문항 | [열기](public/satgat/assets/examples/ko/self-intro-yoon-hajin.html) · [PNG](public/satgat/assets/examples/ko/self-intro-yoon-hajin.png) |
+| **명함** · 박상세 | 90×55mm 앞뒷면 | [열기](public/satgat/assets/examples/ko/business-card-parksangse.html) · [PNG](public/satgat/assets/examples/ko/business-card-parksangse.png) |
+| **브랜드 원페이지** · 백자상회 | A4 가로 | [열기](public/satgat/assets/examples/ko/one-pager-baekja.html) · [PNG](public/satgat/assets/examples/ko/one-pager-baekja.png) |
+| **제품 소개서** · 온정 | A4 세로 | [열기](public/satgat/assets/examples/ko/product-sheet-onjeong.html) · [PNG](public/satgat/assets/examples/ko/product-sheet-onjeong.png) |
+| **회사 소개서** · 달빛식품 | A4 세로 | [열기](public/satgat/assets/examples/ko/company-profile-dalbit.html) · [PNG](public/satgat/assets/examples/ko/company-profile-dalbit.png) |
+| **투자 IR 덱** · 마루AI | 16:9 · 6장 | [열기](public/satgat/assets/examples/ko/investor-deck-maruai.html) · [PNG](public/satgat/assets/examples/ko/investor-deck-maruai.png) |
+| **브랜드 스토리북** · 술도가 한울 | A4 세로 | [열기](public/satgat/assets/examples/ko/brand-storybook-sool.html) · [PNG](public/satgat/assets/examples/ko/brand-storybook-sool.png) |
+| **청첩장** · 지수와 민호 | 엽서 105×148mm | [열기](public/satgat/assets/examples/ko/invitation-jisoo-minho.html) · [PNG](public/satgat/assets/examples/ko/invitation-jisoo-minho.png) |
+| **연하장** · 박상세 가족 | 엽서 105×148mm | [열기](public/satgat/assets/examples/ko/newyear-card-park.html) · [PNG](public/satgat/assets/examples/ko/newyear-card-park.png) |
+| **제안서** · 한지 리테일 | A4 세로 | [열기](public/satgat/assets/examples/ko/proposal-hanji-retail.html) · [PNG](public/satgat/assets/examples/ko/proposal-hanji-retail.png) |
+| **뉴스레터** · 장소리 | A4 세로 | [열기](public/satgat/assets/examples/ko/newsletter-jangsori.html) · [PNG](public/satgat/assets/examples/ko/newsletter-jangsori.png) |
+| **포트폴리오** · 스튜디오결 | A4 가로 | [열기](public/satgat/assets/examples/ko/portfolio-studio-gyeol.html) · [PNG](public/satgat/assets/examples/ko/portfolio-studio-gyeol.png) |
 
-| 회사 소개서 | 투자 IR 덱 | 청첩장 |
-|---|---|---|
-| <img src="public/satgat/assets/examples/ko/company-profile-dalbit.png" width="240"> | <img src="public/satgat/assets/examples/ko/investor-deck-maruai.png" width="240"> | <img src="public/satgat/assets/examples/ko/invitation-jisoo-minho.png" width="240"> |
-| [HTML](public/satgat/assets/examples/ko/company-profile-dalbit.html) · [PDF](public/satgat/assets/examples/ko/company-profile-dalbit.pdf) | [HTML](public/satgat/assets/examples/ko/investor-deck-maruai.html) · [PDF](public/satgat/assets/examples/ko/investor-deck-maruai.pdf) | [HTML](public/satgat/assets/examples/ko/invitation-jisoo-minho.html) · [PDF](public/satgat/assets/examples/ko/invitation-jisoo-minho.pdf) |
-
-전체 갤러리: [한국어 데모팩](public/satgat/assets/examples/ko/index.html).
+전체 갤러리: [한국어 데모팩](public/satgat/assets/examples/ko/index.html) · 재생성 `npm run demo:ko`.
 
 ---
 
@@ -159,6 +167,7 @@ src/lib/generation/           AI 프롬프트 → 슬롯 데이터
 src/lib/bridge/prompt-builder.ts  type-aware 생성 프롬프트
 scripts/verify-template-catalog.mjs   계약 검증
 scripts/template-preview-fixtures.mjs 13종 미리보기 fixture
+scripts/generate-korean-demo-pack.mjs 데모팩 생성 (scripts/demo/* css·data·layouts)
 public/satgat/                정적 specimen + 한국어 데모팩
 skills/satgat/SKILL.md        AI agent용 brief
 references/                   디자인·글쓰기·이력서·안티패턴 가이드
