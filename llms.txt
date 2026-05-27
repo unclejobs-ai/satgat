@@ -2,7 +2,7 @@
 
 satgat is a Korean AI document generator. Korean name 삿갓. Turns natural-language briefs into structured Korean documents on baekjaji canvas with ink typography, single dancheong accent (≤ 5%/page), Korean serif hierarchy, and print/PDF-aware layouts. 13 document templates.
 
-Repository: https://github.com/EungjePark/satgat
+Repository: https://github.com/unclejobs-ai/satgat
 License: MIT
 Live: https://satgat.fun
 
@@ -13,7 +13,7 @@ Primary audience:
 Install (any AI agent):
 - npx satgat skill ~/.claude/skills/satgat   # AI agent skill
 - npx satgat init my-satgat                  # full Next.js workspace
-- git clone https://github.com/EungjePark/satgat && npm install
+- git clone https://github.com/unclejobs-ai/satgat && npm install
 
 Invoke via natural language:
 - "이력서 한 장 만들어 주세요. 7년차 프론트엔드, 카카오·무신사·29CM."
@@ -30,7 +30,7 @@ Important paths:
 - bin/satgat.mjs: npx CLI entry (init / skill / dev / build / start).
 - skills/satgat/SKILL.md: single-file design brief for AI agents.
 - README.md: project overview, install paths, demo gallery, design rules.
-- public/satgat/satgat-ko.html: static Korean landing/specimen page (kami-inspired editorial).
+- public/satgat/satgat-ko.html: static Korean landing/specimen page (hanji editorial).
 - public/satgat/assets/examples/ko/: Korean demo pack with HTML, PDF, PNG, manifest.
 - scripts/generate-korean-demo-pack.mjs: regenerates Korean demo HTML and manifest.
 - scripts/verify-template-catalog.mjs: contract verification (definitions × renderers × landing × fixtures).

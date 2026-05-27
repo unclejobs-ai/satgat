@@ -17,14 +17,14 @@
     "nextjs",
     "skill"
   ],
-  "author": "EungjePark",
+  "author": "unclejobs-ai",
   "repository": {
     "type": "git",
-    "url": "https://github.com/EungjePark/satgat.git"
+    "url": "https://github.com/unclejobs-ai/satgat.git"
   },
   "homepage": "https://satgat.fun",
   "bugs": {
-    "url": "https://github.com/EungjePark/satgat/issues"
+    "url": "https://github.com/unclejobs-ai/satgat/issues"
   },
   "bin": {
     "satgat": "./bin/satgat.mjs"

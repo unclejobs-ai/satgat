@@ -22,7 +22,7 @@ import { dirname, join, resolve, basename } from 'node:path';
 const __filename = fileURLToPath(import.meta.url);
 const ROOT = resolve(dirname(__filename), '..');
 
-const HELP = `\n  satgat — 한지 위에 먹글씨. AI가 옮겨 적는 한국형 문서 디자인 시스템.\n\n  사용:\n    npx satgat init <dir>     새 satgat 워크스페이스 만들기 (next 앱 + 13종 템플릿)\n    npx satgat skill <dir>    AI 에이전트용 satgat skill 폴더 내보내기\n    npx satgat dev            로컬 dev 서버 시작 (next dev)\n    npx satgat build          프로덕션 빌드 (next build)\n    npx satgat start          프로덕션 서버 (next start)\n    npx satgat help           이 도움말\n\n  Claude/Codex/Gemini 호출 예시:\n    "이력서 한 장 만들어 주세요. 7년차 프론트엔드, 카카오·무신사·29CM."\n    "신년 연하장 — 박상세 가족, 단정한 톤으로."\n    "스타트업 IR 덱 한 벌, 시드 단계, 단청 강조."\n\n  문서: https://github.com/EungjePark/satgat\n`;
+const HELP = `\n  satgat — 한지 위에 먹글씨. AI가 옮겨 적는 한국형 문서 디자인 시스템.\n\n  사용:\n    npx satgat init <dir>     새 satgat 워크스페이스 만들기 (next 앱 + 13종 템플릿)\n    npx satgat skill <dir>    AI 에이전트용 satgat skill 폴더 내보내기\n    npx satgat dev            로컬 dev 서버 시작 (next dev)\n    npx satgat build          프로덕션 빌드 (next build)\n    npx satgat start          프로덕션 서버 (next start)\n    npx satgat help           이 도움말\n\n  Claude/Codex/Gemini 호출 예시:\n    "이력서 한 장 만들어 주세요. 7년차 프론트엔드, 카카오·무신사·29CM."\n    "신년 연하장 — 박상세 가족, 단정한 톤으로."\n    "스타트업 IR 덱 한 벌, 시드 단계, 단청 강조."\n\n  문서: https://github.com/unclejobs-ai/satgat\n`;
 
 async function copyDir(src, dest) {
   await mkdir(dest, { recursive: true });
@@ -63,7 +63,7 @@ async function init(target) {
   }
   console.log(`satgat 워크스페이스를 ${dest}에 git clone 합니다...`);
   try {
-    await git(['clone', '--depth', '1', 'https://github.com/EungjePark/satgat.git', dest]);
+    await git(['clone', '--depth', '1', 'https://github.com/unclejobs-ai/satgat.git', dest]);
   } catch (err) {
     console.error('git clone 실패:', err.message);
     console.error('git 설치 + 네트워크 확인 후 다시 시도하세요.');

@@ -128,4 +128,4 @@ accent: dancheong
 - 이력서 작성: `references/resume-writing.ko.md`
 - 안티 패턴: `references/anti-patterns.ko.md`
 - 라이브 미리보기: https://satgat.fun
-- 소스: https://github.com/EungjePark/satgat
+- 소스: https://github.com/unclejobs-ai/satgat
