@@ -250,6 +250,9 @@ export function renderExample(ex) {
 }
 
 export function renderIndex(examples) {
+  // 갤러리는 /satgat/assets/examples/ko/ 로 서빙되지만 Vercel이 trailing slash를 벗겨
+  // 무슬래시 URL로 리다이렉트한다. 상대경로(./)는 한 단계 위로 풀려 404가 나므로 절대경로 고정.
+  const base = "/satgat/assets/examples/ko";
   return page(
     "satgat 한국어 데모팩",
     `<main class="gallery">
@@ -260,13 +263,13 @@ export function renderIndex(examples) {
         ${examples
           .map(
             (ex) => `<article class="card">
-          <a href="./${ex.id}.html"><img class="shot" src="./${ex.id}.png" alt="${e(ex.title)} 미리보기" loading="lazy"></a>
+          <a href="${base}/${ex.id}.html"><img class="shot" src="${base}/${ex.id}.png" alt="${e(ex.title)} 미리보기" loading="lazy"></a>
           <div class="card-body">
             <p class="ct">${e(ex.type)}</p>
             <h2>${e(ex.title)}</h2>
             <p class="cm">${e(ex.meta)}</p>
             <p class="cp">${e(ex.prompt)}</p>
-            <div class="links"><a href="./${ex.id}.html">문서 열기</a><a href="./${ex.id}.png">PNG</a><a href="./${ex.id}.html" title="브라우저 인쇄 → PDF">인쇄</a></div>
+            <div class="links"><a href="${base}/${ex.id}.html">문서 열기</a><a href="${base}/${ex.id}.png">PNG</a><a href="${base}/${ex.id}.html" title="브라우저 인쇄 → PDF">인쇄</a></div>
           </div>
         </article>`
           )
