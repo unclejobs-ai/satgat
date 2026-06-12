@@ -20,14 +20,14 @@
   "author": "unclejobs-ai",
   "repository": {
     "type": "git",
-    "url": "https://github.com/unclejobs-ai/satgat.git"
+    "url": "git+https://github.com/unclejobs-ai/satgat.git"
   },
   "homepage": "https://satgat.vercel.app",
   "bugs": {
     "url": "https://github.com/unclejobs-ai/satgat/issues"
   },
   "bin": {
-    "satgat": "./bin/satgat.mjs"
+    "satgat": "bin/satgat.mjs"
   },
   "files": [
     "bin",
@@ -48,7 +48,7 @@
     "start": "next start",
     "lint": "eslint"
   },
-  "dependencies": {
+  "devDependencies": {
     "@ai-sdk/google": "^3.0.74",
     "@types/js-yaml": "^4.0.9",
     "ai": "^6.0.183",
@@ -57,9 +57,7 @@
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "zod": "^4.4.3"
-  },
-  "devDependencies": {
+    "zod": "^4.4.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
