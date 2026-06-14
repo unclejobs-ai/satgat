@@ -1,7 +1,7 @@
 {
   "name": "satgat",
-  "version": "0.6.0",
-  "description": "satgat은 자연어를 한지 감성의 한국형 문서로 옮겨 적는 AI 문서 생성기입니다. 13종 한국 문서, 단청 단일 강조, 명조 위계.",
+  "version": "0.7.0",
+  "description": "satgat은 자연어를 한지 감성의 한국형 문서로 옮겨 적는 AI 문서 생성기입니다. 14종 한국 문서, 단청 단일 강조, 명조 위계, 서버 PDF 내려받기.",
   "private": false,
   "license": "MIT",
   "keywords": [
@@ -44,26 +44,31 @@
     "dev": "next dev",
     "demo:ko": "node scripts/generate-korean-demo-pack.mjs",
     "verify:templates": "node scripts/verify-template-catalog.mjs",
+    "test": "bun test",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "release": "node scripts/release.mjs",
+    "prepublishOnly": "node -e \"console.error('satgat: do not publish from the source tree (it would publish real deps). Run: npm run release'); process.exit(1)\""
   },
-  "devDependencies": {
+  "dependencies": {
     "@ai-sdk/google": "^3.0.74",
-    "@types/js-yaml": "^4.0.9",
     "ai": "^6.0.183",
-    "js-yaml": "^4.1.1",
     "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "zod": "^4.4.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sparticuz/chromium": "^149.0.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "puppeteer-core": "^25.1.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

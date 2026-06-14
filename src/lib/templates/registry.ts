@@ -12,9 +12,10 @@ import { brandStorybook } from './definitions/brand-storybook';
 import { companyProfile } from './definitions/company-profile';
 import { investorDeck } from './definitions/investor-deck';
 import { productBrochure } from './definitions/product-brochure';
+import { report } from './definitions/report';
 
 /**
- * 삿갓 — 한국 문서 13종 라인업
+ * 삿갓 — 한국 문서 14종 라인업
  * 순서: 개인 문서에서 브랜드/회사 문서, 인사 문서로.
  */
 const templates: Record<string, SatgatTemplate> = {
@@ -31,6 +32,7 @@ const templates: Record<string, SatgatTemplate> = {
   [newYearCard.id]: newYearCard,  // 賀
   [newsletter.id]: newsletter,    // 報
   [portfolio.id]: portfolio,      // 作
+  [report.id]: report,            // 報告
 };
 
 export function getTemplate(id: string): SatgatTemplate | undefined {
@@ -60,6 +62,7 @@ export const TEMPLATE_SEAL: Record<string, { glyph: string; variant: 'ink' | 'da
   proposal: { glyph: '案', variant: 'dancheong' },
   newsletter: { glyph: '報', variant: 'gold' },
   portfolio: { glyph: '作', variant: 'jade' },
+  report: { glyph: '報', variant: 'ink' },
 };
 
 /** 한 줄 시(詩) — 카드 부제로 사용 */
@@ -77,4 +80,5 @@ export const TEMPLATE_VOICE: Record<string, string> = {
   proposal: '사업의 길',
   newsletter: '정기 소식',
   portfolio: '솜씨를 펼치다',
+  report: '일의 기록',
 };

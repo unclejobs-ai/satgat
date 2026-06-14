@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # satgat — 한국형 문서 디자인 시스템
 
-자연어 한 문장이면 한국 문서 한 장이 됩니다. 13종 한국 문서. 단청 단일 강조 (≤ 5%/page), 명조 위계, 회녹 백자지 캔버스.
+자연어 한 문장이면 한국 문서 한 장이 됩니다. 14종 한국 문서. 단청 단일 강조 (≤ 5%/page), 명조 위계, 회녹 백자지 캔버스.
 
 ## 디자인 원칙 (skill brief)
 
@@ -24,12 +24,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## 디렉토리 핵심
 
 - `src/lib/design-system/constraint.ts` — 색·폰트·shadow 토큰
-- `src/lib/templates/` — 13종 정의 + registry
-- `src/components/templates/` — 13개 React 렌더러
+- `src/lib/templates/` — 14종 정의 + registry
+- `src/components/templates/` — 14개 React 렌더러
 - `src/lib/engine/` — 렌더 + 슬롯 정규화
 - `src/lib/generation/` — AI 슬롯 fill
 - `scripts/verify-template-catalog.mjs` — 계약 검증 (CI 게이트)
-- `scripts/template-preview-fixtures.mjs` — 13종 미리보기 fixture
+- `scripts/template-preview-fixtures.mjs` — 14종 미리보기 fixture
 - `skills/satgat/SKILL.md` — AI agent용 single-file brief
 - `references/` — 디자인·글쓰기·이력서·안티패턴 가이드
 - `bin/satgat.mjs` — npx CLI (init / skill / dev / build / start)

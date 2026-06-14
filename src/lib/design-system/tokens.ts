@@ -59,18 +59,18 @@ export const colors = {
 export const fonts = {
   /** 본문 한글 — 따뜻한 바탕 + 명조 fallback */
   serif:
-    "'Gowun Batang', 'Nanum Myeongjo', AppleMyungjo, 'Noto Serif KR', 'Source Han Serif K', 'Batang', Georgia, serif",
+    "'Gowun Batang', 'Nanum Myeongjo', 'Noto Serif KR', serif",
 
   /** Display/H1 — 장중한 명조 */
   serifDisplay:
-    "'Nanum Myeongjo', AppleMyungjo, 'Noto Serif KR', 'Source Han Serif K', Georgia, serif",
+    "'Nanum Myeongjo', 'Noto Serif KR', serif",
 
   /** Latin display italic — Cormorant Garamond */
   serifLatin: "'Cormorant Garamond', Georgia, 'Times New Roman', serif",
 
   /** UI/라벨/한자 인덱스 — 돋움 + Pretendard fallback */
   sans:
-    "'Gowun Dodum', 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif",
+    "'Gowun Dodum', 'Nanum Myeongjo', 'Noto Serif KR', sans-serif",
 
   /** 코드 블록 */
   mono: "'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', 'SF Mono', Consolas, Monaco, monospace",

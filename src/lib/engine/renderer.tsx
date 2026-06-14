@@ -5,7 +5,7 @@ import type { SatgatTemplate, SatgatDocumentData } from '@/lib/templates/types';
 
 // 템플릿별 고유 렌더러 (lazy import로 번들 사이즈 최적화)
 const renderers: Record<string, React.ComponentType<{ data: SatgatDocumentData }>> = {
-  // 한국 문서 13종
+  // 한국 문서 14종
   'resume': React.lazy(() => import('@/components/templates/Resume')),
   'self-intro': React.lazy(() => import('@/components/templates/SelfIntro')),
   'business-card': React.lazy(() => import('@/components/templates/BusinessCard')),
@@ -19,6 +19,7 @@ const renderers: Record<string, React.ComponentType<{ data: SatgatDocumentData }
   'proposal': React.lazy(() => import('@/components/templates/Proposal')),
   'newsletter': React.lazy(() => import('@/components/templates/Newsletter')),
   'portfolio': React.lazy(() => import('@/components/templates/Portfolio')),
+  'report': React.lazy(() => import('@/components/templates/Report')),
 };
 
 interface SatgatTemplateRendererProps {

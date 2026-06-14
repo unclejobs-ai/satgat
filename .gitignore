@@ -23,7 +23,12 @@
 # misc
 .DS_Store
 *.pem
-.omx/
+.codex-orchestration/
+
+# gjc runtime state (plans, ledgers, session state) — never published
+.gjc/
+# bun lockfile (package-lock.json is canonical; bun only runs tests)
+bun.lock
 public/satgat/assets/fonts/TsangerJinKai02-*.ttf
 src/app/favicon.ico
 public/file.svg
