@@ -54,7 +54,7 @@ export const PLACEHOLDER = '#969B91';
 // Latin: Cormorant Garamond (classic serif, 인쇄물 품격)
 export const FONT_MYEONGJO = "'Nanum Myeongjo', 'Noto Serif KR', 'Batang', Georgia, serif";
 export const FONT_BATANG = "'Gowun Batang', 'Nanum Myeongjo', 'Noto Serif KR', 'Batang', Georgia, serif";
-export const FONT_DODUM = "'Gowun Dodum', 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif";
+export const FONT_DODUM = "'Gowun Dodum', 'Nanum Myeongjo', 'Noto Serif KR', sans-serif";
 export const FONT_LATIN = "'Cormorant Garamond', 'Nanum Myeongjo', Georgia, 'Times New Roman', serif";
 
 // Weight 규칙:

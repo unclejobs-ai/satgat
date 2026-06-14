@@ -106,7 +106,7 @@ function TemplatePreview({ id }: { id: string }) {
             <span className="tp-deck-bar" />
             <span className="tp-metrics">
               <span><b>10분</b><i>생성</i></span>
-              <span><b>13종</b><i>문서</i></span>
+              <span><b>14종</b><i>문서</i></span>
               <span><b>20억</b><i>ASK</i></span>
             </span>
           </span>
@@ -157,11 +157,11 @@ function TemplatePreview({ id }: { id: string }) {
           <span className="tp-metrics">
             <span><b>+18%</b><i>전환율</i></span>
             <span><b>10분</b><i>생성</i></span>
-            <span><b>13종</b><i>양식</i></span>
+            <span><b>14종</b><i>양식</i></span>
           </span>
           <span className="tp-divider thin" />
           <span className="tp-tiny">― 평균 작성 2주 → 10분</span>
-          <span className="tp-tiny">― 한국 인쇄 13종 모두 지원</span>
+          <span className="tp-tiny">― 한국 인쇄 14종 모두 지원</span>
         </span>
       );
     case 'newsletter':
@@ -175,7 +175,7 @@ function TemplatePreview({ id }: { id: string }) {
           <span className="tp-line" />
           <span className="tp-line short" />
           <span className="tp-tiny">― 무궁화로 시선 모으기</span>
-          <span className="tp-tiny">― 13종 문서 확장</span>
+          <span className="tp-tiny">― 14종 문서 확장</span>
         </span>
       );
     case 'portfolio':
@@ -190,6 +190,18 @@ function TemplatePreview({ id }: { id: string }) {
             <span className="tp-work" />
             <span className="tp-work" />
           </span>
+        </span>
+      );
+    case 'report':
+      return (
+        <span className="tp tp-report">
+          <span className="tp-eyebrow">REPORT · 報告書</span>
+          <span className="tp-prop-title">2026년 1분기<br />운영 보고</span>
+          <span className="tp-divider thin" />
+          <span className="tp-line" />
+          <span className="tp-line short" />
+          <span className="tp-tiny">― 추진 내용 · 성과 지표</span>
+          <span className="tp-tiny">― 향후 계획</span>
         </span>
       );
     default:
@@ -256,6 +268,10 @@ const TEMPLATE_PROMPTS: Record<string, string[]> = {
     "브랜드 디자이너 이상윤의 포트폴리오입니다. 대표 작업 4개, 역할, 과정, 성과, 연락처를 전시 도록처럼 구성해 주세요.",
     "건축 사진가 포트폴리오입니다. 작업 철학, 프로젝트 목록, 클라이언트, 전시 이력, 문의 정보를 고급스럽게 정리해 주세요.",
   ],
+  report: [
+    "2026년 1분기 운영 보고서입니다. 사업 현황, 주요 추진 내용, 성과 지표, 이슈, 향후 계획을 임원 보고 형식으로 정리해 주세요.",
+    "프로젝트 완료 보고서입니다. 배경, 추진 과정, 결과물, 문제와 대응, 다음 단계를 명확하고 간결하게 기술해 주세요.",
+  ],
 };
 
 const TEMPLATE_CHECKLIST: Record<string, string[]> = {
@@ -272,6 +288,7 @@ const TEMPLATE_CHECKLIST: Record<string, string[]> = {
   proposal: ["문제 정의", "해결안", "일정·예산", "기대 효과"],
   newsletter: ["발행 주제", "섹션 목록", "주요 소식", "마무리 문장"],
   portfolio: ["작업자 소개", "대표 작업", "역할·성과", "연락처"],
+  report: ["보고 제목·기간", "개요·요약", "추진 내용", "성과 지표", "향후 계획"],
 };
 
 function getPromptQuality(prompt: string) {
@@ -499,7 +516,15 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
               {error && (
                 <div className="error-banner" role="alert">
                   <span className="error-mark">!</span>
-                  <span>{error}</span>
+                  <span className="error-text">{error}</span>
+                  <button
+                    type="button"
+                    className="error-retry"
+                    onClick={handleGenerate}
+                    disabled={generating}
+                  >
+                    {generating ? "다시 시도 중…" : "다시 시도"}
+                  </button>
                 </div>
               )}
 
@@ -1770,6 +1795,36 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
           font-weight: 800;
           font-size: 14px;
           flex-shrink: 0;
+        }
+        .error-text {
+          flex: 1;
+          min-width: 0;
+        }
+        .error-retry {
+          flex-shrink: 0;
+          cursor: pointer;
+          font-family: var(--sans);
+          font-size: 12.5px;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          color: var(--parchment);
+          background: var(--brand);
+          border: 1px solid var(--brand);
+          border-radius: 4px;
+          padding: 7px 14px;
+          white-space: nowrap;
+          transition: opacity 0.18s ease;
+        }
+        .error-retry:hover {
+          opacity: 0.88;
+        }
+        .error-retry:disabled {
+          opacity: 0.5;
+          cursor: default;
+        }
+        .error-retry:focus-visible {
+          outline: 2px solid var(--brand);
+          outline-offset: 2px;
         }
 
         /* RESULT */

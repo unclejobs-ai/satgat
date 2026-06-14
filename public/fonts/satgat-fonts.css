@@ -1,0 +1,78 @@
+/* satgat — self-hosted OFL faces for deterministic print/PDF fidelity.
+ *
+ * The live app loads Korean fonts from the Google Fonts CDN with display=swap
+ * (app/globals.css), which is fine on screen but unsafe for headless-Chromium
+ * PDF export: a swap face that isn't ready at print time renders a fallback
+ * serif / tofu, silently breaking the 명조 (rule 5) hierarchy. These local
+ * @font-face rules use `font-display: block` so the export path waits for the
+ * real 명조/바탕 glyphs (paired with `await document.fonts.ready`).
+ *
+ * Full-coverage OFL woff2 (converted from the google/fonts TTF sources), not
+ * Google's unicode-range web subsets, so every Hangul/Hanja glyph embeds.
+ */
+
+@font-face {
+  font-family: "Nanum Myeongjo";
+  src: url("/fonts/NanumMyeongjo-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Nanum Myeongjo";
+  src: url("/fonts/NanumMyeongjo-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Nanum Myeongjo";
+  src: url("/fonts/NanumMyeongjo-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Gowun Batang";
+  src: url("/fonts/GowunBatang-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Gowun Batang";
+  src: url("/fonts/GowunBatang-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Noto Serif KR (OFL), subset to CJK ideographs only — Hanja fallback.
+ * The Google-distributed Nanum Myeongjo / Gowun Batang cuts contain NO Hanja,
+ * so 명조 headings and parenthetical Hanja (報·履·名·漢字…) must fall through
+ * to this face or they render as tofu in the headless-Chromium PDF on Linux.
+ * Chain it AFTER the brand faces: "Nanum Myeongjo","Noto Serif KR",serif. */
+@font-face {
+  font-family: "Noto Serif KR";
+  src: url("/fonts/NotoSerifKR-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Noto Serif KR";
+  src: url("/fonts/NotoSerifKR-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Gowun Dodum (OFL) — the 돋움/sans face for labels, meta, indices.
+ * Hangul + Latin; Hanja falls through to Noto Serif KR (above). */
+@font-face {
+  font-family: "Gowun Dodum";
+  src: url("/fonts/GowunDodum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Check, Link2, Printer, RotateCcw } from "lucide-react";
+import { Check, Download, Link2, Printer, RotateCcw } from "lucide-react";
 import { SatgatTemplateRenderer } from "@/lib/engine/renderer";
 import { getTemplate, TEMPLATE_SEAL, TEMPLATE_VOICE } from "@/lib/templates/registry";
 import type { SatgatDocumentData } from "@/lib/templates/types";
@@ -33,6 +33,7 @@ const FORMAT_LABEL: Record<string, string> = {
 
 export default function PreviewClient({ lang, preview }: PreviewClientProps) {
   const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "failed">("idle");
+  const [pdfStatus, setPdfStatus] = React.useState<"idle" | "loading" | "error">("idle");
   const { data, error } = preview;
   const template = data ? getTemplate(data.templateId) : undefined;
   const langPath = `/${encodeURIComponent(lang)}`;
@@ -45,6 +46,32 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
       setCopyStatus("failed");
     }
     window.setTimeout(() => setCopyStatus("idle"), 1500);
+  };
+
+  const downloadPdf = async () => {
+    if (!data) return;
+    setPdfStatus("loading");
+    try {
+      const res = await fetch("/api/export", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ templateId: data.templateId, slots: data.slots, lang }),
+      });
+      if (!res.ok) throw new Error(`export failed: ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `satgat-${data.templateId}.pdf`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+      setPdfStatus("idle");
+    } catch {
+      setPdfStatus("error");
+      window.setTimeout(() => setPdfStatus("idle"), 2500);
+    }
   };
 
   if (error) {
@@ -121,6 +148,17 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
           <button onClick={copyLink} className="tb-link tb-copy" type="button">
             {copyStatus === "copied" ? <Check size={14} strokeWidth={1.9} aria-hidden /> : <Link2 size={14} strokeWidth={1.8} aria-hidden />}
             <span>{copyStatus === "copied" ? "복사됨" : copyStatus === "failed" ? "복사 실패" : "링크 복사"}</span>
+          </button>
+          <button
+            onClick={downloadPdf}
+            className="tb-link tb-pdf"
+            type="button"
+            disabled={pdfStatus === "loading"}
+          >
+            <Download size={14} strokeWidth={1.8} aria-hidden />
+            <span>
+              {pdfStatus === "loading" ? "내보내는 중…" : pdfStatus === "error" ? "다시 시도" : "PDF 내려받기"}
+            </span>
           </button>
           <button onClick={() => window.print()} className="tb-print">
             <Printer size={15} strokeWidth={1.8} aria-hidden />

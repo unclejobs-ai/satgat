@@ -1,57 +1,12 @@
-import { generateText } from 'ai';
+import { z } from 'zod';
+import { generateObject } from 'ai';
 import { google } from '@ai-sdk/google';
 import type { SatgatTemplate, SatgatDocumentData, TemplateSlot } from '@/lib/templates/types';
 import type { BrandProfile } from '@/lib/design-system/brand-resolver';
 import { buildGenerationPrompt } from '@/lib/bridge/prompt-builder';
+import { buildSlotsSchema } from '@/lib/generation/slot-schema';
 import { validateDocumentData } from '@/lib/engine/validator';
 import { normalizeImageSlot } from '@/lib/engine/slot-image';
-
-/**
- * AI 응답에서 JSON 객체를 추출
- */
-function extractJsonObject(text: string): Record<string, unknown> {
-  // 1. 코드 블록 안의 JSON 추출
-  const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-  if (codeBlockMatch) {
-    return JSON.parse(codeBlockMatch[1]);
-  }
-
-  // 2. 텍스트 안의 첫 JSON object를 bracket depth로 추출
-  const start = text.indexOf('{');
-  if (start >= 0) {
-    let depth = 0;
-    let inString = false;
-    let escaped = false;
-
-    for (let index = start; index < text.length; index += 1) {
-      const char = text[index];
-
-      if (escaped) {
-        escaped = false;
-        continue;
-      }
-      if (char === '\\') {
-        escaped = true;
-        continue;
-      }
-      if (char === '"') {
-        inString = !inString;
-        continue;
-      }
-      if (inString) continue;
-
-      if (char === '{') depth += 1;
-      if (char === '}') depth -= 1;
-
-      if (depth === 0) {
-        return JSON.parse(text.slice(start, index + 1));
-      }
-    }
-  }
-
-  // 3. 전체 텍스트를 JSON으로 파싱 시도
-  return JSON.parse(text);
-}
 
 function isEmptySlotValue(value: unknown): boolean {
   if (value == null) return true;
@@ -134,8 +89,15 @@ function normalizeListArray(value: unknown[]): unknown[] {
   });
 }
 
+/** table row를 항상 문자열 배열로 강제. 모델이 객체 row를 주면 값들을 배열로 변환. */
+function normalizeTableRow(row: unknown): string[] {
+  if (Array.isArray(row)) return row.map(stringifySlotValue);
+  if (row && typeof row === 'object') return Object.values(row).map(stringifySlotValue);
+  return [stringifySlotValue(row)];
+}
+
 /**
- * slot 값을 템플릿 타입에 맞게 정규화
+ * slot 값을 템플릿 타입에 맞게 정규화 (모델 출력 후처리 안전망)
  */
 function normalizeSlotValue(value: unknown, slotType: string): unknown {
   switch (slotType) {
@@ -168,15 +130,11 @@ function normalizeSlotValue(value: unknown, slotType: string): unknown {
       return [];
 
     case 'table':
-      if (
-        value &&
-        typeof value === 'object' &&
-        'headers' in (value as object) &&
-        'rows' in (value as object) &&
-        Array.isArray((value as { rows?: unknown }).rows) &&
-        (value as { rows: unknown[] }).rows.length > 0
-      ) {
-        return value;
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const table = value as { headers?: unknown; rows?: unknown };
+        const headers = Array.isArray(table.headers) ? table.headers.map(stringifySlotValue) : [];
+        const rows = Array.isArray(table.rows) ? table.rows.map(normalizeTableRow) : [];
+        if (rows.length > 0) return { headers, rows };
       }
       return undefined;
 
@@ -188,26 +146,37 @@ function normalizeSlotValue(value: unknown, slotType: string): unknown {
   }
 }
 
-/**
- * AI로 문서 데이터 생성
- */
-export async function generateDocumentData(
-  template: SatgatTemplate,
-  userPrompt: string,
-  brandProfile?: BrandProfile | null
-): Promise<SatgatDocumentData> {
-  const systemPrompt = buildGenerationPrompt(template, userPrompt, brandProfile);
+const GENERATION_SYSTEM =
+  '당신은 삿갓(Satgat) 문서 생성 엔진입니다. 한국 전통 미학(한지·먹·명조)을 따르는 문서 데이터를, 주어진 스키마에 정확히 맞는 한국어 구조화 데이터로만 생성하세요.';
 
-  const result = await generateText({
+/**
+ * 모델 호출 seam. 기본 구현은 Gemini structured output을 쓰고,
+ * 테스트는 이 함수를 주입해 모델 없이 검증한다.
+ */
+export type SlotGenerator = (args: {
+  template: SatgatTemplate;
+  system: string;
+  prompt: string;
+  schema: z.ZodTypeAny;
+}) => Promise<Record<string, unknown>>;
+
+const defaultSlotGenerator: SlotGenerator = async ({ system, prompt, schema }) => {
+  const { object } = await generateObject({
     model: google('gemini-2.5-flash'),
-    system: '당신은 삿갓(Satgat) 문서 생성 엔진입니다. 항상 유효한 JSON만 출력하세요.',
-    prompt: systemPrompt,
+    schema,
+    system,
+    prompt,
     temperature: 0.7,
   });
+  return object as Record<string, unknown>;
+};
 
-  const rawSlots = extractJsonObject(result.text);
-
-  // slot 타입에 맞게 정규화
+function normalizeSlots(
+  template: SatgatTemplate,
+  rawSlots: Record<string, unknown>,
+  userPrompt: string,
+  withFallback: boolean
+): Record<string, unknown> {
   const slots: Record<string, unknown> = {};
   for (const slot of template.slots) {
     if (slot.id in rawSlots) {
@@ -217,24 +186,77 @@ export async function generateDocumentData(
         continue;
       }
     }
-
-    if (slot.required) {
+    if (withFallback && slot.required) {
       const fallback = fallbackForRequiredSlot(slot, userPrompt);
       if (!isEmptySlotValue(fallback)) {
         slots[slot.id] = fallback;
       }
     }
   }
+  return slots;
+}
 
-  const data = {
-    templateId: template.id,
-    slots,
-  };
+export interface GenerateOptions {
+  /** 모델 호출 주입 (테스트용). 미지정 시 Gemini structured output. */
+  generateSlots?: SlotGenerator;
+  /** schema-invalid / 필수 누락 시 재시도 횟수. 기본 2 (총 3회 시도). */
+  maxRetries?: number;
+}
 
-  const validation = validateDocumentData(template, data);
-  if (!validation.valid) {
-    throw new Error(`Generated document failed validation: ${validation.errors.join('; ')}`);
+/**
+ * AI로 문서 데이터 생성.
+ * generateObject(structured output) + per-template zod 스키마로 모델 출력을 강제하고,
+ * 스키마 위반/필수 누락 시 bounded retry(기본 2회) 후 fallback 채움으로 떨어진다.
+ */
+export async function generateDocumentData(
+  template: SatgatTemplate,
+  userPrompt: string,
+  brandProfile?: BrandProfile | null,
+  options?: GenerateOptions
+): Promise<SatgatDocumentData> {
+  const system = GENERATION_SYSTEM;
+  const prompt = buildGenerationPrompt(template, userPrompt, brandProfile);
+  const schema = buildSlotsSchema(template);
+  const generate = options?.generateSlots ?? defaultSlotGenerator;
+  const maxRetries = options?.maxRetries ?? 2;
+
+  let lastRaw: Record<string, unknown> = {};
+  let lastError: unknown;
+  let modelResponded = false;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+    let raw: Record<string, unknown>;
+    try {
+      raw = await generate({ template, system, prompt, schema });
+    } catch (error) {
+      lastError = error; // schema-invalid 또는 API 오류 → 재시도
+      continue;
+    }
+
+    modelResponded = true;
+    lastRaw = raw && typeof raw === 'object' ? raw : {};
+    const slots = normalizeSlots(template, lastRaw, userPrompt, false);
+    const data: SatgatDocumentData = { templateId: template.id, slots };
+    if (validateDocumentData(template, data).valid) {
+      return data; // 깨끗한 성공 — fallback 불필요
+    }
+    // 필수 slot 비어있음 → 재시도
   }
 
+  // 모든 시도가 throw 했으면(모델이 한 번도 응답 못 함: API 키/쿼터/네트워크 오류)
+  // 가짜 placeholder 문서로 성공을 위장하지 말고 실제 오류를 올린다.
+  if (!modelResponded) {
+    if (lastError instanceof Error) throw lastError;
+    throw new Error('Document generation failed: model produced no response.');
+  }
+
+  // 모델은 응답했으나 필수 slot이 비어있는 경우에만 fallback 채움(부분 출력 보전).
+  const slots = normalizeSlots(template, lastRaw, userPrompt, true);
+  const data: SatgatDocumentData = { templateId: template.id, slots };
+  const validation = validateDocumentData(template, data);
+  if (!validation.valid) {
+    const reason = lastError instanceof Error ? ` (last error: ${lastError.message})` : '';
+    throw new Error(`Generated document failed validation: ${validation.errors.join('; ')}${reason}`);
+  }
   return data;
 }

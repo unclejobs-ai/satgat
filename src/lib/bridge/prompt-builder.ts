@@ -11,7 +11,7 @@ function slotShapeHint(slot: TemplateSlot): string {
     case 'list':
       return '배열. 각 항목은 {"title":"...","description":"..."} 형태의 객체';
     case 'image':
-      return '이미지 URL 문자열 또는 {"url":"...","alt":"..."} 객체. 확실한 이미지 URL이 없으면 빈 값';
+      return '{"url":"...","alt":"..."} 객체. 확실한 이미지 URL이 없으면 url을 빈 문자열로 두고 설명문을 넣지 말 것';
     case 'image-list':
       return '이미지 객체 배열. 각 항목은 {"url":"...","alt":"..."} 형태';
     case 'table':
@@ -34,6 +34,7 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
       case 'table':
         return { headers: [], rows: [] };
       case 'image':
+        return { url: '', alt: '' };
       case 'textarea':
       case 'markdown':
       case 'text':
@@ -46,7 +47,7 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
     case 'list':
       return [{ title: `${slot.label} 1`, description: '핵심 내용을 구체적으로 작성' }];
     case 'image':
-      return '';
+      return { url: '', alt: slot.label };
     case 'image-list':
       return [{ url: '', alt: slot.label }];
     case 'table':
