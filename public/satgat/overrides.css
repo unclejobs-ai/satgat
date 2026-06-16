@@ -243,22 +243,20 @@ html[lang='ko'] blockquote {
   letter-spacing: -0.005em;
 }
 
-/* 한글 제목 — 묵직한 무게감 + 자간 조이기 */
+/* 한글 제목 — 명조 위계, 장식 없음. weight는 크기로만 */
 html[lang='ko'] h1,
 html[lang='ko'] h2,
 html[lang='ko'] h3,
 html[lang='ko'] h4 {
   font-family: var(--serif-display);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.018em;
-  line-height: 1.18;
+  line-height: 1.2;
   word-break: keep-all;
-  text-shadow:
-    0 0 0.3px rgba(28, 25, 22, 0.10),
-    0 0 0.7px rgba(28, 25, 22, 0.05);
 }
 html[lang='ko'] h3,
 html[lang='ko'] h4 {
+  font-weight: 600;
   line-height: 1.3;
   letter-spacing: -0.012em;
 }
@@ -273,14 +271,13 @@ html[lang='ko'] em[lang='en'] {
   color: var(--brand);
 }
 
-/* UI 라벨 — 돋움 + uppercase + 자간 넓힘 */
 html[lang='ko'] .section-num,
 html[lang='ko'] .eyebrow,
 html[lang='ko'] .label,
 html[lang='ko'] .hero-tokens b {
   font-family: var(--sans);
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -580,16 +577,7 @@ html[lang='ko'] .hero-cta:focus-visible {
  *  Section heading polish — 섹션 번호 hairline 띠
  * ═══════════════════════════════════════════════════════════════════════ */
 html[lang='ko'] .section-num {
-  display: inline-block;
-  padding: 4pt 10pt;
-  background: var(--ivory);
-  border: 0.5pt solid var(--border);
-  border-radius: 3pt;
-  font-size: 10.5px;
-  color: var(--brand);
-  letter-spacing: 0.16em;
-  font-weight: 700;
-  margin-bottom: 14pt;
+  margin-bottom: 10pt;
 }
 
 html[lang='ko'] .section-title {
@@ -1498,3 +1486,858 @@ html[lang='ko'] .slide-end-mark {
     background: var(--parchment);
   }
 }
+
+/* ═════════════════════════════════════════════════════════════════════════
+ *  랜딩 페이지 컴포넌트 — hero · demo cards · visual scenes · examples
+ *  satgat-ko.html 인라인 스타일에서 추출
+ * ═════════════════════════════════════════════════════════════════════════ */
+
+html[lang='ko'] body main.page > .hero h1 {
+    font-weight: 700;
+    font-size: clamp(72px, 9vw, 106px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 8px 0 26px;
+    position: relative;
+  }
+  html[lang='ko'] body main.page > .hero h1::before {
+    content: "";
+    position: absolute;
+    left: -28px;
+    top: 18%;
+    bottom: 24%;
+    width: 3px;
+    background: var(--brand, #9B1B1B);
+    border-radius: 0;
+  }
+  html[lang='ko'] body main.page > .hero h1 .cn {
+    font-weight: 400;
+    margin-left: 0.18em;
+    font-size: 0.66em;
+    color: var(--olive, #4D4B46);
+    letter-spacing: 0;
+    opacity: 0.85;
+  }
+  html[lang='ko'] body main.page > .hero .tagline {
+    max-width: 620px;
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--olive, #4D4B46);
+    margin: 0 0 26px;
+  }
+  html[lang='ko'] body main.page > .hero .hero-tokens-flow {
+    margin: 0 0 28px;
+    font-family: var(--serif);
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--olive, #4D4B46);
+    max-width: 780px;
+  }
+  html[lang='ko'] body main.page > .hero .hero-tokens-flow span {
+    display: inline-block;
+    margin-right: 26px;
+    white-space: nowrap;
+  }
+  html[lang='ko'] body main.page > .hero .hero-tokens-flow i {
+    font-style: normal;
+    color: var(--stone, #6B6862);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    margin-right: 6px;
+    text-transform: uppercase;
+  }
+  html[lang='ko'] body main.page > .hero .hero-cta-line {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 15px;
+    letter-spacing: -0.005em;
+  }
+  html[lang='ko'] body main.page > .hero .hero-cta-link {
+    color: var(--near-black, #1C1916);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1.5px solid var(--brand, #9B1B1B);
+    padding-bottom: 1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  html[lang='ko'] body main.page > .hero .hero-cta-link:hover {
+    color: var(--brand, #9B1B1B);
+  }
+  html[lang='ko'] body main.page > .hero .hero-cta-link.muted {
+    color: var(--olive, #4D4B46);
+    border-bottom: 1px dotted var(--border-soft, #BEC5BA);
+    font-weight: 400;
+  }
+  html[lang='ko'] body main.page > .hero .hero-cta-link.muted:hover {
+    color: var(--near-black, #1C1916);
+    border-bottom-color: var(--near-black, #1C1916);
+  }
+  html[lang='ko'] body main.page > .hero .hero-cta-sep {
+    color: var(--stone, #6B6862);
+    margin: 0 12px;
+  }
+  /* 기존 hero-actions 흔적 정리 */
+  html[lang='ko'] body main.page > .hero .hero-actions,
+  html[lang='ko'] body main.page > .hero .hero-tokens {
+    display: none;
+  }
+  html[lang='ko'] body main.page .section-title {
+    font-weight: 700;
+    letter-spacing: -0.018em;
+  }
+  html[lang='ko'] body main.page .demo-title {
+    font-weight: 700;
+  }
+  html[lang='ko'] body main.page .landing-card {
+    position: relative;
+    border: 1px solid var(--border-soft, #E8E2D0);
+    border-radius: 8px;
+    transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+    overflow: hidden;
+  }
+  html[lang='ko'] body main.page .landing-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: var(--brand, #9B1B1B);
+    transition: width 0.2s ease;
+  }
+  html[lang='ko'] body main.page .landing-card:hover {
+    border-color: var(--near-black, #1C1916);
+    box-shadow: 0 12px 32px -16px rgba(28,25,22,0.18);
+    transform: translateY(-2px);
+  }
+  html[lang='ko'] body main.page .landing-card:hover::before {
+    width: 3px;
+  }
+  html[lang='ko'] body main.page .landing-card > div > span:first-child {
+    font-weight: 700;
+    letter-spacing: -0.012em;
+  }
+  html[lang='ko'] body main.page .landing-card > div > span:last-child {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 24px;
+    border-radius: 2px;
+  }
+  /* v12 demo card polish — kami 능가 paper feel */
+  html[lang='ko'] body main.page .satgat-sample .satgat-paper {
+    box-shadow: 0 0 0 1px var(--border-soft, #E8E2D0), 0 1px 2px rgba(28,25,22,0.02), 0 12px 32px -16px rgba(28,25,22,0.18);
+    border-radius: 4px;
+    transition: box-shadow 0.22s ease, transform 0.22s ease;
+  }
+  html[lang='ko'] body main.page .satgat-sample .satgat-paper:hover {
+    box-shadow: 0 0 0 1px var(--near-black, #1C1916), 0 1px 2px rgba(28,25,22,0.04), 0 18px 44px -18px rgba(28,25,22,0.28);
+    transform: translateY(-2px);
+  }
+  html[lang='ko'] body main.page .satgat-sample .paper-seal {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+    font-weight: 600;
+    right: 14px;
+    bottom: 14px;
+    border-radius: 2px;
+    font-family: var(--serif-display);
+  }
+  html[lang='ko'] body main.page .satgat-sample .paper-seal.sm {
+    width: 18px;
+    height: 18px;
+    font-size: 9.5px;
+    right: 12px;
+    bottom: 12px;
+  }
+  html[lang='ko'] body main.page .satgat-sample .demo-title {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.012em;
+    color: var(--near-black, #1C1916);
+  }
+  html[lang='ko'] body main.page .satgat-sample .demo-desc {
+    font-size: 12px;
+    color: var(--olive, #4D4B46);
+    line-height: 1.6;
+  }
+  html[lang='ko'] body main.page .section-prompt-example {
+    margin: -8px 0 28px;
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--olive, #4D4B46);
+  }
+  html[lang='ko'] body main.page .section-prompt-example code {
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 12.5px;
+    color: var(--near-black, #1C1916);
+    background: var(--ivory, #FFFFFB);
+    padding: 3px 8px;
+    border: 1px solid var(--border-soft, #E8E2D0);
+    border-radius: 3px;
+  }
+  .satgat-samples { gap: 28px 24px; }
+  .satgat-sample .satgat-paper {
+    position: relative;
+    display: block;
+    background: var(--ivory, #FFFFFB);
+    background-image:
+      radial-gradient(ellipse 100% 70% at 50% 20%, rgba(255,250,235,0.4) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.22' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.25 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23f)' opacity='0.05'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)' opacity='0.02'/%3E%3C/svg%3E");
+    background-size: auto, 200px 200px, 120px 120px;
+    border-radius: 4px;
+    box-shadow:
+      0 0 0 1pt var(--border-soft, #E8E2D0),
+      0 1pt 2pt rgba(28, 25, 22, 0.04),
+      0 12pt 32pt -6pt rgba(28, 25, 22, 0.10);
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.22s ease, transform 0.22s ease;
+  }
+  .satgat-sample .satgat-paper:hover {
+    box-shadow:
+      0 0 0 1pt var(--brand, #9B1B1B),
+      0 4pt 8pt rgba(28, 25, 22, 0.06),
+      0 18pt 40pt -6pt rgba(28, 25, 22, 0.14);
+    transform: translateY(-3px);
+  }
+  .satgat-sample .satgat-paper[data-format='a4'] { aspect-ratio: 210/297; }
+  .satgat-sample .satgat-paper[data-format='a5'] { aspect-ratio: 148/210; }
+  .satgat-sample .satgat-paper[data-format='card'] { aspect-ratio: 90/55; }
+
+  .paper-seal {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif-display);
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+    z-index: 2;
+    box-shadow: inset 0 0 0 1.2px rgba(255,255,255,0.18), 0 1px 2px rgba(28,25,22,0.1);
+  }
+  .paper-seal.sm { width: 22px; height: 22px; font-size: 12px; right: 10px; bottom: 10px; }
+  .paper-seal[data-variant='ink'] { background: var(--near-black); color: var(--parchment); }
+  .paper-seal[data-variant='dancheong'] { background: var(--brand); color: var(--parchment); }
+  .paper-seal[data-variant='jade'] { background: var(--jade); color: var(--parchment); }
+  .paper-seal[data-variant='gold'] { background: var(--gold); color: var(--near-black); }
+
+  .paper-inner { padding: 26px 22px 22px; font-family: var(--serif); }
+
+  /* 이력서 */
+  .resume-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
+  .resume-name { display: flex; flex-direction: column; gap: 1px; }
+  .resume-name .ko { font-family: var(--serif-display); font-weight: 800; font-size: 21px; color: var(--near-black); letter-spacing: -0.02em; line-height: 1.05; }
+  .resume-name .hanja { font-family: var(--serif-display); font-size: 9px; color: var(--olive); letter-spacing: 0.06em; }
+  .resume-photo { width: 28px; height: 36px; background: var(--warm-sand); border: 0.5pt solid var(--border-soft); border-radius: 1.5px; flex-shrink: 0; }
+  .resume-meta { font-size: 9.5px; color: var(--olive); margin: 4px 0 12px; letter-spacing: -0.005em; }
+  .resume-rule { height: 1.5pt; background: var(--near-black); margin: 0 0 14px; opacity: 0.92; }
+  .resume-section-title { font-family: var(--serif-display); font-weight: 700; font-size: 10px; color: var(--near-black); margin: 12px 0 5px; letter-spacing: 0.02em; padding-bottom: 2.5px; border-bottom: 0.4pt solid var(--border-soft); }
+  .resume-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2.5px; }
+  .resume-list li { display: grid; grid-template-columns: 64px 1fr; gap: 8px; font-size: 8.5px; line-height: 1.45; color: var(--dark-warm); }
+  .resume-list li b { font-weight: 700; color: var(--near-black); font-family: var(--serif); letter-spacing: -0.01em; }
+
+  /* 명함 */
+  .card-inner { padding: 14px 16px; display: flex; flex-direction: column; height: 100%; position: relative; font-family: var(--serif); }
+  .card-rule { position: absolute; top: 50%; left: 16px; right: 16px; height: 0.6pt; background: var(--brand); opacity: 0.85; transform: translateY(-50%); }
+  .card-name { display: flex; align-items: baseline; gap: 6px; margin-bottom: 1px; }
+  .card-name .ko { font-family: var(--serif-display); font-weight: 800; font-size: 15px; color: var(--near-black); letter-spacing: -0.015em; }
+  .card-name .hanja { font-family: var(--serif-display); font-size: 8px; color: var(--olive); letter-spacing: 0.06em; }
+  .card-title { font-size: 7.5px; color: var(--olive); letter-spacing: 0.04em; margin-bottom: auto; }
+  .card-foot { display: flex; flex-direction: column; gap: 2px; margin-top: auto; }
+  .card-line { font-family: var(--mono); font-size: 6.5px; color: var(--stone); letter-spacing: 0.04em; }
+
+  /* 청첩장 */
+  .invitation-inner { padding: 28px 18px 22px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; height: 100%; font-family: var(--serif); }
+  .invitation-eyebrow { font-family: var(--serif-display); font-size: 10px; font-weight: 700; color: var(--brand); letter-spacing: 0.65em; padding-left: 0.65em; }
+  .invitation-divider { width: 36px; height: 0.8pt; background: var(--brand); }
+  .invitation-divider.thin { width: 24px; height: 0.4pt; opacity: 0.5; }
+  .invitation-couple { display: flex; align-items: baseline; gap: 10px; margin: 4px 0; }
+  .invitation-couple .i-name { font-family: var(--serif-display); font-weight: 800; font-size: 18px; color: var(--near-black); letter-spacing: -0.015em; }
+  .invitation-couple .i-and { font-family: var(--serif-latin); font-style: italic; font-size: 14px; color: var(--brand); }
+  .invitation-date { display: flex; flex-direction: column; gap: 1px; align-items: center; margin: 2px 0; }
+  .i-date-ko { font-size: 9px; color: var(--near-black); }
+  .i-date-hanja { font-size: 8px; color: var(--olive); letter-spacing: 0.1em; }
+  .i-date-time { font-size: 8px; color: var(--olive); margin-top: 2px; }
+  .invitation-place { margin-top: auto; font-size: 7.5px; color: var(--stone); line-height: 1.5; letter-spacing: 0.04em; }
+
+  /* 제안서 */
+  .proposal-inner { padding: 22px 20px 18px; display: flex; flex-direction: column; height: 100%; font-family: var(--serif); gap: 0; }
+  .proposal-eyebrow { font-family: var(--mono); font-size: 7.5px; color: var(--olive); letter-spacing: 0.18em; margin-bottom: 8px; }
+  .proposal-title { font-family: var(--serif-display); font-weight: 800; font-size: 16px; line-height: 1.1; color: var(--near-black); letter-spacing: -0.022em; margin-bottom: 10px; }
+  .proposal-bar { width: 32px; height: 2pt; background: var(--brand); margin-bottom: 12px; }
+  .proposal-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .proposal-metrics > div { display: flex; flex-direction: column; gap: 1px; padding: 6px 4px; border-top: 0.4pt solid var(--border-soft); }
+  .proposal-metrics b { font-family: var(--serif-display); font-weight: 800; font-size: 13px; color: var(--brand); line-height: 1; letter-spacing: -0.015em; }
+  .proposal-metrics span { font-size: 6.5px; color: var(--olive); letter-spacing: 0.04em; }
+  .proposal-body { display: flex; flex-direction: column; gap: 3px; margin-bottom: auto; }
+  .proposal-body p { font-size: 8px; line-height: 1.6; color: var(--dark-warm); margin: 0; letter-spacing: -0.005em; }
+  .proposal-body b { color: var(--near-black); font-weight: 700; }
+  .proposal-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 0.4pt solid var(--border-soft); }
+  .proposal-page { font-family: var(--mono); font-size: 6.5px; color: var(--stone); letter-spacing: 0.06em; }
+  .proposal-author { font-family: var(--serif); font-size: 7px; color: var(--olive); font-style: italic; }
+
+  /* meta typography */
+  .satgat-sample .demo-title {
+    font-family: var(--serif-display);
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--near-black);
+    margin: 14px 0 2px;
+    letter-spacing: -0.015em;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .satgat-sample .demo-hanja,
+  .satgat-sample .hanja,
+  .satgat-sample .i-date-hanja {
+    display: none;
+  }
+  /* v12 — 한자 장식은 본문 옆 괄호만 허용 (AGENTS.md rule 8) */
+  .specimen-name-cn,
+  .season-hanja,
+  .sagunja-seal,
+  .slide-end-mark {
+    display: none;
+  }
+  .satgat-sample .demo-desc {
+    font-family: var(--serif);
+    font-size: 12.5px;
+    color: var(--olive);
+    line-height: 1.55;
+    margin: 0;
+    letter-spacing: -0.003em;
+  }
+
+
+  html[lang='ko'] body main.page .visual-scene-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    margin: 0 0 34px;
+  }
+  html[lang='ko'] body main.page .visual-scene-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+  }
+  html[lang='ko'] body main.page .visual-scene-sheet {
+    min-height: 332px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 18px 18px;
+    background: #FFFFFB;
+    border: 1px solid #D2D6CB;
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px #F7F7F2;
+  }
+  html[lang='ko'] body main.page .visual-scene-kicker {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6B6862;
+    margin: 0 0 10px;
+  }
+  html[lang='ko'] body main.page .visual-scene-sheet h3 {
+    font-family: var(--serif-display);
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1C1916;
+    margin: 0 0 8px;
+  }
+  html[lang='ko'] body main.page .visual-scene-copy {
+    font-family: var(--serif);
+    font-size: 12.5px;
+    line-height: 1.62;
+    color: #4D4B46;
+    margin: 0 0 16px;
+  }
+  html[lang='ko'] body main.page .visual-scene-sheet svg {
+    width: 100%;
+    margin-top: auto;
+    border-top: 1px solid #D2D6CB;
+    padding-top: 16px;
+  }
+  html[lang='ko'] body main.page .visual-scene-card strong {
+    font-family: var(--serif-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: #1C1916;
+    line-height: 1.25;
+  }
+  html[lang='ko'] body main.page .visual-scene-card span {
+    font-family: var(--serif);
+    font-size: 12.5px;
+    line-height: 1.62;
+    color: #4D4B46;
+  }
+  html[lang='ko'] body main.page .visual-scene-card:hover .visual-scene-sheet {
+    border-color: #1C1916;
+    transform: translateY(-2px);
+    transition: border-color 0.18s ease, transform 0.18s ease;
+  }
+  @media (max-width: 980px) {
+    html[lang='ko'] body main.page .visual-scene-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    html[lang='ko'] body main.page > .hero .hero-tokens-flow span {
+      display: block;
+      margin-right: 0;
+      white-space: normal;
+    }
+    html[lang='ko'] body main.page .section-prompt-example {
+      margin: 0 0 26px;
+      max-width: 100%;
+    }
+    html[lang='ko'] body main.page .section-prompt-example code {
+      display: block;
+      margin-top: 8px;
+      padding: 9px 10px;
+      line-height: 1.62;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    html[lang='ko'] body main.page .satgat-samples,
+    html[lang='ko'] body main.page .demo-grid,
+    html[lang='ko'] body main.page .landing-grid {
+      grid-template-columns: 1fr;
+    }
+    html[lang='ko'] body main.page .visual-scene-grid {
+      grid-template-columns: 1fr;
+    }
+    html[lang='ko'] body main.page .visual-scene-sheet {
+      min-height: 286px;
+    }
+  }
+
+
+  html[lang='ko'] body main.page .example-pack-cta {
+    margin: -8px 0 30px;
+  }
+  html[lang='ko'] body main.page .example-pack-cta a {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    padding: 0 14px;
+    border: 1px solid #1C1916;
+    border-radius: 4px;
+    color: #1C1916;
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  html[lang='ko'] body main.page .complete-example-groups {
+    display: grid;
+    gap: 42px;
+  }
+  html[lang='ko'] body main.page .complete-example-group h3 {
+    font-family: var(--serif-display);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #1C1916;
+    margin: 0 0 16px;
+  }
+  html[lang='ko'] body main.page .complete-example-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px 20px;
+  }
+  html[lang='ko'] body main.page .complete-example-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    color: inherit;
+    text-decoration: none;
+  }
+  html[lang='ko'] body main.page .complete-example-shot {
+    display: block;
+    aspect-ratio: 210 / 297;
+    padding: 10px;
+    background: #FFFFFB;
+    border: 1px solid #D2D6CB;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  html[lang='ko'] body main.page .complete-example-shot.is-land,
+  html[lang='ko'] body main.page .complete-example-shot.is-deck {
+    aspect-ratio: 297 / 210;
+  }
+  html[lang='ko'] body main.page .complete-example-shot.is-card {
+    aspect-ratio: 105 / 148;
+  }
+  html[lang='ko'] body main.page .complete-example-shot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top center;
+    background: #F7F7F2;
+  }
+  html[lang='ko'] body main.page .complete-example-card:hover .complete-example-shot {
+    border-color: #1C1916;
+  }
+  html[lang='ko'] body main.page .complete-example-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+  html[lang='ko'] body main.page .complete-example-meta i {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9px;
+    line-height: 1.35;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6B6862;
+  }
+  html[lang='ko'] body main.page .complete-example-meta strong {
+    display: block;
+    font-family: var(--serif-display);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.32;
+    color: #1C1916;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  html[lang='ko'] body main.page .complete-example-meta em {
+    display: block;
+    font-family: var(--serif);
+    font-size: 12px;
+    font-style: normal;
+    line-height: 1.45;
+    color: #4D4B46;
+  }
+  @media (max-width: 560px) {
+    html[lang='ko'] body main.page .example-pack-cta a {
+      width: 100%;
+      justify-content: center;
+    }
+    html[lang='ko'] body main.page .complete-example-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+
+  .rule-five { margin: 0 0 40px; }
+  .rule-five-bar {
+    display: flex;
+    height: 18px;
+    border-radius: 2px;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+  }
+  .rf-canvas { flex: 70; background: #F7F7F2; border-right: 1px solid var(--border-soft); }
+  .rf-ink { flex: 20; background: #1C1916; }
+  .rf-jade { flex: 3; background: #2E6B5E; }
+  .rf-gold { flex: 2; background: #B8954F; }
+  .rf-dancheong { flex: 5; background: #9B1B1B; }
+  .rule-five-legend {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--olive);
+    letter-spacing: 0.02em;
+  }
+  .rule-five-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .rule-five-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 1.5px; }
+
+/* ═════════════════════════════════════════════════════════════════════════
+ *  14종 템플릿 라인업 카드 — landing-card
+ * ═════════════════════════════════════════════════════════════════════════ */
+  html[lang='ko'] body main.page .landing-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  html[lang='ko'] body main.page .landing-card {
+    background: var(--ivory);
+    border-radius: 8px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+  }
+  html[lang='ko'] body main.page .lc-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  html[lang='ko'] body main.page .lc-name {
+    font-family: var(--serif-display);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--near-black);
+    letter-spacing: -0.012em;
+  }
+  html[lang='ko'] body main.page .lc-seal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-family: var(--serif-display);
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 3px;
+  }
+  html[lang='ko'] body main.page .lc-seal[data-variant='ink'] { background: var(--near-black); color: var(--parchment); }
+  html[lang='ko'] body main.page .lc-seal[data-variant='dancheong'] { background: var(--brand); color: var(--parchment); }
+  html[lang='ko'] body main.page .lc-seal[data-variant='jade'] { background: var(--jade); color: var(--parchment); }
+  html[lang='ko'] body main.page .lc-seal[data-variant='gold'] { background: var(--gold); color: var(--near-black); }
+  html[lang='ko'] body main.page .lc-desc {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--olive);
+  }
+  html[lang='ko'] body main.page .lc-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--stone);
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+  }
+
+/* ═════════════════════════════════════════════════════════════════════════
+ *  미니 목업 — tp-mini (8종 데모 카드 내부)
+ *  극단적으로 작은 폰트 금지. 최소 9px.
+ * ═════════════════════════════════════════════════════════════════════════ */
+  html[lang='ko'] body main.page .tp-mini {
+    padding: 22px 18px 18px;
+    font-family: var(--serif);
+  }
+  html[lang='ko'] body main.page .tp-mini-eyebrow {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--olive);
+    margin: 0 0 10px;
+  }
+  html[lang='ko'] body main.page .tp-mini-eyebrow.jade { color: var(--jade); }
+  html[lang='ko'] body main.page .tp-mini-name {
+    font-family: var(--serif-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--near-black);
+    letter-spacing: -0.02em;
+    margin: 0 0 4px;
+    line-height: 1.1;
+  }
+  html[lang='ko'] body main.page .tp-mini-role {
+    font-size: 11px;
+    color: var(--olive);
+    margin: 0 0 14px;
+  }
+  html[lang='ko'] body main.page .tp-mini-rule {
+    height: 2pt;
+    background: var(--near-black);
+    margin: 0 0 14px;
+    opacity: 0.9;
+  }
+  html[lang='ko'] body main.page .tp-mini-bar {
+    width: 36px;
+    height: 2pt;
+    background: var(--brand);
+    margin: 0 0 14px;
+  }
+  html[lang='ko'] body main.page .tp-mini-bar.gold { background: var(--gold); }
+  html[lang='ko'] body main.page .tp-mini-section {
+    font-family: var(--serif-display);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--near-black);
+    margin: 0 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 0.5pt solid var(--border-soft);
+  }
+  html[lang='ko'] body main.page .tp-mini-line {
+    font-size: 10px;
+    line-height: 1.55;
+    color: var(--dark-warm);
+    margin: 0 0 4px;
+  }
+  html[lang='ko'] body main.page .tp-mini-line b {
+    font-weight: 700;
+    color: var(--near-black);
+    margin-right: 8px;
+  }
+  html[lang='ko'] body main.page .tp-mini-headline {
+    font-family: var(--serif-display);
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--near-black);
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+  }
+  html[lang='ko'] body main.page .tp-mini-headline-sm {
+    font-family: var(--serif-display);
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--near-black);
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+  }
+  html[lang='ko'] body main.page .tp-mini-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 0 0 14px;
+  }
+  html[lang='ko'] body main.page .tp-mini-metrics > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 4px 0;
+    border-top: 0.5pt solid var(--border-soft);
+  }
+  html[lang='ko'] body main.page .tp-mini-metrics b {
+    font-family: var(--serif-display);
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--brand);
+    line-height: 1;
+  }
+  html[lang='ko'] body main.page .tp-mini-metrics span {
+    font-size: 9px;
+    color: var(--olive);
+    letter-spacing: 0.04em;
+  }
+  html[lang='ko'] body main.page .tp-mini-body {
+    font-size: 10px;
+    line-height: 1.7;
+    color: var(--dark-warm);
+    margin: 0 0 8px;
+  }
+  html[lang='ko'] body main.page .tp-mini-line-dash {
+    font-size: 10px;
+    line-height: 1.7;
+    color: var(--dark-warm);
+    margin: 0 0 4px;
+  }
+  html[lang='ko'] body main.page .tp-mini-foot {
+    font-size: 9px;
+    color: var(--olive);
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  html[lang='ko'] body main.page .tp-mini-foot-sm {
+    font-size: 9px;
+    color: var(--stone);
+    margin: 0;
+  }
+  html[lang='ko'] body main.page .tp-mini-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 0 0 10px;
+  }
+  html[lang='ko'] body main.page .tp-mini-dots {
+    height: 4px;
+    background: repeating-linear-gradient(to right, var(--border-soft) 0 2px, transparent 2px 5px);
+    margin: 0 0 12px;
+  }
+  html[lang='ko'] body main.page .tp-mini-dots.short { width: 60%; margin-bottom: 0; }
+  html[lang='ko'] body main.page .tp-mini-center {
+    text-align: center;
+    padding: 22px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 4px;
+    font-family: var(--serif);
+  }
+  html[lang='ko'] body main.page .tp-mini-gold {
+    font-family: var(--serif-display);
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.28em;
+    margin: 0 0 6px;
+  }
+  html[lang='ko'] body main.page .tp-mini-msg {
+    font-size: 10px;
+    line-height: 1.7;
+    color: var(--olive);
+    margin: 0 0 10px;
+  }
+  html[lang='ko'] body main.page .tp-mini-gallery {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 5px;
+    margin: 0 0 10px;
+  }
+  html[lang='ko'] body main.page .tp-mini-gallery-main {
+    aspect-ratio: 1.4;
+    background: linear-gradient(135deg, rgba(184,149,79,0.12), var(--ivory));
+    border: 0.5pt solid var(--border-soft);
+    border-radius: 2px;
+    display: flex;
+    align-items: flex-end;
+    padding: 6px;
+  }
+  html[lang='ko'] body main.page .tp-mini-gallery-main span {
+    font-family: var(--serif);
+    font-size: 9px;
+    color: var(--near-black);
+    line-height: 1.3;
+  }
+  html[lang='ko'] body main.page .tp-mini-gallery-side {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 5px;
+  }
+  html[lang='ko'] body main.page .tp-mini-gallery-side > div {
+    background: linear-gradient(135deg, rgba(46,107,94,0.1), var(--ivory));
+    border: 0.5pt solid var(--border-soft);
+    border-radius: 2px;
+    display: flex;
+    align-items: flex-end;
+    padding: 4px;
+  }
+  html[lang='ko'] body main.page .tp-mini-gallery-side > div:first-child {
+    background: linear-gradient(135deg, rgba(155,27,27,0.08), var(--ivory));
+  }
+  html[lang='ko'] body main.page .tp-mini-gallery-side span {
+    font-family: var(--serif);
+    font-size: 9px;
+    color: var(--near-black);
+    line-height: 1.25;
+  }
+
+  /* 한자 데모 타이틀 숨김 */
+  html[lang='ko'] body main.page .demo-hanja { display: none; }

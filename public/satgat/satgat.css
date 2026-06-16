@@ -13,8 +13,8 @@
     --dark-surface: #30302e;
     --deep-dark:    #141413;
 
-    --brand:        #1B365D;
-    --brand-light:  #2D5A8A;
+    --brand:        #9B1B1B;
+    --brand-light:  #B92D2D;
 
     --near-black:   #141413;
     --dark-warm:    #383b36;
@@ -207,7 +207,7 @@
   }
 
   .page {
-    max-width: 1120px;
+    max-width: 1080px;
     margin: 0 auto;
     padding: 88px 64px 120px;
     animation: fadeIn 0.4s ease-out;
@@ -217,7 +217,7 @@
   .hero {
     padding-bottom: 40px;
     border-bottom: 1px solid var(--border-soft);
-    margin-bottom: 48px;
+    margin-bottom: 56px;
   }
   .hero-tokens {
     display: flex;
@@ -273,7 +273,6 @@
     margin: 0 0 14px;
     color: var(--near-black);
   }
-  .hero h1 .cn {
     display: inline-block;
     margin-left: 16px;
     letter-spacing: 0;
@@ -289,14 +288,14 @@
   }
 
   /* ---------- Section ---------- */
-  section { margin-bottom: 72px; }
-  .section-head { margin-bottom: 24px; }
+  section { margin-bottom: 80px; }
+  .section-head { margin-bottom: 28px; }
   .section-num {
-    font-family: var(--serif);
+    font-family: var(--sans);
     font-weight: 500;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--brand);
-    letter-spacing: 0.4px;
+    letter-spacing: 0.06em;
     margin: 0 0 6px;
   }
   .section-title {
@@ -307,7 +306,7 @@
     color: var(--near-black);
     margin: 0;
     display: block;
-    letter-spacing: 0.4px;
+    letter-spacing: 0;
   }
   .section-lede {
     font-family: var(--serif);
@@ -320,13 +319,14 @@
 
   /* ---------- Manifesto ---------- */
   .manifesto {
-    font-family: var(--serif);
-    font-size: 20px;
+    font-family: var(--serif-display);
+    font-weight: 400;
+    font-size: 22px;
     line-height: 1.65;
-    letter-spacing: 0.05em;
+    letter-spacing: -0.005em;
     color: var(--near-black);
     margin: 0 0 28px;
-    font-weight: 400;
+    font-weight: 500;
   }
   .manifesto em {
     color: var(--brand);
@@ -910,7 +910,7 @@
   .demo-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 20px 16px;
     align-items: start;
   }
   .demo-card a img {
