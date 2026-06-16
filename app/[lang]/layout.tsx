@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "satgat · 삿갓",
-  description: "자연어를 한지 감성의 이력서, 제안서, 명함, 포트폴리오로 옮겨 적는 한국형 AI 문서 생성기.",
+  description: "자연어를 한지 감성의 한국 문서, 차트, 도표로 옮겨 적는 한국형 AI 문서 생성기.",
 };
 
 export default async function SatgatLayout({
@@ -43,13 +43,13 @@ export default async function SatgatLayout({
           display: flex;
           justify-content: space-between;
           align-items: center;
+          box-sizing: border-box;
+          width: 100%;
           padding: 14px 32px;
           max-width: 1080px;
           margin: 0 auto;
-          background-color: rgba(247, 247, 242, 0.9);
-          backdrop-filter: saturate(180%) blur(12px);
-          -webkit-backdrop-filter: saturate(180%) blur(12px);
-          border-bottom: 0.5px solid var(--border, #DDD6C4);
+          background-color: #F7F7F2;
+          border-bottom: 1px solid var(--border, #D8DBD1);
         }
         .satgat-topbar .brand {
           display: inline-flex;
@@ -70,7 +70,7 @@ export default async function SatgatLayout({
           font-size: 20px;
           font-weight: 800;
           border-radius: 4px;
-          box-shadow: inset 0 0 0 1.2px rgba(255,255,255,0.18), 0 1px 2px rgba(28,25,22,0.1);
+          box-shadow: inset 0 0 0 1px #4D4B46;
         }
         .satgat-topbar .brand-text {
           display: flex;
@@ -83,7 +83,6 @@ export default async function SatgatLayout({
           font-weight: 800;
           letter-spacing: -0.005em;
           color: var(--near-black);
-          text-shadow: 0 0 0.3px rgba(28,25,22,0.1);
         }
         .satgat-topbar .brand-tag {
           font-family: var(--sans);
@@ -110,7 +109,7 @@ export default async function SatgatLayout({
         }
         .satgat-topbar .nav-link:hover {
           color: var(--brand, #9B1B1B);
-          background: rgba(155, 27, 27, 0.04);
+          background: #F1E5E2;
         }
         .satgat-topbar .nav-link.is-primary {
           background: var(--near-black);
@@ -122,6 +121,8 @@ export default async function SatgatLayout({
         @media (max-width: 600px) {
           .satgat-topbar { padding: 12px 18px; }
           .satgat-topbar .brand-tag { display: none; }
+          .satgat-topbar .topnav .nav-link:not(.is-primary) { display: none; }
+          .satgat-topbar .nav-link.is-primary { padding: 8px 12px; }
         }
       `}} />
     </div>

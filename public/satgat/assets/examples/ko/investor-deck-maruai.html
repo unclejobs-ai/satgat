@@ -161,6 +161,64 @@
     table.data td.num { font-family: var(--serif); color: var(--dan); font-weight: 700; text-align: right; white-space: nowrap; }
     table.data tr:last-child td { border-bottom: 0; }
 
+    /* ---------- 문서 안 도표 ---------- */
+    .viz {
+      display: block;
+      margin: 18px 0 0;
+      padding: 13px 14px 12px;
+      background: var(--ivory);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      contain: paint;
+      isolation: isolate;
+    }
+    .viz-title {
+      margin: 0 0 7px;
+      font-family: var(--sans);
+      font-size: 11px;
+      line-height: 1.35;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--jade);
+    }
+    .viz svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+      shape-rendering: geometricPrecision;
+    }
+    .viz text {
+      font-family: var(--sans);
+      fill: var(--muted);
+      font-size: 10px;
+      dominant-baseline: auto;
+    }
+    .viz text.value {
+      font-family: var(--serif);
+      font-size: 12px;
+      font-weight: 700;
+      fill: var(--dan);
+    }
+    .viz text.flow-no {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      fill: #FFFFFB;
+    }
+    .viz-caption {
+      margin: 7px 0 0;
+      font-family: var(--sans);
+      font-size: 11px;
+      line-height: 1.48;
+      color: var(--stone);
+    }
+    .viz-compact { padding: 11px 12px 10px; margin-top: 14px; }
+    .viz-wide { margin: 18px 0; }
+    .viz-newsletter { margin: 18px 0 16px; }
+    .viz-op { margin: 0; align-self: stretch; }
+
     /* ---------- 콜로폰 ---------- */
     .colophon { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-family: var(--sans); font-size: 11px; color: var(--stone); letter-spacing: .04em; }
     .colophon .mark { color: var(--dan); font-weight: 700; letter-spacing: .12em; }
@@ -173,24 +231,198 @@
     .block h3 { margin: 4px 0 8px; color: var(--ink); font-size: 16.5px; font-weight: 700; }
     .block p { font-size: 13.5px; line-height: 1.62; margin: 0; color: var(--body); }
 
+    /* 도표 포함 고밀도 A4 */
+    .product-sheet { padding: 16mm 19mm 12mm; }
+    .product-sheet h1 { font-size: 39px; }
+    .product-sheet .rule { margin: 20px 0; }
+    .product-sheet .lead { font-size: 14.5px; line-height: 1.62; }
+    .product-sheet .block-grid { gap: 13px; margin-top: 14px; }
+    .product-sheet .block { padding: 15px; }
+    .product-sheet .block p { font-size: 12.8px; line-height: 1.55; }
+    .product-sheet .two { gap: 24px; }
+    .product-sheet .two[style] { margin-top: 20px !important; }
+    .product-sheet table.data td { padding: 9px 0; font-size: 13px; }
+    .product-sheet .gold-div { margin: 14px 0; }
+    .product-sheet .colophon { margin-top: 16px; }
+
+    .profile-sheet { padding: 18mm 20mm 14mm; }
+    .profile-sheet h1 { font-size: 38px; }
+    .profile-sheet .quote { margin: 18px 0; }
+    .profile-sheet .two.even[style] { margin-top: 20px !important; }
+    .profile-sheet .history-row { padding: 10px 0; }
+    .profile-sheet .section { margin-top: 20px; }
+
+    .proposal-sheet { padding: 16mm 19mm 13mm; }
+    .proposal-sheet h1 { font-size: 34px; }
+    .proposal-sheet .subtitle { font-size: 15px; }
+    .proposal-sheet .metrics { margin: 17px 0; gap: 10px; }
+    .proposal-sheet .metric { padding: 11px 12px 10px; }
+    .proposal-sheet .metric b { font-size: 22px; }
+    .proposal-sheet .viz-wide { margin: 13px 0 15px; }
+    .proposal-sheet .viz-wide svg { height: 185px; }
+    .proposal-body { display: grid; grid-template-columns: .92fr 1.08fr; gap: 17px; align-items: start; }
+    .proposal-blocks { display: grid; gap: 10px; }
+    .proposal-blocks .block { padding: 13px 14px; }
+    .proposal-blocks .block h3 { font-size: 15px; margin-bottom: 5px; }
+    .proposal-blocks .block p { font-size: 12px; line-height: 1.45; }
+    .proposal-schedule h2.bar { margin-bottom: 10px; }
+    .proposal-schedule table.data { margin-top: 8px; }
+    .proposal-schedule table.data th { font-size: 10px; letter-spacing: .1em; }
+    .proposal-schedule table.data td { padding: 8px 0; font-size: 12.2px; line-height: 1.45; }
+    .proposal-sheet .colophon { margin-top: 18px; }
+
+    .newsletter-sheet { padding: 20mm 19mm 16mm; }
+    .newsletter-sheet .masthead { padding-right: 25mm; }
+    .newsletter-sheet .masthead .mh-title { font-size: 32px; }
+    .nl-feature-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 22px; align-items: start; margin-top: 18px; }
+    .nl-feature-grid .nl-lead { margin-top: 0; }
+    .newsletter-sheet .nl-lead h2 { font-size: 22px; }
+    .newsletter-sheet .nl-lead p { font-size: 13.5px; line-height: 1.62; }
+    .newsletter-sheet .gold-div { margin: 17px 0; }
+    .newsletter-sheet .nl-cols { gap: 20px; }
+    .newsletter-sheet .nl-item { padding-top: 10px; }
+    .newsletter-sheet .nl-item h3 { font-size: 14.5px; }
+    .newsletter-sheet .nl-item p { font-size: 12.4px; line-height: 1.52; }
+    .newsletter-sheet .nl-aside { padding: 13px 16px; margin-top: 18px; }
+    .newsletter-sheet .colophon { margin-top: 21px; }
+
     /* 16:9 덱 */
-    .deck-page { page: deck; position: relative; width: 297mm; height: 167mm; margin: 26px auto; padding: 24mm 26mm; background:
-        radial-gradient(120% 90% at 90% -10%, rgba(46,107,94,.05), transparent 48%), var(--paper);
-      border: 1px solid var(--line); box-shadow: 0 24px 70px -28px rgba(28,25,22,.34); overflow: hidden; }
-    .deck-page:after { content: attr(data-no) " / " attr(data-of); position: absolute; right: 26mm; bottom: 15mm; font-family: var(--sans); color: var(--stone); font-size: 13px; letter-spacing: .12em; }
-    .deck-page .seal { right: 26mm; top: 24mm; }
-    .deck-cover { display: flex; flex-direction: column; justify-content: center; }
-    .deck-title { font-size: 58px; font-weight: 800; line-height: 1.08; letter-spacing: -.015em; max-width: 22ch; }
-    .deck-cover .deck-title { font-size: 76px; }
-    .deck-lead { font-size: 22px; color: var(--muted); max-width: 50ch; margin-top: 16px; line-height: 1.45; }
-    .deck-cover .deck-lead { font-size: 26px; margin-top: 22px; }
+    .deck-page {
+      page: deck;
+      position: relative;
+      width: 297mm;
+      height: 167mm;
+      margin: 26px auto;
+      padding: 22mm 24mm 18mm;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 70px -28px rgba(28,25,22,.34);
+      overflow: hidden;
+    }
+    .deck-page:before {
+      content: "";
+      position: absolute;
+      left: 24mm;
+      right: 24mm;
+      top: 17mm;
+      height: 2px;
+      background: var(--ink);
+    }
+    .deck-page:after { content: attr(data-no) " / " attr(data-of); position: absolute; right: 24mm; bottom: 12mm; font-family: var(--sans); color: var(--stone); font-size: 12px; letter-spacing: .14em; }
+    .deck-page .seal { right: 24mm; top: 23mm; width: 15mm; height: 15mm; font-size: 22px; }
+    .deck-kicker,
+    .deck-slide-label {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .22em;
+      color: var(--stone);
+      text-transform: uppercase;
+    }
+    .deck-slide-label { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .deck-slide-label b {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 24px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--dan);
+      letter-spacing: .08em;
+    }
+    .deck-cover {
+      display: grid;
+      grid-template-columns: 1fr 250px;
+      gap: 48px;
+      align-items: end;
+    }
+    .deck-cover:before { background: var(--gold); }
+    .deck-cover-copy { align-self: center; padding-top: 18mm; }
+    .deck-title {
+      margin: 0;
+      padding-right: 0;
+      font-family: var(--batang);
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: 0;
+      max-width: 19ch;
+      text-wrap: balance;
+    }
+    .deck-cover .deck-title {
+      font-family: var(--serif);
+      font-size: 84px;
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .deck-lead { font-size: 21px; color: var(--muted); max-width: 42ch; margin-top: 18px; line-height: 1.48; }
+    .deck-cover .deck-lead { font-size: 25px; margin-top: 24px; }
+    .deck-cover-panel {
+      align-self: center;
+      background: var(--ivory);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 22px 24px;
+      font-family: var(--sans);
+      color: var(--muted);
+    }
+    .deck-cover-panel b {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: .2em;
+    }
+    .deck-cover-panel span {
+      display: block;
+      padding: 9px 0;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      letter-spacing: .03em;
+    }
     .deck-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 34px; }
-    .deck-card { background: var(--ivory); border: 1px solid var(--line); border-radius: 11px; padding: 22px; }
-    .deck-card h4 { margin: 0 0 9px; font-size: 18px; font-weight: 700; color: var(--dan); }
-    .deck-card p { font-size: 15px; line-height: 1.55; margin: 0; color: var(--body); }
-    .deck-metrics { display: flex; gap: 40px; margin-top: 36px; }
-    .deck-metrics div b { display: block; font-family: var(--serif); font-size: 44px; font-weight: 800; color: var(--dan); line-height: 1; }
-    .deck-metrics div span { font-family: var(--sans); font-size: 14px; color: var(--muted); }
+    .deck-card { background: var(--ivory); border: 1px solid var(--line); border-radius: 8px; padding: 20px; }
+    .deck-card h4 { margin: 0 0 8px; font-size: 17px; font-weight: 700; color: var(--dan); }
+    .deck-card p { font-size: 14px; line-height: 1.52; margin: 0; color: var(--body); }
+    .deck-metrics { display: flex; gap: 34px; margin-top: 31px; }
+    .deck-metrics div b { display: block; font-family: var(--serif); font-size: 42px; font-weight: 800; color: var(--dan); line-height: 1; letter-spacing: 0; }
+    .deck-metrics div span { display: block; margin-top: 7px; font-family: var(--sans); font-size: 13px; color: var(--muted); line-height: 1.35; }
+    .deck-page.has-visual {
+      display: grid;
+      grid-template-columns: .86fr 1.14fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .deck-page.has-visual .deck-copy { min-width: 0; }
+    .deck-page.has-visual .deck-title {
+      font-size: 32px;
+      line-height: 1.2;
+      max-width: 18ch;
+      padding-right: 0;
+      font-weight: 700;
+    }
+    .deck-page.has-visual .deck-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+    .deck-page.has-visual .deck-card { padding: 13px 15px; }
+    .deck-page.has-visual .deck-card h4 { font-size: 15px; }
+    .deck-page.has-visual .deck-card p { font-size: 12.6px; }
+    .deck-page.has-visual .deck-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+    .deck-page.has-visual .deck-metrics div b { font-size: 31px; }
+    .deck-page.has-visual .deck-metrics div span { font-size: 11.5px; }
+    .viz-deck {
+      margin: 0;
+      min-width: 0;
+      padding: 20px 22px 17px;
+      border-radius: 10px;
+    }
+    .viz-deck .viz-title { font-size: 12px; }
+    .viz-deck text { font-size: 11px; }
+    .viz-deck text.value { font-size: 13px; }
 
     /* 명함 8-up 대지 + 단일 카드 미리보기 */
     .card-stage { display: flex; flex-direction: column; gap: 7mm; align-items: center; margin-top: 8mm; }
@@ -247,10 +479,18 @@
     .work .wb p { font-family: var(--sans); font-size: 11.5px; color: var(--muted); margin: 0; line-height: 1.5; }
 
     /* 브랜드 원페이지 (가로) */
+    .op-showcase { display: grid; grid-template-columns: 1fr .82fr; gap: 34px; align-items: center; margin-top: 8px; }
     .op-hero { font-family: var(--serif); font-size: 40px; font-weight: 800; line-height: 1.2; max-width: 24ch; letter-spacing: -.01em; }
     .op-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 6px; }
     .op-pillar h3 { font-size: 17px; font-weight: 700; color: var(--dan); margin: 0 0 7px; padding-top: 12px; border-top: 2px solid var(--ink); }
     .op-pillar p { font-size: 13.5px; line-height: 1.6; margin: 0; }
+    .onepager-sheet { padding: 8mm 20mm; }
+    .onepager-sheet .op-showcase { gap: 28px; }
+    .onepager-sheet .op-hero { font-size: 34px; }
+    .onepager-sheet .viz-op svg { height: 160px; }
+    .onepager-sheet .op-grid { gap: 18px; margin-top: 18px; }
+    .onepager-sheet .metrics { margin: 16px 0; }
+    .onepager-sheet .colophon { margin-top: 22px; }
 
     /* 브랜드 스토리북 */
     .sb-figure { aspect-ratio: 21/9; margin: 18px 0; background:
@@ -290,7 +530,7 @@
       .sheet, .sheet.land, .deck-page, .prompt-panel, .prompt-panel.land, .prompt-panel.deck { width: calc(100vw - 24px); }
       .sheet, .sheet.land { min-height: auto; padding: 30px; }
       .deck-page { height: auto; min-height: 56vw; padding: 30px; }
-      .two, .two.even, .nl-cols, .block-grid, .deck-grid, .works, .op-grid, .pf-head { grid-template-columns: 1fr; }
+      .two, .two.even, .nl-cols, .nl-feature-grid, .block-grid, .proposal-body, .deck-grid, .deck-cover, .deck-page.has-visual, .deck-page.has-visual .deck-metrics, .works, .op-grid, .op-showcase, .pf-head { grid-template-columns: 1fr; }
       .cards { grid-template-columns: 1fr; }
     }
     @media print {
@@ -306,18 +546,150 @@
 </head>
 <body>
 <section class="deck-page deck-cover" data-no="01" data-of="06"><span class="seal gold">投</span>
-    <p class="eyebrow">마루AI · Seed Round · 2026</p>
-    <h1 class="deck-title">마루AI</h1>
-    <p class="deck-lead">중소기업 문서를 10분 안에 실무 양식으로 바꿉니다.</p></section><section class="deck-page" data-no="02" data-of="06">
-        <p class="eyebrow">마루AI · 문제</p>
-        <h1 class="deck-title">보고서·제안서·공문이 여전히 담당자의 야근과 복붙으로 만들어집니다.</h1><div class="deck-grid"><div class="deck-card"><h4>양식마다 다른 문체</h4><p>부서·문서마다 톤이 흩어져 검토에서 다시 손봅니다.</p></div><div class="deck-card"><h4>검토 기준 부재</h4><p>무엇이 '잘 쓴 문서'인지 합의된 기준이 없습니다.</p></div><div class="deck-card"><h4>전환 품질 불안</h4><p>PDF로 내보내면 표·줄간격이 깨지기 일쑤입니다.</p></div></div></section><section class="deck-page" data-no="03" data-of="06">
-        <p class="eyebrow">마루AI · 해결책</p>
-        <h1 class="deck-title">업종별 템플릿, 검증 가능한 JSON, 브라우저 렌더링을 하나의 흐름으로 묶습니다.</h1><div class="deck-grid"><div class="deck-card"><h4>자연어 brief</h4><p>한 문장만 적으면 문서 골격이 잡힙니다.</p></div><div class="deck-card"><h4>구조화 데이터</h4><p>모든 항목이 검증된 JSON으로 채워집니다.</p></div><div class="deck-card"><h4>인쇄 가능한 결과</h4><p>디자인 제약이 품질을 보장합니다.</p></div></div></section><section class="deck-page" data-no="04" data-of="06">
-        <p class="eyebrow">마루AI · 시장</p>
-        <h1 class="deck-title">국내 중소기업 771만 곳 중 반복 문서 업무가 많은 1차 타깃을 공략합니다.</h1><div class="deck-metrics"><div><b>771만</b><span>국내 중소기업 수</span></div><div><b>2.4조</b><span>문서 작성 인건비/년(추정)</span></div><div><b>38%</b><span>반복 문서 비중</span></div></div></section><section class="deck-page" data-no="05" data-of="06">
-        <p class="eyebrow">마루AI · Traction</p>
-        <h1 class="deck-title">비공개 베타 6주 동안 83개 팀이 1,420건의 문서를 만들었습니다.</h1><div class="deck-metrics"><div><b>1,420건</b><span>생성 문서</span></div><div><b>52%</b><span>주간 재방문</span></div><div><b>38%</b><span>유료 전환 의향</span></div></div></section><section class="deck-page" data-no="06" data-of="06">
-        <p class="eyebrow">마루AI · 요청</p>
-        <h1 class="deck-title">Seed 7억 원으로 업종 템플릿 40종, 파트너 세일즈, 보안 검토 체계를 구축합니다.</h1><div class="deck-grid"><div class="deck-card"><h4>18개월 runway</h4><p>손익분기까지의 자금 계획을 확보합니다.</p></div><div class="deck-card"><h4>B2B 세일즈 2명</h4><p>파트너 채널과 직판을 동시에 엽니다.</p></div><div class="deck-card"><h4>문서 QA 자동화</h4><p>품질을 사람이 아닌 시스템이 보증합니다.</p></div></div></section><aside class="prompt-panel deck"><b>입력 예시</b> 한국 중소기업을 위한 문서 자동화 SaaS 마루AI의 Seed 투자 IR 덱을 만들어줘. 문제, 해결책, 시장, traction, 요청 금액이 한눈에 보이게.</aside>
+    <div class="deck-cover-copy">
+      <p class="deck-kicker">Seed Round · 2026</p>
+      <h1 class="deck-title">마루AI</h1>
+      <p class="deck-lead">중소기업 문서를 10분 안에 실무 양식으로 바꿉니다.</p>
+    </div>
+    <aside class="deck-cover-panel">
+      <b>IR OUTLINE</b>
+      <span>Problem</span>
+      <span>Solution</span>
+      <span>Market</span>
+      <span>Traction</span>
+      <span>Ask</span>
+    </aside>
+  </section><section class="deck-page has-visual" data-no="02" data-of="06">
+        <div class="deck-copy"><p class="deck-slide-label"><b>02</b><span>마루AI · 문제</span></p>
+        <h1 class="deck-title">보고서·제안서·공문이 여전히 담당자의 야근과 복붙으로 만들어집니다.</h1><div class="deck-grid"><div class="deck-card"><h4>양식마다 다른 문체</h4><p>부서·문서마다 톤이 흩어져 검토에서 다시 손봅니다.</p></div><div class="deck-card"><h4>검토 기준 부재</h4><p>무엇이 '잘 쓴 문서'인지 합의된 기준이 없습니다.</p></div><div class="deck-card"><h4>전환 품질 불안</h4><p>PDF로 내보내면 표·줄간격이 깨지기 일쑤입니다.</p></div></div></div><figure class="viz viz-deck">
+    <figcaption class="viz-title">현재 문서 제작 병목</figcaption>
+    <svg viewBox="0 0 364 198" role="img" aria-label="현재 문서 제작 병목"><g>
+        <rect x="36" y="24" width="292" height="28" rx="8" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="36" y="24" width="34" height="28" rx="8" fill="var(--dan)"></rect>
+        <text x="53" y="43" class="flow-no" text-anchor="middle">01</text>
+        <text x="82" y="42" class="value">기존 파일 복사</text>
+        <text x="246" y="42" text-anchor="middle">양식 의존</text>
+        <path d="M182 50 L182 60" stroke="var(--line)" stroke-width="2" stroke-linecap="round"></path>
+             <path d="M176 56 L182 62 L188 56" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </g><g>
+        <rect x="36" y="66" width="292" height="28" rx="8" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="36" y="66" width="34" height="28" rx="8" fill="var(--jade)"></rect>
+        <text x="53" y="85" class="flow-no" text-anchor="middle">02</text>
+        <text x="82" y="84" class="value">부서별 문체 수정</text>
+        <text x="246" y="84" text-anchor="middle">재작업</text>
+        <path d="M182 92 L182 102" stroke="var(--line)" stroke-width="2" stroke-linecap="round"></path>
+             <path d="M176 98 L182 104 L188 98" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </g><g>
+        <rect x="36" y="108" width="292" height="28" rx="8" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="36" y="108" width="34" height="28" rx="8" fill="var(--dan)"></rect>
+        <text x="53" y="127" class="flow-no" text-anchor="middle">03</text>
+        <text x="82" y="126" class="value">검토 기준 확인</text>
+        <text x="246" y="126" text-anchor="middle">담당자 감</text>
+        <path d="M182 134 L182 144" stroke="var(--line)" stroke-width="2" stroke-linecap="round"></path>
+             <path d="M176 140 L182 146 L188 140" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </g><g>
+        <rect x="36" y="150" width="292" height="28" rx="8" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="36" y="150" width="34" height="28" rx="8" fill="var(--gold)"></rect>
+        <text x="53" y="169" class="flow-no" text-anchor="middle">04</text>
+        <text x="82" y="168" class="value">PDF 변환</text>
+        <text x="246" y="168" text-anchor="middle">줄간격 깨짐</text>
+        
+      </g></svg>
+    <p class="viz-caption">문제는 작성 도구가 아니라, 문서 품질을 보증하는 구조가 없다는 점입니다.</p>
+  </figure></section><section class="deck-page has-visual" data-no="03" data-of="06">
+        <div class="deck-copy"><p class="deck-slide-label"><b>03</b><span>마루AI · 해결책</span></p>
+        <h1 class="deck-title">업종별 템플릿, 검증 가능한 JSON, 브라우저 렌더링을 하나의 흐름으로 묶습니다.</h1><div class="deck-grid"><div class="deck-card"><h4>자연어 brief</h4><p>한 문장만 적으면 문서 골격이 잡힙니다.</p></div><div class="deck-card"><h4>구조화 데이터</h4><p>모든 항목이 검증된 JSON으로 채워집니다.</p></div><div class="deck-card"><h4>인쇄 가능한 결과</h4><p>디자인 제약이 품질을 보장합니다.</p></div></div></div><figure class="viz viz-deck">
+    <figcaption class="viz-title">마루AI 생성 파이프라인</figcaption>
+    <svg viewBox="0 0 364 184" role="img" aria-label="마루AI 생성 파이프라인">
+      <path d="M182 25 L182 166" stroke="var(--line)" stroke-width="1.4" stroke-dasharray="4 5"></path>
+      <g>
+        <rect x="44.0" y="25" width="276.0" height="27" rx="7" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="44.0" y="25" width="6" height="27" rx="3" fill="var(--dan)"></rect>
+        <text x="66" y="43" class="value">자연어 brief</text>
+        <text x="292" y="43" text-anchor="end">입력</text>
+      </g><g>
+        <rect x="55.0" y="61" width="254.0" height="27" rx="7" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="55.0" y="61" width="6" height="27" rx="3" fill="var(--jade)"></rect>
+        <text x="77" y="79" class="value">슬롯 JSON</text>
+        <text x="288" y="79" text-anchor="end">검증</text>
+      </g><g>
+        <rect x="66.0" y="97" width="232.0" height="27" rx="7" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="66.0" y="97" width="6" height="27" rx="3" fill="var(--gold)"></rect>
+        <text x="88" y="115" class="value">템플릿 엔진</text>
+        <text x="284" y="115" text-anchor="end">조립</text>
+      </g><g>
+        <rect x="77.0" y="133" width="210.0" height="27" rx="7" fill="#FFFFFB" stroke="var(--line)"></rect>
+        <rect x="77.0" y="133" width="6" height="27" rx="3" fill="#D6D9CD"></rect>
+        <text x="99" y="151" class="value">브라우저 렌더</text>
+        <text x="280" y="151" text-anchor="end">인쇄</text>
+      </g>
+    </svg>
+    <p class="viz-caption">작성, 검증, 렌더링을 분리해 문서마다 같은 품질 기준을 적용합니다.</p>
+  </figure></section><section class="deck-page has-visual" data-no="04" data-of="06">
+        <div class="deck-copy"><p class="deck-slide-label"><b>04</b><span>마루AI · 시장</span></p>
+        <h1 class="deck-title">국내 중소기업 771만 곳 중 반복 문서 업무가 많은 1차 타깃을 공략합니다.</h1><div class="deck-metrics"><div><b>771만</b><span>국내 중소기업 수</span></div><div><b>2.4조</b><span>문서 작성 인건비/년(추정)</span></div><div><b>38%</b><span>반복 문서 비중</span></div></div></div><figure class="viz viz-deck">
+    <figcaption class="viz-title">1차 타깃 시장 필터</figcaption>
+    <svg viewBox="0 0 364 172" role="img" aria-label="1차 타깃 시장 필터">
+      <line x1="32" y1="132" x2="332" y2="132" stroke="var(--line)" stroke-width="1.5"></line>
+      <g>
+        <rect x="32.0" y="22.0" width="90.7" height="110.0" rx="5" fill="var(--dan)"></rect>
+        <text x="77.3" y="14.0" class="value" text-anchor="middle">771만</text>
+        <text x="77.3" y="154" text-anchor="middle">중소기업</text>
+      </g><g>
+        <rect x="136.7" y="90.2" width="90.7" height="41.8" rx="5" fill="var(--jade)"></rect>
+        <text x="182.0" y="82.2" class="value" text-anchor="middle">293만</text>
+        <text x="182.0" y="154" text-anchor="middle">반복 문서</text>
+      </g><g>
+        <rect x="241.3" y="126.0" width="90.7" height="6.0" rx="5" fill="var(--gold)"></rect>
+        <text x="286.7" y="118.0" class="value" text-anchor="middle">42만</text>
+        <text x="286.7" y="154" text-anchor="middle">초기 타깃</text>
+      </g>
+    </svg>
+    <p class="viz-caption">반복 문서 빈도와 결재 절차가 있는 팀을 우선 공략합니다.</p>
+  </figure></section><section class="deck-page has-visual" data-no="05" data-of="06">
+        <div class="deck-copy"><p class="deck-slide-label"><b>05</b><span>마루AI · Traction</span></p>
+        <h1 class="deck-title">비공개 베타 6주 동안 83개 팀이 1,420건의 문서를 만들었습니다.</h1><div class="deck-metrics"><div><b>1,420건</b><span>생성 문서</span></div><div><b>52%</b><span>주간 재방문</span></div><div><b>38%</b><span>유료 전환 의향</span></div></div></div><figure class="viz viz-deck">
+    <figcaption class="viz-title">주차별 생성 문서</figcaption>
+    <svg viewBox="0 0 364 176" role="img" aria-label="주차별 생성 문서">
+      <line x1="34" y1="24" x2="34" y2="136" stroke="var(--line)" stroke-width="1.2"></line>
+      <line x1="34" y1="136" x2="328" y2="136" stroke="var(--line)" stroke-width="1.2"></line>
+      <polyline points="34.0,126.5 132.0,115.5 230.0,79.2 328.0,24.0" fill="none" stroke="var(--dan)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      <g>
+        <circle cx="34.0" cy="126.5" r="4.5" fill="var(--dan)"></circle>
+        <text x="34.0" y="158" text-anchor="middle">1주</text>
+      </g><g>
+        <circle cx="132.0" cy="115.5" r="4.5" fill="var(--dan)"></circle>
+        <text x="132.0" y="158" text-anchor="middle">2주</text>
+      </g><g>
+        <circle cx="230.0" cy="79.2" r="4.5" fill="var(--dan)"></circle>
+        <text x="230.0" y="158" text-anchor="middle">4주</text>
+      </g><g>
+        <circle cx="328.0" cy="24.0" r="4.5" fill="var(--dan)"></circle>
+        <text x="328.0" y="158" text-anchor="middle">6주</text>
+      </g>
+    </svg>
+    <p class="viz-caption">팀 초대 이후 문서 생성량이 누적 기준 11.8배 증가했습니다.</p>
+  </figure></section><section class="deck-page has-visual" data-no="06" data-of="06">
+        <div class="deck-copy"><p class="deck-slide-label"><b>06</b><span>마루AI · 요청</span></p>
+        <h1 class="deck-title">Seed 7억 원으로 업종 템플릿 40종, 파트너 세일즈, 보안 검토 체계를 구축합니다.</h1><div class="deck-grid"><div class="deck-card"><h4>18개월 runway</h4><p>손익분기까지의 자금 계획을 확보합니다.</p></div><div class="deck-card"><h4>B2B 세일즈 2명</h4><p>파트너 채널과 직판을 동시에 엽니다.</p></div><div class="deck-card"><h4>문서 QA 자동화</h4><p>품질을 사람이 아닌 시스템이 보증합니다.</p></div></div></div><figure class="viz viz-deck">
+    <figcaption class="viz-title">Seed 자금 사용 계획</figcaption>
+    <svg viewBox="0 0 364 121" role="img" aria-label="Seed 자금 사용 계획"><g>
+        <text x="18" y="33" >템플릿 R&amp;D</text>
+        <rect x="112" y="20" width="196" height="15" rx="7.5" fill="#F2F2EC"></rect>
+        <rect x="112" y="20" width="190.0" height="15" rx="7.5" fill="var(--dan)"></rect>
+        <text x="322" y="32" class="value">40%</text>
+      </g><g>
+        <text x="18" y="64" >세일즈</text>
+        <rect x="112" y="51" width="196" height="15" rx="7.5" fill="#F2F2EC"></rect>
+        <rect x="112" y="51" width="152.0" height="15" rx="7.5" fill="var(--jade)"></rect>
+        <text x="322" y="63" class="value">32%</text>
+      </g><g>
+        <text x="18" y="95" >보안·QA</text>
+        <rect x="112" y="82" width="196" height="15" rx="7.5" fill="#F2F2EC"></rect>
+        <rect x="112" y="82" width="133.0" height="15" rx="7.5" fill="var(--gold)"></rect>
+        <text x="322" y="94" class="value">28%</text>
+      </g></svg>
+    
+  </figure></section><aside class="prompt-panel deck"><b>입력 예시</b> 한국 중소기업을 위한 문서 자동화 SaaS 마루AI의 Seed 투자 IR 덱을 만들어줘. 문제, 해결책, 시장, traction, 요청 금액이 한눈에 보이게.</aside>
 </body>
 </html>

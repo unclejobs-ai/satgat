@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
+import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
@@ -31,6 +32,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
   const promotion = String(s['promotion'] ?? '');
   const cta = String(s['cta'] ?? '');
   const unsubscribe = String(s['unsubscribe'] ?? '');
+  const issueChart = s['issue_chart'];
 
   const articles = normalizeListItems(s['articles'], {
     titleKeys: ['title', 'headline', 'name'],
@@ -286,6 +288,12 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
               </p>
             </div>
           </div>
+
+          {Boolean(issueChart) && (
+            <section style={{ marginBottom: 30 }}>
+              <SatgatVisual visual={issueChart} compact />
+            </section>
+          )}
 
           {secondaryArticles.length > 0 && (
             <section style={{ marginBottom: 30 }}>

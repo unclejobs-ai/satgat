@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>삿갓(笠) 紙: 한국형 AI 문서 디자인 시스템</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="삿갓 - 한지(韓紙) 위에 먹(墨)글씨. 단청(丹靑) 단일 강조색, 명조 주도 위계, 한국형 여백.">
+  <meta name="description" content="삿갓 - 한지 위에 먹글씨. 단청 단일 강조색, 명조 주도 위계, 한국형 여백. 차트와 도표까지 자연어로 만드는 한국 문서 생성기.">
   <link rel="icon" href="/satgat/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/satgat/icon-512.png">
   <link rel="apple-touch-icon" href="/satgat/apple-touch-icon.png">
@@ -19,7 +19,7 @@
   <link rel="alternate" hreflang="ko" href="https://satgat.vercel.app/ko">
   <meta property="og:type" content="website">
   <meta property="og:title" content="삿갓: 한지(韓紙) 위에 먹(墨)글씨. AI가 옮겨 적는 한국 문서 생성기">
-  <meta property="og:description" content="삿갓 - 한지(韓紙) 위에 먹(墨)글씨. 단청(丹靑) 단일 강조색, 명조 주도 위계, 한국형 여백.">
+  <meta property="og:description" content="삿갓 - 한지 위에 먹글씨. 단청 단일 강조색, 명조 주도 위계, 한국형 여백. 차트와 도표까지 자연어로 만드는 한국 문서 생성기.">
   <meta property="og:url" content="https://satgat.vercel.app/ko">
   <meta property="og:image" content="https://satgat.vercel.app/satgat/assets/og-cover.png">
   <meta property="og:image:width" content="1200">
@@ -27,14 +27,14 @@
   <meta property="og:locale" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="삿갓: 한지(韓紙) 위에 먹(墨)글씨. AI가 옮겨 적는 한국 문서 생성기">
-  <meta name="twitter:description" content="삿갓 - 한지(韓紙) 위에 먹(墨)글씨. 단청(丹靑) 단일 강조색, 명조 주도 위계, 한국형 여백.">
+  <meta name="twitter:description" content="삿갓 - 한지 위에 먹글씨. 단청 단일 강조색, 명조 주도 위계, 한국형 여백. 차트와 도표까지 자연어로 만드는 한국 문서 생성기.">
   <meta name="twitter:image" content="https://satgat.vercel.app/satgat/assets/og-cover.png">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "삿갓",
-    "description": "한지(韓紙) 위에 먹(墨)글씨. AI가 옮겨 적는 한국 문서 생성기. 단청(丹靑) 단일 강조색, 명조 위계, 한국형 여백.",
+    "description": "한지 위에 먹글씨. AI가 옮겨 적는 한국 문서 생성기. 단청 단일 강조색, 명조 위계, 한국형 여백, 차트와 도표 슬롯.",
     "url": "https://satgat.vercel.app",
     "applicationCategory": "DesignApplication",
     "operatingSystem": "Any",
@@ -69,7 +69,7 @@
         "name": "삿갓으로 무엇을 만들 수 있나요?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "14가지 한국 문서: 이력서(履), 자기소개서(介), 명함(名), 브랜드 원페이지(品), 제품 소개서(製), 회사 소개서(社), 회사 제안서(案), 투자 IR Deck(投), 브랜드 스토리북(話), 청첩장(牒), 연하장(賀), 뉴스레터(報), 포트폴리오(作), 보고서(報告). 브라우저 인쇄로 PDF 저장 가능."
+          "text": "14가지 한국 문서: 이력서(履), 자기소개서(介), 명함(名), 브랜드 원페이지(品), 제품 소개서(製), 회사 소개서(社), 회사 제안서(案), 투자 IR Deck(投), 브랜드 스토리북(話), 청첩장(牒), 연하장(賀), 뉴스레터(報), 포트폴리오(作), 보고서(報告). 제안서·IR·회사 소개서 등에는 차트와 도표 슬롯을 함께 넣을 수 있습니다. 브라우저 인쇄로 PDF 저장 가능."
         }
       },
       {
@@ -116,6 +116,7 @@
       <span><i>Ink</i> 먹 #1C1916</span>
       <span><i>Serif</i> 나눔명조 · 고운바탕</span>
       <span><i>Documents</i> 한국 문서 14종</span>
+      <span><i>Visuals</i> 차트·도표 슬롯</span>
     </p>
     <p class="hero-cta-line">
       <a href="/ko/new" class="hero-cta-link">새 문서 만들기 →</a>
@@ -784,6 +785,463 @@
         <span style="font-family:var(--mono); font-size:10px; color:var(--stone); letter-spacing:0.08em; margin-top:4px;">A4 · 업무 보고</span>
       </a>
     </div>
+  </section>
+
+  <!-- ============ 차트와 도표 ============ -->
+  <section class="visual-system">
+    <div class="section-head">
+      <p class="section-num">0⅔ · 차트와 도표</p>
+      <h2 class="section-title">숫자와 구조도 같은 종이에</h2>
+      <p class="section-lede">제안서의 효과 폭포, IR의 성장 추이, 회사 소개서의 연혁, 브랜드 원페이지의 포지셔닝까지. 자연어 안에 “차트로 보여줘” 한 줄만 있으면 삿갓이 문장 옆에 읽히는 도표를 놓습니다.</p>
+    </div>
+
+    <div class="visual-scene-grid" aria-label="도표가 들어간 실제 문서 장면 샘플">
+      <a href="/ko/new?template=proposal" class="visual-scene-card">
+        <div class="visual-scene-sheet">
+          <p class="visual-scene-kicker">proposal</p>
+          <h3>도입 효과 보고</h3>
+          <p class="visual-scene-copy">제작 시간과 검수 비용을 한 흐름으로 정리합니다.</p>
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="300" height="160" fill="#F7F7F2"/>
+            <line x1="28" y1="76" x2="272" y2="76" stroke="#3A3833" stroke-width="1.4"/>
+            <rect x="42" y="34" width="28" height="42" fill="#3A3833"/>
+            <rect x="96" y="76" width="28" height="24" fill="#9B1B1B"/>
+            <rect x="150" y="76" width="28" height="42" fill="#9B1B1B"/>
+            <rect x="204" y="52" width="28" height="24" fill="#2E6B5E"/>
+            <text x="56" y="134" text-anchor="middle" font-size="9" fill="#4D4B46">기존</text>
+            <text x="110" y="134" text-anchor="middle" font-size="9" fill="#4D4B46">기획</text>
+            <text x="164" y="134" text-anchor="middle" font-size="9" fill="#4D4B46">작성</text>
+            <text x="218" y="134" text-anchor="middle" font-size="9" fill="#4D4B46">효과</text>
+          </svg>
+        </div>
+        <strong>효과 폭포가 들어간 제안서</strong>
+        <span>임원 보고용 숫자를 문장 옆에 바로 읽히게 배치합니다.</span>
+      </a>
+
+      <a href="/ko/new?template=investor-deck" class="visual-scene-card">
+        <div class="visual-scene-sheet">
+          <p class="visual-scene-kicker">investor deck</p>
+          <h3>월 생성 문서</h3>
+          <p class="visual-scene-copy">traction 페이지의 핵심 수치를 선형 흐름으로 보여줍니다.</p>
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="300" height="160" fill="#F7F7F2"/>
+            <line x1="30" y1="38" x2="270" y2="38" stroke="#D2D6CB" stroke-width="1"/>
+            <line x1="30" y1="76" x2="270" y2="76" stroke="#D2D6CB" stroke-width="1"/>
+            <line x1="30" y1="114" x2="270" y2="114" stroke="#D2D6CB" stroke-width="1"/>
+            <path d="M 34 114 L 84 104 L 134 82 L 184 58 L 266 36 L 266 126 L 34 126 Z" fill="#F1E5E2"/>
+            <path d="M 34 114 L 84 104 L 134 82 L 184 58 L 266 36" fill="none" stroke="#9B1B1B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="34" cy="114" r="4" fill="#9B1B1B"/>
+            <circle cx="134" cy="82" r="4" fill="#9B1B1B"/>
+            <circle cx="266" cy="36" r="5" fill="#9B1B1B"/>
+          </svg>
+        </div>
+        <strong>성장 추이가 들어간 IR 덱</strong>
+        <span>투자자가 먼저 보는 지표를 슬라이드 톤으로 정리합니다.</span>
+      </a>
+
+      <a href="/ko/new?template=company-profile" class="visual-scene-card">
+        <div class="visual-scene-sheet">
+          <p class="visual-scene-kicker">company profile</p>
+          <h3>연혁과 확장</h3>
+          <p class="visual-scene-copy">회사 소개의 시간 흐름을 한 줄 타임라인으로 놓습니다.</p>
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="300" height="160" fill="#F7F7F2"/>
+            <line x1="40" y1="78" x2="260" y2="78" stroke="#3A3833" stroke-width="1.6"/>
+            <circle cx="44" cy="78" r="5" fill="#3A3833"/>
+            <circle cx="110" cy="78" r="5" fill="#3A3833"/>
+            <circle cx="178" cy="78" r="5" fill="#3A3833"/>
+            <circle cx="258" cy="78" r="6" fill="#9B1B1B"/>
+            <text x="44" y="50" text-anchor="middle" font-size="9" fill="#4D4B46">파일럿</text>
+            <text x="110" y="110" text-anchor="middle" font-size="9" fill="#4D4B46">런칭</text>
+            <text x="178" y="50" text-anchor="middle" font-size="9" fill="#4D4B46">확장</text>
+            <text x="258" y="110" text-anchor="middle" font-size="9" fill="#4D4B46">전국</text>
+          </svg>
+        </div>
+        <strong>연혁 도표가 들어간 회사소개서</strong>
+        <span>연도와 사건이 인쇄 문서 안에서 같은 리듬으로 읽힙니다.</span>
+      </a>
+
+      <a href="/ko/new?template=brand-onepager" class="visual-scene-card">
+        <div class="visual-scene-sheet">
+          <p class="visual-scene-kicker">brand onepage</p>
+          <h3>브랜드 포지션</h3>
+          <p class="visual-scene-copy">격식과 현대성 사이의 위치를 사분면으로 정합니다.</p>
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="300" height="160" fill="#F7F7F2"/>
+            <rect x="46" y="26" width="208" height="108" fill="#FFFFFB" stroke="#D2D6CB" stroke-width="1"/>
+            <line x1="150" y1="26" x2="150" y2="134" stroke="#D2D6CB" stroke-width="1"/>
+            <line x1="46" y1="80" x2="254" y2="80" stroke="#D2D6CB" stroke-width="1"/>
+            <rect x="164" y="42" width="60" height="22" fill="#F1E5E2" stroke="#9B1B1B" stroke-width="1"/>
+            <text x="194" y="57" text-anchor="middle" font-size="10" fill="#1C1916">우리</text>
+            <text x="98" y="57" text-anchor="middle" font-size="9" fill="#4D4B46">전통</text>
+            <text x="98" y="108" text-anchor="middle" font-size="9" fill="#4D4B46">일상</text>
+            <text x="202" y="108" text-anchor="middle" font-size="9" fill="#4D4B46">선물</text>
+          </svg>
+        </div>
+        <strong>포지셔닝 도표가 들어간 원페이지</strong>
+        <span>브랜드 방향을 장식 대신 구조로 보여줍니다.</span>
+      </a>
+
+      <a href="/ko/new?template=product-brochure" class="visual-scene-card">
+        <div class="visual-scene-sheet">
+          <p class="visual-scene-kicker">product brochure</p>
+          <h3>특징 비교</h3>
+          <p class="visual-scene-copy">제품 강점을 가로 막대로 압축해 읽힙니다.</p>
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="300" height="160" fill="#F7F7F2"/>
+            <line x1="92" y1="34" x2="258" y2="34" stroke="#D2D6CB" stroke-width="1"/>
+            <line x1="92" y1="76" x2="258" y2="76" stroke="#D2D6CB" stroke-width="1"/>
+            <line x1="92" y1="118" x2="258" y2="118" stroke="#D2D6CB" stroke-width="1"/>
+            <text x="82" y="39" text-anchor="end" font-size="10" fill="#4D4B46">질감</text>
+            <text x="82" y="81" text-anchor="end" font-size="10" fill="#4D4B46">펼침</text>
+            <text x="82" y="123" text-anchor="end" font-size="10" fill="#4D4B46">내구</text>
+            <rect x="92" y="22" width="132" height="22" fill="#9B1B1B"/>
+            <rect x="92" y="64" width="104" height="22" fill="#4D4B46"/>
+            <rect x="92" y="106" width="150" height="22" fill="#2E6B5E"/>
+          </svg>
+        </div>
+        <strong>비교 차트가 들어간 제품 소개서</strong>
+        <span>스펙을 표만이 아니라 구매 판단의 리듬으로 정리합니다.</span>
+      </a>
+
+      <a href="/ko/new?template=newsletter" class="visual-scene-card">
+        <div class="visual-scene-sheet">
+          <p class="visual-scene-kicker">newsletter</p>
+          <h3>호별 구성</h3>
+          <p class="visual-scene-copy">섹션 비중을 도넛으로 요약해 편집감을 만듭니다.</p>
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="300" height="160" fill="#F7F7F2"/>
+            <circle cx="112" cy="82" r="48" fill="#E3EDE7"/>
+            <path d="M112 82 L112 34 A48 48 0 0 1 158 96 Z" fill="#9B1B1B"/>
+            <path d="M112 82 L158 96 A48 48 0 0 1 92 126 Z" fill="#B8954F"/>
+            <circle cx="112" cy="82" r="26" fill="#F7F7F2"/>
+            <rect x="190" y="44" width="12" height="12" fill="#9B1B1B"/>
+            <text x="210" y="54" font-size="9" fill="#4D4B46">큐레이션</text>
+            <rect x="190" y="72" width="12" height="12" fill="#B8954F"/>
+            <text x="210" y="82" font-size="9" fill="#4D4B46">행사</text>
+            <rect x="190" y="100" width="12" height="12" fill="#2E6B5E"/>
+            <text x="210" y="110" font-size="9" fill="#4D4B46">소식</text>
+          </svg>
+        </div>
+        <strong>요약 차트가 들어간 뉴스레터</strong>
+        <span>읽는 순서와 구성비가 한눈에 보입니다.</span>
+      </a>
+    </div>
+
+    <style>
+      html[lang='ko'] body main.page .visual-scene-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+        margin: 0 0 34px;
+      }
+      html[lang='ko'] body main.page .visual-scene-card {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        color: inherit;
+        text-decoration: none;
+      }
+      html[lang='ko'] body main.page .visual-scene-sheet {
+        min-height: 332px;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 18px 18px;
+        background: #FFFFFB;
+        border: 1px solid #D2D6CB;
+        border-radius: 6px;
+        box-shadow: 0 0 0 1px #F7F7F2;
+      }
+      html[lang='ko'] body main.page .visual-scene-kicker {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #6B6862;
+        margin: 0 0 10px;
+      }
+      html[lang='ko'] body main.page .visual-scene-sheet h3 {
+        font-family: var(--serif-display);
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #1C1916;
+        margin: 0 0 8px;
+      }
+      html[lang='ko'] body main.page .visual-scene-copy {
+        font-family: var(--serif);
+        font-size: 12.5px;
+        line-height: 1.62;
+        color: #4D4B46;
+        margin: 0 0 16px;
+      }
+      html[lang='ko'] body main.page .visual-scene-sheet svg {
+        width: 100%;
+        margin-top: auto;
+        border-top: 1px solid #D2D6CB;
+        padding-top: 16px;
+      }
+      html[lang='ko'] body main.page .visual-scene-card strong {
+        font-family: var(--serif-display);
+        font-size: 17px;
+        font-weight: 700;
+        color: #1C1916;
+        line-height: 1.25;
+      }
+      html[lang='ko'] body main.page .visual-scene-card span {
+        font-family: var(--serif);
+        font-size: 12.5px;
+        line-height: 1.62;
+        color: #4D4B46;
+      }
+      html[lang='ko'] body main.page .visual-scene-card:hover .visual-scene-sheet {
+        border-color: #1C1916;
+        transform: translateY(-2px);
+        transition: border-color 0.18s ease, transform 0.18s ease;
+      }
+      @media (max-width: 980px) {
+        html[lang='ko'] body main.page .visual-scene-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 560px) {
+        html[lang='ko'] body main.page > .hero .hero-tokens-flow span {
+          display: block;
+          margin-right: 0;
+          white-space: normal;
+        }
+        html[lang='ko'] body main.page .section-prompt-example {
+          margin: 0 0 26px;
+          max-width: 100%;
+        }
+        html[lang='ko'] body main.page .section-prompt-example code {
+          display: block;
+          margin-top: 8px;
+          padding: 9px 10px;
+          line-height: 1.62;
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+        html[lang='ko'] body main.page .satgat-samples,
+        html[lang='ko'] body main.page .demo-grid,
+        html[lang='ko'] body main.page .landing-grid {
+          grid-template-columns: 1fr !important;
+        }
+        html[lang='ko'] body main.page .visual-scene-grid {
+          grid-template-columns: 1fr;
+        }
+        html[lang='ko'] body main.page .visual-scene-sheet {
+          min-height: 286px;
+        }
+      }
+    </style>
+  </section>
+
+  <!-- ============ 완성형 예시 ============ -->
+  <section class="complete-examples">
+    <div class="section-head">
+      <p class="section-num">0⅞ · 완성형 예시</p>
+      <h2 class="section-title">한 문장이 실제 페이지가 되는 모습</h2>
+      <p class="section-lede">13종 결과물을 완성 페이지 단위로 나눠 봅니다. 각 카드는 실제 생성된 HTML과 PNG 예시로 연결됩니다.</p>
+    </div>
+
+    <div class="example-pack-cta">
+      <a href="/satgat/assets/examples/ko/index.html">완성 예시팩 전체 열기 →</a>
+    </div>
+
+    <div class="complete-example-groups">
+      <div class="complete-example-group">
+        <h3>개인 문서</h3>
+        <div class="complete-example-grid">
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/resume-kim-sumin.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/resume-kim-sumin.png" alt="김수민 이력서 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>이력서</i><strong>김수민 이력서</strong><em>A4 세로 · 단면</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/self-intro-yoon-hajin.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/self-intro-yoon-hajin.png" alt="윤하진 자기소개서 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>자기소개서</i><strong>윤하진 자기소개서</strong><em>A4 세로 · 4문항</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/business-card-parksangse.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/business-card-parksangse.png" alt="박상세 명함 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>명함</i><strong>박상세 명함</strong><em>90×55mm · 앞뒷면</em></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="complete-example-group">
+        <h3>브랜드·제품</h3>
+        <div class="complete-example-grid">
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/one-pager-baekja.html">
+            <span class="complete-example-shot is-land"><img src="/satgat/assets/examples/ko/one-pager-baekja.png" alt="백자 브랜드 원페이지 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>브랜드 원페이지</i><strong>백자 브랜드 원페이지</strong><em>A4 가로 · 1p</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/product-sheet-onjeong.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/product-sheet-onjeong.png" alt="온정 제품 소개서 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>제품 소개서</i><strong>온정 제품 소개서</strong><em>A4 세로 · 1p</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/company-profile-dalbit.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/company-profile-dalbit.png" alt="달빛식품 회사 소개서 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>회사 소개서</i><strong>달빛식품 회사 소개서</strong><em>A4 세로 · 1p</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/brand-storybook-sool.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/brand-storybook-sool.png" alt="술도가 한울 브랜드 스토리북 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>브랜드 스토리북</i><strong>술도가 한울 브랜드 스토리북</strong><em>A4 세로 · 1p</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/portfolio-studio-gyeol.html">
+            <span class="complete-example-shot is-land"><img src="/satgat/assets/examples/ko/portfolio-studio-gyeol.png" alt="스튜디오결 포트폴리오 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>포트폴리오</i><strong>스튜디오결 포트폴리오</strong><em>A4 가로 · 1p</em></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="complete-example-group">
+        <h3>제안·투자</h3>
+        <div class="complete-example-grid">
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/proposal-hanji-retail.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/proposal-hanji-retail.png" alt="한지 리테일 전환 제안서 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>제안서</i><strong>한지 리테일 전환 제안서</strong><em>A4 세로 · 1p</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/investor-deck-maruai.html">
+            <span class="complete-example-shot is-deck"><img src="/satgat/assets/examples/ko/investor-deck-maruai.png" alt="마루AI 투자 IR 덱 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>투자 IR 덱</i><strong>마루AI 투자 IR 덱</strong><em>16:9 · 6 slides</em></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="complete-example-group">
+        <h3>초대·소식</h3>
+        <div class="complete-example-grid">
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/invitation-jisoo-minho.html">
+            <span class="complete-example-shot is-card"><img src="/satgat/assets/examples/ko/invitation-jisoo-minho.png" alt="지수와 민호 청첩장 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>청첩장</i><strong>지수와 민호 청첩장</strong><em>엽서 105×148mm</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/newyear-card-park.html">
+            <span class="complete-example-shot is-card"><img src="/satgat/assets/examples/ko/newyear-card-park.png" alt="박상세 가족 연하장 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>연하장</i><strong>박상세 가족 연하장</strong><em>엽서 105×148mm</em></span>
+          </a>
+          <a class="complete-example-card" href="/satgat/assets/examples/ko/newsletter-jangsori.html">
+            <span class="complete-example-shot"><img src="/satgat/assets/examples/ko/newsletter-jangsori.png" alt="장소리 월간 뉴스레터 완성 예시" loading="lazy"></span>
+            <span class="complete-example-meta"><i>뉴스레터</i><strong>장소리 월간 뉴스레터</strong><em>A4 세로 · 1p</em></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      html[lang='ko'] body main.page .example-pack-cta {
+        margin: -8px 0 30px;
+      }
+      html[lang='ko'] body main.page .example-pack-cta a {
+        display: inline-flex;
+        min-height: 36px;
+        align-items: center;
+        padding: 0 14px;
+        border: 1px solid #1C1916;
+        border-radius: 4px;
+        color: #1C1916;
+        text-decoration: none;
+        font-family: var(--sans);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+      html[lang='ko'] body main.page .complete-example-groups {
+        display: grid;
+        gap: 42px;
+      }
+      html[lang='ko'] body main.page .complete-example-group h3 {
+        font-family: var(--serif-display);
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #1C1916;
+        margin: 0 0 16px;
+      }
+      html[lang='ko'] body main.page .complete-example-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+      }
+      html[lang='ko'] body main.page .complete-example-card {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        color: inherit;
+        text-decoration: none;
+      }
+      html[lang='ko'] body main.page .complete-example-shot {
+        display: block;
+        aspect-ratio: 210 / 297;
+        padding: 10px;
+        background: #FFFFFB;
+        border: 1px solid #D2D6CB;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      html[lang='ko'] body main.page .complete-example-shot.is-land,
+      html[lang='ko'] body main.page .complete-example-shot.is-deck {
+        aspect-ratio: 297 / 210;
+      }
+      html[lang='ko'] body main.page .complete-example-shot.is-card {
+        aspect-ratio: 105 / 148;
+      }
+      html[lang='ko'] body main.page .complete-example-shot img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: top center;
+        background: #F7F7F2;
+      }
+      html[lang='ko'] body main.page .complete-example-card:hover .complete-example-shot {
+        border-color: #1C1916;
+      }
+      html[lang='ko'] body main.page .complete-example-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        min-width: 0;
+      }
+      html[lang='ko'] body main.page .complete-example-meta i {
+        display: block;
+        font-family: var(--mono);
+        font-size: 9px;
+        line-height: 1.35;
+        font-style: normal;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #6B6862;
+      }
+      html[lang='ko'] body main.page .complete-example-meta strong {
+        display: block;
+        font-family: var(--serif-display);
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.32;
+        color: #1C1916;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
+      }
+      html[lang='ko'] body main.page .complete-example-meta em {
+        display: block;
+        font-family: var(--serif);
+        font-size: 12px;
+        font-style: normal;
+        line-height: 1.45;
+        color: #4D4B46;
+      }
+      @media (max-width: 560px) {
+        html[lang='ko'] body main.page .example-pack-cta a {
+          width: 100%;
+          justify-content: center;
+        }
+        html[lang='ko'] body main.page .complete-example-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </section>
 
   <!-- ============ 0¾ FULL SPECIMEN — A4 자세히 보기 ============ -->
@@ -2399,6 +2857,25 @@ beauty  = 절제 × 의도 ÷ 장식</pre>
   });
   document.addEventListener('keydown',function(e){
     if(e.key==='Escape')setOpen(false);
+  });
+})();
+(function(){
+  document.querySelectorAll('.satgat-sample').forEach(function(card){
+    var link=card.querySelector('.satgat-paper[href]');
+    if(!link)return;
+    card.setAttribute('role','link');
+    card.setAttribute('tabindex','0');
+    card.style.cursor='pointer';
+    card.addEventListener('click',function(event){
+      if(event.target.closest('a'))return;
+      window.location.href=link.href;
+    });
+    card.addEventListener('keydown',function(event){
+      if(event.key==='Enter'||event.key===' '){
+        event.preventDefault();
+        window.location.href=link.href;
+      }
+    });
   });
 })();
 </script>

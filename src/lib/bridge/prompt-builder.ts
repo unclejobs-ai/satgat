@@ -16,6 +16,8 @@ function slotShapeHint(slot: TemplateSlot): string {
       return '이미지 객체 배열. 각 항목은 {"url":"...","alt":"..."} 형태';
     case 'table':
       return '표 객체. {"headers":["항목","내용"],"rows":[["...","..."]]} 형태';
+    case 'visual':
+      return '차트/도표 객체. {"kind":"bar|line|donut|waterfall|timeline|flow|architecture|quadrant|venn|swimlane|tree|layer-stack|candlestick","title":"...","caption":"...","data":[{"label":"...","value":12}]} 형태. 흐름도는 steps[], 구성도는 nodes[]와 edges[] 사용 가능';
     case 'textarea':
     case 'markdown':
       return '문단 문자열. 줄바꿈이 필요하면 \\n 사용';
@@ -33,6 +35,8 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
         return [];
       case 'table':
         return { headers: [], rows: [] };
+      case 'visual':
+        return null;
       case 'image':
         return { url: '', alt: '' };
       case 'textarea':
@@ -52,6 +56,16 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
       return [{ url: '', alt: slot.label }];
     case 'table':
       return { headers: ['항목', '내용'], rows: [['예시', '구체적인 값']] };
+    case 'visual':
+      return {
+        kind: 'bar',
+        title: slot.label,
+        caption: '수치는 사용자 요청에 근거해 작성',
+        data: [
+          { label: '현재', value: 42 },
+          { label: '목표', value: 68 },
+        ],
+      };
     case 'textarea':
     case 'markdown':
       return `${slot.label} 내용을 2-4문장으로 작성`;
@@ -114,6 +128,7 @@ ${userPrompt}
 필수 slot은 반드시 채우고, 선택 slot도 사용자 요청에서 추론 가능한 내용이면 채우세요.
 근거 없는 선택 slot은 빈 문자열, 빈 배열, 또는 빈 표로 두세요. 라벨명을 값으로 반복하지 마세요.
 list와 table은 문자열이 아니라 지정된 배열/객체 구조로 작성하세요.
+visual은 chart/diagram 객체로 작성하세요. 숫자가 있는 경우 bar, line, donut, waterfall 중 하나를 쓰고, 절차·구조·전략 설명은 timeline, flow, architecture, quadrant, venn, swimlane, tree, layer-stack 중 하나를 쓰세요.
 이미지 URL을 확실히 알 수 없는 image slot은 빈 문자열로 두세요. 설명문을 이미지 값으로 넣지 마세요.
 
 ${JSON.stringify(buildOutputSkeleton(template), null, 2)}

@@ -50,7 +50,7 @@ export async function renderPdf(url, outPath) {
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle0' });
     await page.evaluate(async () => {
-      // @ts-ignore — browser API
+      // @ts-expect-error — browser API
       await document.fonts.ready;
     });
     const pdf = await page.pdf({ printBackground: true, preferCSSPageSize: true });

@@ -3,6 +3,7 @@
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
 import { SatgatDivider } from '@/components/document/SatgatDivider';
+import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
@@ -44,6 +45,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
   const marketSize = String(s['market_size'] ?? '');
   const businessModel = String(s['business_model'] ?? '');
   const ask = String(s['ask'] ?? '');
+  const tractionChart = s['traction_chart'];
 
   const traction = normalizeListItems(s['traction'], {
     titleKeys: ['metric', 'label', 'title', 'name'],
@@ -462,6 +464,16 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                   </p>
                 </div>
               ))}
+            </div>
+          </SlideSection>
+        </SatgatDocument>
+      )}
+
+      {Boolean(tractionChart) && (
+        <SatgatDocument format="slide-16x9">
+          <SlideSection kicker="05" title="Traction Chart" accent="dancheong">
+            <div style={{ width: '82%', maxWidth: 620 }}>
+              <SatgatVisual visual={tractionChart} compact />
             </div>
           </SlideSection>
         </SatgatDocument>

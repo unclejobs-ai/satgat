@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '../document/SatgatDocument';
+import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
@@ -32,6 +33,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
   const solution = String(s['solution'] ?? '');
   const timeline = String(s['timeline'] ?? '');
   const cost = String(s['cost'] ?? '');
+  const impactChart = s['impact_chart'];
   const metrics = normalizeListItems(s['metrics'], {
     titleKeys: ['label', 'metric', 'title', 'name'],
     descriptionKeys: ['value', 'description', 'summary'],
@@ -170,16 +172,25 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
         </section>
       )}
 
+      {Boolean(impactChart) && (
+        <section style={{ margin: '30px 0 34px', breakInside: 'avoid' }}>
+          <SectionHead title="四. 효과 도표(圖表)" subtitle="숫자와 흐름을 함께 보기" />
+          <div style={{ marginTop: 14 }}>
+            <SatgatVisual visual={impactChart} />
+          </div>
+        </section>
+      )}
+
       {/* Timeline */}
       {timeline && (
-        <Section title="四. 추진 일정(日程)" subtitle="단계별 계획">
+        <Section title={Boolean(impactChart) ? '五. 추진 일정(日程)' : '四. 추진 일정(日程)'} subtitle="단계별 계획">
           {timeline}
         </Section>
       )}
 
       {/* Cost */}
       {cost && (
-        <Section title="五. 비용·조건(費用)" subtitle="투자 규모와 조건">
+        <Section title={Boolean(impactChart) ? '六. 비용·조건(費用)' : '五. 비용·조건(費用)'} subtitle="투자 규모와 조건">
           {cost}
         </Section>
       )}
@@ -187,7 +198,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
       {/* Team */}
       {team.length > 0 && (
         <section style={{ marginTop: 32 }}>
-          <SectionHead title="六. 담당(擔當)" subtitle="추진 인력" />
+          <SectionHead title={Boolean(impactChart) ? '七. 담당(擔當)' : '六. 담당(擔當)'} subtitle="추진 인력" />
           <div
             style={{
               display: 'grid',

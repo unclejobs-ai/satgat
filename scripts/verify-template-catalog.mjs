@@ -10,7 +10,7 @@ const rendererPath = path.join(root, 'src/lib/engine/renderer.tsx');
 const newClientPath = path.join(root, 'app/[lang]/new/NewDocumentClient.tsx');
 const landingPath = path.join(root, 'public/satgat/satgat-ko.html');
 const validFormats = new Set(['a4', 'a4-landscape', 'slide-16x9']);
-const validSlotTypes = new Set(['text', 'textarea', 'image', 'image-list', 'list', 'markdown', 'table']);
+const validSlotTypes = new Set(['text', 'textarea', 'image', 'image-list', 'list', 'markdown', 'table', 'visual']);
 const validSectionTypes = new Set([
   'hero',
   'text',
@@ -20,6 +20,7 @@ const validSectionTypes = new Set([
   'image',
   'image-text',
   'table',
+  'visual',
   'divider',
   'footer',
   'spacer',
@@ -338,6 +339,25 @@ function validateFixtureSlotValue(templateId, slot, value, errors) {
       if (slot.required && value.rows.length === 0) errors.push(`${label} is required but has no rows`);
       for (const [rowIndex, row] of value.rows.entries()) {
         if (!Array.isArray(row)) errors.push(`${label}.rows[${rowIndex}] should be an array`);
+      }
+      break;
+
+    case 'visual':
+      if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        errors.push(`${label} should be a visual object`);
+        break;
+      }
+      if (typeof value.kind !== 'string' || !value.kind.trim()) {
+        errors.push(`${label} should have a kind`);
+      }
+      if (
+        value.data !== undefined &&
+        (!Array.isArray(value.data) || value.data.some((item) => !item || typeof item !== 'object' || Array.isArray(item)))
+      ) {
+        errors.push(`${label}.data should be an array of objects`);
+      }
+      if (value.steps !== undefined && !Array.isArray(value.steps)) {
+        errors.push(`${label}.steps should be an array`);
       }
       break;
 

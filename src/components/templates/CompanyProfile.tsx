@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
+import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
@@ -43,6 +44,7 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
   const mission = String(s['mission'] ?? '');
   const contact = String(s['contact'] ?? '');
   const website = String(s['website'] ?? '');
+  const growthChart = s['growth_chart'];
 
   const values = normalizeListItems(s['values']);
   const history = normalizeListItems(s['history'], {
@@ -453,6 +455,12 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
             {companyName}
           </span>
         </header>
+
+        {Boolean(growthChart) && (
+          <section style={{ margin: '0 0 34px', breakInside: 'avoid' }}>
+            <SatgatVisual visual={growthChart} />
+          </section>
+        )}
 
         <div
           style={{

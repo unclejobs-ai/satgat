@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
+import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
@@ -31,6 +32,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
   const description = String(s['description'] ?? '');
   const website = String(s['website'] ?? '');
   const contact = String(s['contact'] ?? '');
+  const positioningMap = s['positioning_map'];
 
   const products = normalizeListItems(s['products'], {
     titleKeys: ['title', 'name', 'product_name', 'service'],
@@ -237,6 +239,18 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                   </article>
                 ))}
               </div>
+            </section>
+          )}
+
+          {Boolean(positioningMap) && (
+            <section
+              style={{
+                marginTop: primaryProducts.length > 0 ? 22 : 0,
+                paddingTop: primaryProducts.length > 0 ? 22 : 0,
+                borderTop: primaryProducts.length > 0 ? `1px solid ${HAIRLINE}` : undefined,
+              }}
+            >
+              <SatgatVisual visual={positioningMap} compact />
             </section>
           )}
 

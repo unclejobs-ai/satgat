@@ -160,6 +160,64 @@ export function baseCss() {
     table.data td.num { font-family: var(--serif); color: var(--dan); font-weight: 700; text-align: right; white-space: nowrap; }
     table.data tr:last-child td { border-bottom: 0; }
 
+    /* ---------- 문서 안 도표 ---------- */
+    .viz {
+      display: block;
+      margin: 18px 0 0;
+      padding: 13px 14px 12px;
+      background: var(--ivory);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      contain: paint;
+      isolation: isolate;
+    }
+    .viz-title {
+      margin: 0 0 7px;
+      font-family: var(--sans);
+      font-size: 11px;
+      line-height: 1.35;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--jade);
+    }
+    .viz svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+      shape-rendering: geometricPrecision;
+    }
+    .viz text {
+      font-family: var(--sans);
+      fill: var(--muted);
+      font-size: 10px;
+      dominant-baseline: auto;
+    }
+    .viz text.value {
+      font-family: var(--serif);
+      font-size: 12px;
+      font-weight: 700;
+      fill: var(--dan);
+    }
+    .viz text.flow-no {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      fill: #FFFFFB;
+    }
+    .viz-caption {
+      margin: 7px 0 0;
+      font-family: var(--sans);
+      font-size: 11px;
+      line-height: 1.48;
+      color: var(--stone);
+    }
+    .viz-compact { padding: 11px 12px 10px; margin-top: 14px; }
+    .viz-wide { margin: 18px 0; }
+    .viz-newsletter { margin: 18px 0 16px; }
+    .viz-op { margin: 0; align-self: stretch; }
+
     /* ---------- 콜로폰 ---------- */
     .colophon { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-family: var(--sans); font-size: 11px; color: var(--stone); letter-spacing: .04em; }
     .colophon .mark { color: var(--dan); font-weight: 700; letter-spacing: .12em; }
@@ -179,24 +237,198 @@ function layoutCss() {
     .block h3 { margin: 4px 0 8px; color: var(--ink); font-size: 16.5px; font-weight: 700; }
     .block p { font-size: 13.5px; line-height: 1.62; margin: 0; color: var(--body); }
 
+    /* 도표 포함 고밀도 A4 */
+    .product-sheet { padding: 16mm 19mm 12mm; }
+    .product-sheet h1 { font-size: 39px; }
+    .product-sheet .rule { margin: 20px 0; }
+    .product-sheet .lead { font-size: 14.5px; line-height: 1.62; }
+    .product-sheet .block-grid { gap: 13px; margin-top: 14px; }
+    .product-sheet .block { padding: 15px; }
+    .product-sheet .block p { font-size: 12.8px; line-height: 1.55; }
+    .product-sheet .two { gap: 24px; }
+    .product-sheet .two[style] { margin-top: 20px !important; }
+    .product-sheet table.data td { padding: 9px 0; font-size: 13px; }
+    .product-sheet .gold-div { margin: 14px 0; }
+    .product-sheet .colophon { margin-top: 16px; }
+
+    .profile-sheet { padding: 18mm 20mm 14mm; }
+    .profile-sheet h1 { font-size: 38px; }
+    .profile-sheet .quote { margin: 18px 0; }
+    .profile-sheet .two.even[style] { margin-top: 20px !important; }
+    .profile-sheet .history-row { padding: 10px 0; }
+    .profile-sheet .section { margin-top: 20px; }
+
+    .proposal-sheet { padding: 16mm 19mm 13mm; }
+    .proposal-sheet h1 { font-size: 34px; }
+    .proposal-sheet .subtitle { font-size: 15px; }
+    .proposal-sheet .metrics { margin: 17px 0; gap: 10px; }
+    .proposal-sheet .metric { padding: 11px 12px 10px; }
+    .proposal-sheet .metric b { font-size: 22px; }
+    .proposal-sheet .viz-wide { margin: 13px 0 15px; }
+    .proposal-sheet .viz-wide svg { height: 185px; }
+    .proposal-body { display: grid; grid-template-columns: .92fr 1.08fr; gap: 17px; align-items: start; }
+    .proposal-blocks { display: grid; gap: 10px; }
+    .proposal-blocks .block { padding: 13px 14px; }
+    .proposal-blocks .block h3 { font-size: 15px; margin-bottom: 5px; }
+    .proposal-blocks .block p { font-size: 12px; line-height: 1.45; }
+    .proposal-schedule h2.bar { margin-bottom: 10px; }
+    .proposal-schedule table.data { margin-top: 8px; }
+    .proposal-schedule table.data th { font-size: 10px; letter-spacing: .1em; }
+    .proposal-schedule table.data td { padding: 8px 0; font-size: 12.2px; line-height: 1.45; }
+    .proposal-sheet .colophon { margin-top: 18px; }
+
+    .newsletter-sheet { padding: 20mm 19mm 16mm; }
+    .newsletter-sheet .masthead { padding-right: 25mm; }
+    .newsletter-sheet .masthead .mh-title { font-size: 32px; }
+    .nl-feature-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 22px; align-items: start; margin-top: 18px; }
+    .nl-feature-grid .nl-lead { margin-top: 0; }
+    .newsletter-sheet .nl-lead h2 { font-size: 22px; }
+    .newsletter-sheet .nl-lead p { font-size: 13.5px; line-height: 1.62; }
+    .newsletter-sheet .gold-div { margin: 17px 0; }
+    .newsletter-sheet .nl-cols { gap: 20px; }
+    .newsletter-sheet .nl-item { padding-top: 10px; }
+    .newsletter-sheet .nl-item h3 { font-size: 14.5px; }
+    .newsletter-sheet .nl-item p { font-size: 12.4px; line-height: 1.52; }
+    .newsletter-sheet .nl-aside { padding: 13px 16px; margin-top: 18px; }
+    .newsletter-sheet .colophon { margin-top: 21px; }
+
     /* 16:9 덱 */
-    .deck-page { page: deck; position: relative; width: 297mm; height: 167mm; margin: 26px auto; padding: 24mm 26mm; background:
-        radial-gradient(120% 90% at 90% -10%, rgba(46,107,94,.05), transparent 48%), var(--paper);
-      border: 1px solid var(--line); box-shadow: 0 24px 70px -28px rgba(28,25,22,.34); overflow: hidden; }
-    .deck-page:after { content: attr(data-no) " / " attr(data-of); position: absolute; right: 26mm; bottom: 15mm; font-family: var(--sans); color: var(--stone); font-size: 13px; letter-spacing: .12em; }
-    .deck-page .seal { right: 26mm; top: 24mm; }
-    .deck-cover { display: flex; flex-direction: column; justify-content: center; }
-    .deck-title { font-size: 58px; font-weight: 800; line-height: 1.08; letter-spacing: -.015em; max-width: 22ch; }
-    .deck-cover .deck-title { font-size: 76px; }
-    .deck-lead { font-size: 22px; color: var(--muted); max-width: 50ch; margin-top: 16px; line-height: 1.45; }
-    .deck-cover .deck-lead { font-size: 26px; margin-top: 22px; }
+    .deck-page {
+      page: deck;
+      position: relative;
+      width: 297mm;
+      height: 167mm;
+      margin: 26px auto;
+      padding: 22mm 24mm 18mm;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 70px -28px rgba(28,25,22,.34);
+      overflow: hidden;
+    }
+    .deck-page:before {
+      content: "";
+      position: absolute;
+      left: 24mm;
+      right: 24mm;
+      top: 17mm;
+      height: 2px;
+      background: var(--ink);
+    }
+    .deck-page:after { content: attr(data-no) " / " attr(data-of); position: absolute; right: 24mm; bottom: 12mm; font-family: var(--sans); color: var(--stone); font-size: 12px; letter-spacing: .14em; }
+    .deck-page .seal { right: 24mm; top: 23mm; width: 15mm; height: 15mm; font-size: 22px; }
+    .deck-kicker,
+    .deck-slide-label {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .22em;
+      color: var(--stone);
+      text-transform: uppercase;
+    }
+    .deck-slide-label { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .deck-slide-label b {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 24px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--dan);
+      letter-spacing: .08em;
+    }
+    .deck-cover {
+      display: grid;
+      grid-template-columns: 1fr 250px;
+      gap: 48px;
+      align-items: end;
+    }
+    .deck-cover:before { background: var(--gold); }
+    .deck-cover-copy { align-self: center; padding-top: 18mm; }
+    .deck-title {
+      margin: 0;
+      padding-right: 0;
+      font-family: var(--batang);
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: 0;
+      max-width: 19ch;
+      text-wrap: balance;
+    }
+    .deck-cover .deck-title {
+      font-family: var(--serif);
+      font-size: 84px;
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .deck-lead { font-size: 21px; color: var(--muted); max-width: 42ch; margin-top: 18px; line-height: 1.48; }
+    .deck-cover .deck-lead { font-size: 25px; margin-top: 24px; }
+    .deck-cover-panel {
+      align-self: center;
+      background: var(--ivory);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 22px 24px;
+      font-family: var(--sans);
+      color: var(--muted);
+    }
+    .deck-cover-panel b {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: .2em;
+    }
+    .deck-cover-panel span {
+      display: block;
+      padding: 9px 0;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      letter-spacing: .03em;
+    }
     .deck-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 34px; }
-    .deck-card { background: var(--ivory); border: 1px solid var(--line); border-radius: 11px; padding: 22px; }
-    .deck-card h4 { margin: 0 0 9px; font-size: 18px; font-weight: 700; color: var(--dan); }
-    .deck-card p { font-size: 15px; line-height: 1.55; margin: 0; color: var(--body); }
-    .deck-metrics { display: flex; gap: 40px; margin-top: 36px; }
-    .deck-metrics div b { display: block; font-family: var(--serif); font-size: 44px; font-weight: 800; color: var(--dan); line-height: 1; }
-    .deck-metrics div span { font-family: var(--sans); font-size: 14px; color: var(--muted); }
+    .deck-card { background: var(--ivory); border: 1px solid var(--line); border-radius: 8px; padding: 20px; }
+    .deck-card h4 { margin: 0 0 8px; font-size: 17px; font-weight: 700; color: var(--dan); }
+    .deck-card p { font-size: 14px; line-height: 1.52; margin: 0; color: var(--body); }
+    .deck-metrics { display: flex; gap: 34px; margin-top: 31px; }
+    .deck-metrics div b { display: block; font-family: var(--serif); font-size: 42px; font-weight: 800; color: var(--dan); line-height: 1; letter-spacing: 0; }
+    .deck-metrics div span { display: block; margin-top: 7px; font-family: var(--sans); font-size: 13px; color: var(--muted); line-height: 1.35; }
+    .deck-page.has-visual {
+      display: grid;
+      grid-template-columns: .86fr 1.14fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .deck-page.has-visual .deck-copy { min-width: 0; }
+    .deck-page.has-visual .deck-title {
+      font-size: 32px;
+      line-height: 1.2;
+      max-width: 18ch;
+      padding-right: 0;
+      font-weight: 700;
+    }
+    .deck-page.has-visual .deck-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+    .deck-page.has-visual .deck-card { padding: 13px 15px; }
+    .deck-page.has-visual .deck-card h4 { font-size: 15px; }
+    .deck-page.has-visual .deck-card p { font-size: 12.6px; }
+    .deck-page.has-visual .deck-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+    .deck-page.has-visual .deck-metrics div b { font-size: 31px; }
+    .deck-page.has-visual .deck-metrics div span { font-size: 11.5px; }
+    .viz-deck {
+      margin: 0;
+      min-width: 0;
+      padding: 20px 22px 17px;
+      border-radius: 10px;
+    }
+    .viz-deck .viz-title { font-size: 12px; }
+    .viz-deck text { font-size: 11px; }
+    .viz-deck text.value { font-size: 13px; }
 
     /* 명함 8-up 대지 + 단일 카드 미리보기 */
     .card-stage { display: flex; flex-direction: column; gap: 7mm; align-items: center; margin-top: 8mm; }
@@ -253,10 +485,18 @@ function layoutCss() {
     .work .wb p { font-family: var(--sans); font-size: 11.5px; color: var(--muted); margin: 0; line-height: 1.5; }
 
     /* 브랜드 원페이지 (가로) */
+    .op-showcase { display: grid; grid-template-columns: 1fr .82fr; gap: 34px; align-items: center; margin-top: 8px; }
     .op-hero { font-family: var(--serif); font-size: 40px; font-weight: 800; line-height: 1.2; max-width: 24ch; letter-spacing: -.01em; }
     .op-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 6px; }
     .op-pillar h3 { font-size: 17px; font-weight: 700; color: var(--dan); margin: 0 0 7px; padding-top: 12px; border-top: 2px solid var(--ink); }
     .op-pillar p { font-size: 13.5px; line-height: 1.6; margin: 0; }
+    .onepager-sheet { padding: 8mm 20mm; }
+    .onepager-sheet .op-showcase { gap: 28px; }
+    .onepager-sheet .op-hero { font-size: 34px; }
+    .onepager-sheet .viz-op svg { height: 160px; }
+    .onepager-sheet .op-grid { gap: 18px; margin-top: 18px; }
+    .onepager-sheet .metrics { margin: 16px 0; }
+    .onepager-sheet .colophon { margin-top: 22px; }
 
     /* 브랜드 스토리북 */
     .sb-figure { aspect-ratio: 21/9; margin: 18px 0; background:
@@ -300,7 +540,7 @@ function chromeCss() {
       .sheet, .sheet.land, .deck-page, .prompt-panel, .prompt-panel.land, .prompt-panel.deck { width: calc(100vw - 24px); }
       .sheet, .sheet.land { min-height: auto; padding: 30px; }
       .deck-page { height: auto; min-height: 56vw; padding: 30px; }
-      .two, .two.even, .nl-cols, .block-grid, .deck-grid, .works, .op-grid, .pf-head { grid-template-columns: 1fr; }
+      .two, .two.even, .nl-cols, .nl-feature-grid, .block-grid, .proposal-body, .deck-grid, .deck-cover, .deck-page.has-visual, .deck-page.has-visual .deck-metrics, .works, .op-grid, .op-showcase, .pf-head { grid-template-columns: 1fr; }
       .cards { grid-template-columns: 1fr; }
     }
     @media print {

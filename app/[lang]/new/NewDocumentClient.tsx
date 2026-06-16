@@ -2,12 +2,149 @@
 
 import React from "react";
 import { flushSync } from "react-dom";
+import Image from "next/image";
 import Link from "next/link";
+import { SatgatVisual } from "@/components/diagrams";
+import type { SatgatVisualSlot } from "@/lib/engine/slot-visual";
 import { listTemplates, getTemplate, TEMPLATE_SEAL, TEMPLATE_VOICE } from "@/lib/templates/registry";
 
 const PROMPT_MIN_LENGTH = 10;
 const PROMPT_MAX_LENGTH = 8000;
 const HERO_SPECIMENS = ['resume', 'brand-onepager', 'investor-deck'];
+const VISUAL_SCENE_SAMPLES: Array<{
+  label: string;
+  copy: string;
+  template: string;
+  visual: SatgatVisualSlot;
+}> = [
+  {
+    label: "제안서 장면",
+    copy: "도입 효과를 폭포 차트로 한 장 안에 놓습니다.",
+    template: "proposal",
+    visual: {
+      kind: "waterfall",
+      title: "제작 시간 변화",
+      data: [
+        { label: "기존", value: 100 },
+        { label: "기획", value: -18 },
+        { label: "작성", value: -42 },
+        { label: "검수", value: -12 },
+        { label: "효과", value: 20 },
+      ],
+    },
+  },
+  {
+    label: "IR 장면",
+    copy: "traction을 선 차트로 슬라이드 위계에 맞춥니다.",
+    template: "investor-deck",
+    visual: {
+      kind: "line",
+      title: "월 생성 문서",
+      data: [
+        { label: "1월", value: 120 },
+        { label: "2월", value: 210 },
+        { label: "3월", value: 360 },
+        { label: "4월", value: 520 },
+      ],
+    },
+  },
+  {
+    label: "회사소개 장면",
+    copy: "연혁과 운영 흐름을 타임라인으로 정리합니다.",
+    template: "company-profile",
+    visual: {
+      kind: "timeline",
+      title: "도입 연혁",
+      data: [
+        { year: "2023", title: "파일럿" },
+        { year: "2024", title: "런칭" },
+        { year: "2025", title: "확장" },
+        { year: "2026", title: "전국" },
+      ],
+    },
+  },
+  {
+    label: "브랜드 장면",
+    copy: "포지셔닝을 사분면으로 단정하게 보여줍니다.",
+    template: "brand-onepager",
+    visual: {
+      kind: "quadrant",
+      title: "브랜드 포지션",
+      quadrants: {
+        tl: "전통",
+        tr: "우리",
+        bl: "일상",
+        br: "선물",
+        xLabel: "현대성",
+        yLabel: "격식",
+      },
+    },
+  },
+  {
+    label: "제품소개 장면",
+    copy: "특징 비교를 가로 막대 차트로 압축합니다.",
+    template: "product-brochure",
+    visual: {
+      kind: "bar-horizontal",
+      title: "특징 비교",
+      data: [
+        { label: "질감", value: 82 },
+        { label: "펼침", value: 64 },
+        { label: "내구", value: 94 },
+      ],
+    },
+  },
+  {
+    label: "뉴스레터 장면",
+    copy: "호별 구성비를 도넛 차트로 요약합니다.",
+    template: "newsletter",
+    visual: {
+      kind: "donut",
+      title: "호별 구성",
+      data: [
+        { label: "큐레이션", value: 42 },
+        { label: "행사", value: 28 },
+        { label: "소식", value: 30 },
+      ],
+    },
+  },
+];
+
+const COMPLETE_EXAMPLE_GROUPS = [
+  {
+    title: "개인 문서",
+    examples: [
+      { type: "이력서", title: "김수민 이력서", meta: "A4 세로 · 단면", image: "resume-kim-sumin.png", html: "resume-kim-sumin.html" },
+      { type: "자기소개서", title: "윤하진 자기소개서", meta: "A4 세로 · 4문항", image: "self-intro-yoon-hajin.png", html: "self-intro-yoon-hajin.html" },
+      { type: "명함", title: "박상세 명함", meta: "90x55mm · 앞뒷면", image: "business-card-parksangse.png", html: "business-card-parksangse.html" },
+    ],
+  },
+  {
+    title: "브랜드·제품",
+    examples: [
+      { type: "브랜드 원페이지", title: "백자 브랜드 원페이지", meta: "A4 가로 · 1p", image: "one-pager-baekja.png", html: "one-pager-baekja.html" },
+      { type: "제품 소개서", title: "온정 제품 소개서", meta: "A4 세로 · 1p", image: "product-sheet-onjeong.png", html: "product-sheet-onjeong.html" },
+      { type: "회사 소개서", title: "달빛식품 회사 소개서", meta: "A4 세로 · 1p", image: "company-profile-dalbit.png", html: "company-profile-dalbit.html" },
+      { type: "브랜드 스토리북", title: "술도가 한울 브랜드 스토리북", meta: "A4 세로 · 1p", image: "brand-storybook-sool.png", html: "brand-storybook-sool.html" },
+      { type: "포트폴리오", title: "스튜디오결 포트폴리오", meta: "A4 가로 · 1p", image: "portfolio-studio-gyeol.png", html: "portfolio-studio-gyeol.html" },
+    ],
+  },
+  {
+    title: "제안·투자",
+    examples: [
+      { type: "제안서", title: "한지 리테일 전환 제안서", meta: "A4 세로 · 1p", image: "proposal-hanji-retail.png", html: "proposal-hanji-retail.html" },
+      { type: "투자 IR 덱", title: "마루AI 투자 IR 덱", meta: "16:9 · 6 slides", image: "investor-deck-maruai.png", html: "investor-deck-maruai.html" },
+    ],
+  },
+  {
+    title: "초대·소식",
+    examples: [
+      { type: "청첩장", title: "지수와 민호 청첩장", meta: "엽서 105x148mm", image: "invitation-jisoo-minho.png", html: "invitation-jisoo-minho.html" },
+      { type: "연하장", title: "박상세 가족 연하장", meta: "엽서 105x148mm", image: "newyear-card-park.png", html: "newyear-card-park.html" },
+      { type: "뉴스레터", title: "장소리 월간 뉴스레터", meta: "A4 세로 · 1p", image: "newsletter-jangsori.png", html: "newsletter-jangsori.html" },
+    ],
+  },
+];
 
 /* 템플릿별 미니프리뷰 — 실제 문서 결.
  * 각각 A4 비율 thumbnail 안에 들어가는 typography-driven 미니 mock. */
@@ -229,20 +366,20 @@ const TEMPLATE_PROMPTS: Record<string, string[]> = {
     "크리에이티브 디렉터 명함입니다. 이름, 한자 이름, 이메일, 웹사이트, 인스타그램, 차분한 브랜드 문장을 포함해 주세요.",
   ],
   "brand-onepager": [
-    "브랜드명은 향유원입니다. 전통 향과 현대적인 웰니스 루틴을 연결하는 브랜드이며, 핵심 문장, 대표 제품 3개, 웹사이트와 연락처를 담아 주세요.",
-    "AI 기반 상세페이지 제작 브랜드입니다. 빠른 제작, 한국형 문장 톤, 검수 프로세스, 상담 CTA를 한 장짜리 소개서처럼 정리해 주세요.",
+    "브랜드명은 향유원입니다. 전통 향과 현대적인 웰니스 루틴을 연결하는 브랜드이며, 핵심 문장, 대표 제품 3개, 포지셔닝 사분면 도표, 웹사이트와 연락처를 담아 주세요.",
+    "AI 기반 상세페이지 제작 브랜드입니다. 빠른 제작, 한국형 문장 톤, 검수 프로세스, 경쟁 포지션 도표, 상담 CTA를 한 장짜리 소개서처럼 정리해 주세요.",
   ],
   "product-brochure": [
-    "제품명은 다담 노트입니다. 한지 질감의 프리미엄 기록 노트이며, 제품 개요, 주요 특징, 스펙, 사용 장면, 구매 문의를 담아 주세요.",
-    "전통 차 선물 세트 소개서입니다. 구성품, 맛의 특징, 포장 방식, 인증 정보, 기업 선물 문의 문구를 품격 있게 정리해 주세요.",
+    "제품명은 다담 노트입니다. 한지 질감의 프리미엄 기록 노트이며, 제품 개요, 주요 특징, 특징 비교 막대 차트, 스펙, 사용 장면, 구매 문의를 담아 주세요.",
+    "전통 차 선물 세트 소개서입니다. 구성품, 맛의 특징, 구성비 도넛 차트, 포장 방식, 인증 정보, 기업 선물 문의 문구를 품격 있게 정리해 주세요.",
   ],
   "company-profile": [
-    "회사명은 북촌랩스입니다. 로컬 문화 공간의 예약·운영을 돕는 SaaS 회사이며, 비전, 미션, 핵심 가치, 연혁, 팀, 연락처를 포함해 주세요.",
-    "사회적 기업 온기공방 소개서입니다. 시니어 장인의 수공예품을 유통하며, 설립 배경, 핵심 가치, 주요 성과, 팀, 협업 문의를 정리해 주세요.",
+    "회사명은 북촌랩스입니다. 로컬 문화 공간의 예약·운영을 돕는 SaaS 회사이며, 비전, 미션, 핵심 가치, 연혁 타임라인 도표, 팀, 연락처를 포함해 주세요.",
+    "사회적 기업 온기공방 소개서입니다. 시니어 장인의 수공예품을 유통하며, 설립 배경, 핵심 가치, 주요 성과 추이 차트, 팀, 협업 문의를 정리해 주세요.",
   ],
   "investor-deck": [
-    "회사명은 한지AI입니다. 한국형 브랜드 문서를 자동 생성하는 B2B SaaS이고, 문제, 해결안, 시장 규모, 초기 성과, 투자 요청을 IR 톤으로 구성해 주세요.",
-    "로컬 커머스 SaaS 투자 제안입니다. 소상공인의 상품 페이지 제작 병목을 해결하며, 월 반복 매출, 고객 사례, 팀 강점, 시드 투자 요청을 담아 주세요.",
+    "회사명은 한지AI입니다. 한국형 브랜드 문서를 자동 생성하는 B2B SaaS이고, 문제, 해결안, 시장 규모, 초기 성과 추이 선 차트, 투자 요청을 IR 톤으로 구성해 주세요.",
+    "로컬 커머스 SaaS 투자 제안입니다. 소상공인의 상품 페이지 제작 병목을 해결하며, 월 반복 매출 막대 차트, 고객 사례, 팀 강점, 시드 투자 요청을 담아 주세요.",
   ],
   "brand-storybook": [
     "한옥 숙박 브랜드 달빛서가의 스토리북입니다. 탄생 배경, 브랜드 가치, 공간의 장면, 고객에게 남기고 싶은 감정을 서사적으로 정리해 주세요.",
@@ -257,12 +394,12 @@ const TEMPLATE_PROMPTS: Record<string, string[]> = {
     "가족 어른께 드리는 연하장입니다. 건강, 평안, 오래 뵙고 싶은 마음을 따뜻하지만 격식 있게 적어 주세요.",
   ],
   proposal: [
-    "한지 리테일 브랜드의 온라인 상세페이지 자동 생성 도입안입니다. 문제, 목표, 일정, 기대 효과, 예산을 임원 보고용으로 정리해 주세요.",
-    "지역 문화재단 제안서입니다. 전시 홍보물을 AI로 자동 제작하는 사업이며, 운영 방식과 검수 체계를 설득력 있게 담아 주세요.",
+    "한지 리테일 브랜드의 온라인 상세페이지 자동 생성 도입안입니다. 문제, 목표, 일정, 기대 효과 폭포 차트, 예산을 임원 보고용으로 정리해 주세요.",
+    "지역 문화재단 제안서입니다. 전시 홍보물을 AI로 자동 제작하는 사업이며, 운영 방식과 검수 체계 흐름도를 설득력 있게 담아 주세요.",
   ],
   newsletter: [
-    "달빛서가 5월 뉴스레터입니다. 이번 달 큐레이션, 작가와의 밤, 신규 입고 도서, 멤버십 소식을 편지처럼 구성해 주세요.",
-    "사내 리더십 뉴스레터입니다. 지난달 성과, 다음 달 집중 과제, 구성원 인터뷰, 짧은 에디터 노트를 포함해 주세요.",
+    "달빛서가 5월 뉴스레터입니다. 이번 달 큐레이션, 작가와의 밤, 신규 입고 도서, 호별 구성 도넛 차트, 멤버십 소식을 편지처럼 구성해 주세요.",
+    "사내 리더십 뉴스레터입니다. 지난달 성과 막대 차트, 다음 달 집중 과제, 구성원 인터뷰, 짧은 에디터 노트를 포함해 주세요.",
   ],
   portfolio: [
     "브랜드 디자이너 이상윤의 포트폴리오입니다. 대표 작업 4개, 역할, 과정, 성과, 연락처를 전시 도록처럼 구성해 주세요.",
@@ -278,15 +415,15 @@ const TEMPLATE_CHECKLIST: Record<string, string[]> = {
   resume: ["이름과 역할", "최근 경력", "정량 성과", "기술·도구"],
   "self-intro": ["지원 맥락", "문항 구조", "대표 사례", "입사 후 계획"],
   "business-card": ["이름·직함", "브랜드 문장", "연락처", "웹·SNS"],
-  "brand-onepager": ["브랜드명", "핵심 문장", "제품·서비스", "연락처"],
-  "product-brochure": ["제품명", "제품 개요", "주요 특징", "스펙·문의"],
-  "company-profile": ["회사명", "비전·미션", "핵심 가치", "연혁", "팀·연락처"],
-  "investor-deck": ["문제", "해결안", "성과 지표", "투자 요청"],
+  "brand-onepager": ["브랜드명", "핵심 문장", "제품·서비스", "포지셔닝 도표", "연락처"],
+  "product-brochure": ["제품명", "제품 개요", "주요 특징", "비교 차트", "스펙·문의"],
+  "company-profile": ["회사명", "비전·미션", "핵심 가치", "연혁 도표", "팀·연락처"],
+  "investor-deck": ["문제", "해결안", "성과 차트", "투자 요청"],
   "brand-storybook": ["탄생 배경", "핵심 가치", "톤앤매너", "주요 장면"],
   invitation: ["두 사람 이름", "날짜·시간", "장소", "초대 문구"],
   "new-year-card": ["받는 대상", "새해 연도", "감사 맥락", "인사 톤"],
-  proposal: ["문제 정의", "해결안", "일정·예산", "기대 효과"],
-  newsletter: ["발행 주제", "섹션 목록", "주요 소식", "마무리 문장"],
+  proposal: ["문제 정의", "해결안", "일정·예산", "효과 도표"],
+  newsletter: ["발행 주제", "섹션 목록", "요약 차트", "마무리 문장"],
   portfolio: ["작업자 소개", "대표 작업", "역할·성과", "연락처"],
   report: ["보고 제목·기간", "개요·요약", "추진 내용", "성과 지표", "향후 계획"],
 };
@@ -434,6 +571,7 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
           <div className="hero-register" aria-label="작성 환경">
             <span>{localeLabel}</span>
             <span>{templates.length}종 문서</span>
+            <span>차트·도표</span>
             <span>{selected ? `${selected.name} 선택` : "종이 대기"}</span>
           </div>
         </div>
@@ -457,6 +595,23 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
           })}
         </aside>
       </header>
+
+      <section className="visual-step" aria-label="차트와 도표">
+        <div className="visual-copy">
+          <span className="visual-kicker">VISUAL SLOTS</span>
+          <h2>숫자와 구조도 같이 옮겨 적습니다</h2>
+        </div>
+        <div className="visual-grid">
+          {VISUAL_SCENE_SAMPLES.map((item) => (
+            <div className="visual-card" key={item.label}>
+              <span className="visual-template">{item.template}</span>
+              <SatgatVisual visual={item.visual} compact />
+              <strong>{item.label}</strong>
+              <span>{item.copy}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Section 1: Prompt */}
       {selected && (
@@ -613,6 +768,45 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
               </button>
             );
           })}
+        </div>
+      </section>
+
+      <section className="step example-step" aria-label="완성형 예시">
+        <div className="step-head example-head">
+          <div>
+            <span className="step-num">{selected ? "參 · THREE" : "貳 · TWO"}</span>
+            <h2 className="step-title">완성형 예시</h2>
+            <p className="step-note">자연어 한 문장이 실제로 어떤 페이지가 되는지 13종 결과물을 세분화해 볼 수 있습니다.</p>
+          </div>
+          <Link className="example-pack-link" href="/satgat/assets/examples/ko/index.html">예시팩 전체 보기</Link>
+        </div>
+
+        <div className="example-groups">
+          {COMPLETE_EXAMPLE_GROUPS.map((group) => (
+            <section className="example-group" key={group.title} aria-label={group.title}>
+              <h3>{group.title}</h3>
+              <div className="example-grid">
+                {group.examples.map((example) => (
+                  <Link className="example-card" href={`/satgat/assets/examples/ko/${example.html}`} key={example.html}>
+                    <span className="example-shot">
+                      <Image
+                        src={`/satgat/assets/examples/ko/${example.image}`}
+                        alt={`${example.title} 완성 예시`}
+                        fill
+                        sizes="(max-width: 520px) 100vw, 220px"
+                        className="example-image"
+                      />
+                    </span>
+                    <span className="example-meta">
+                      <span className="example-type">{example.type}</span>
+                      <strong>{example.title}</strong>
+                      <span>{example.meta}</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </section>
 
@@ -866,6 +1060,84 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
         }
         .step-note strong { color: var(--near-black); font-weight: 700; }
         .step-note .voice { color: var(--brand); font-style: italic; }
+
+        .visual-step {
+          display: grid;
+          grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1fr);
+          gap: 28px;
+          align-items: stretch;
+          margin: -28px 0 78px;
+          padding: 26px 0;
+          border-top: 1px solid var(--border-soft, #E8E2D0);
+          border-bottom: 1px solid var(--border-soft, #E8E2D0);
+        }
+        .visual-copy {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          min-width: 0;
+        }
+        .visual-kicker {
+          font-family: var(--sans);
+          font-size: 10.5px;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          color: var(--brand);
+          margin-bottom: 8px;
+        }
+        .visual-copy h2 {
+          font-family: var(--serif-display);
+          font-size: 24px;
+          font-weight: 700;
+          line-height: 1.24;
+          color: var(--near-black);
+          margin: 0;
+          word-break: keep-all;
+        }
+        .visual-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+        }
+        .visual-card {
+          min-width: 0;
+          min-height: 286px;
+          display: flex;
+          flex-direction: column;
+          padding: 14px;
+          background: var(--ivory, #FFFFFB);
+          border: 1px solid var(--border-soft, #E8E2D0);
+          border-radius: 6px;
+        }
+        .visual-template {
+          align-self: flex-start;
+          font-family: var(--mono);
+          font-size: 9px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--stone, #6B6862);
+          margin-bottom: 9px;
+        }
+        .visual-card .satgat-visual {
+          flex: 1 1 auto;
+          width: 100%;
+        }
+        .visual-card strong {
+          display: block;
+          font-family: var(--serif-display);
+          font-size: 15px;
+          font-weight: 700;
+          line-height: 1.25;
+          color: var(--near-black);
+          margin: 12px 0 3px;
+        }
+        .visual-card > span {
+          font-family: var(--serif);
+          font-size: 11.5px;
+          line-height: 1.45;
+          color: var(--olive, #4D4B46);
+          word-break: keep-all;
+        }
 
         /* PAPER GRID */
         .paper-grid {
@@ -1440,6 +1712,106 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
         }
         .paper-card.is-active .paper-format { color: rgba(241, 236, 223, 0.5); }
 
+        /* COMPLETE EXAMPLES */
+        .example-head {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          gap: 20px;
+        }
+        .example-pack-link {
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          min-height: 36px;
+          padding: 0 14px;
+          border: 1px solid var(--near-black, #1C1916);
+          border-radius: 4px;
+          color: var(--near-black, #1C1916);
+          text-decoration: none;
+          font-family: var(--sans);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+        }
+        .example-groups {
+          display: grid;
+          gap: 34px;
+        }
+        .example-group h3 {
+          font-family: var(--serif-display);
+          font-size: 18px;
+          font-weight: 800;
+          line-height: 1.2;
+          color: var(--near-black, #1C1916);
+          margin: 0 0 14px;
+        }
+        .example-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+          gap: 16px;
+        }
+        .example-card {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 11px;
+          color: inherit;
+          text-decoration: none;
+        }
+        .example-shot {
+          position: relative;
+          display: block;
+          aspect-ratio: 210 / 297;
+          padding: 10px;
+          background: #FFFFFB;
+          border: 1px solid var(--border-soft, #E8E2D0);
+          border-radius: 6px;
+          overflow: hidden;
+        }
+        .example-shot .example-image {
+          display: block;
+          object-fit: contain;
+          object-position: top center;
+          background: #F7F7F2;
+          padding: 10px;
+        }
+        .example-card:hover .example-shot {
+          border-color: var(--near-black, #1C1916);
+        }
+        .example-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          min-width: 0;
+        }
+        .example-type {
+          display: block;
+          font-family: var(--mono);
+          font-size: 9px;
+          line-height: 1.35;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--stone, #6B6862);
+        }
+        .example-meta strong {
+          display: block;
+          font-family: var(--serif-display);
+          font-size: 15.5px;
+          font-weight: 700;
+          line-height: 1.32;
+          color: var(--near-black, #1C1916);
+          word-break: keep-all;
+          overflow-wrap: anywhere;
+        }
+        .example-meta span:last-child {
+          display: block;
+          font-family: var(--serif);
+          font-size: 11.5px;
+          line-height: 1.45;
+          color: var(--olive, #4D4B46);
+        }
+
         /* PROMPT */
         .writing-board {
           display: grid;
@@ -1916,11 +2288,20 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
             right: 120px;
             bottom: 0;
           }
+          .visual-step {
+            grid-template-columns: 1fr;
+          }
+          .visual-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
         }
         @media (max-width: 720px) {
           .satgat-new { padding: 32px 20px 80px; }
           .hero { margin-bottom: 56px; }
           .hero-specimen { display: none; }
+          .visual-step {
+            margin: -22px 0 56px;
+          }
           .step { margin-bottom: 56px; }
           .step-title { font-size: 24px; }
           .hero-register { margin-top: 22px; }
@@ -1943,8 +2324,17 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
           .prompt-textarea {
             min-height: 300px;
           }
+          .example-head {
+            align-items: flex-start;
+            flex-direction: column;
+          }
+          .example-pack-link {
+            width: 100%;
+            justify-content: center;
+          }
         }
-        @media (max-width: 440px) {
+        @media (max-width: 520px) {
+          .visual-grid { grid-template-columns: 1fr; }
           .paper-grid { grid-template-columns: 1fr; }
           .paper-card {
             display: grid;

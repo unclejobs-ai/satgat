@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
+import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import { normalizeImageSlot } from '@/lib/engine/slot-image';
 import type { SatgatDocumentData } from '@/lib/templates/types';
@@ -40,6 +41,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
   const overview = String(s['overview'] ?? '');
   const usage = String(s['usage'] ?? '');
   const contact = String(s['contact'] ?? '');
+  const featureChart = s['feature_chart'];
 
   const features = normalizeListItems(s['features'], {
     titleKeys: ['title', 'name', 'feature'],
@@ -323,7 +325,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       </SatgatDocument>
 
       {/* ─── P2: 주요 특징 ────────────────────────────────────────────── */}
-      {features.length > 0 && (
+      {(features.length > 0 || Boolean(featureChart)) && (
         <SatgatDocument format="a4">
           <h2
             style={{
@@ -342,51 +344,59 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
             주요 특징
           </h2>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 28,
-            }}
-          >
-            {features.map((f, i) => (
-              <div key={i}>
-                <div
-                  style={{
-                    width: 32,
-                    height: 2,
-                    backgroundColor: DANCHEONG,
-                    marginBottom: 16,
-                  }}
-                />
-                <h3
-                  style={{
-                    fontFamily: FONT_MYEONGJO,
-                    fontSize: 16,
-                    fontWeight: 700,
-                    lineHeight: 1.4,
-                    color: INK,
-                    margin: '0 0 8px 0',
-                    wordBreak: 'keep-all',
-                  }}
-                >
-                  {f.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: FONT_BATANG,
-                    fontSize: 14,
-                    lineHeight: 1.7,
-                    color: INK_MUTED,
-                    margin: 0,
-                    wordBreak: 'keep-all',
-                  }}
-                >
-                  {f.description}
-                </p>
-              </div>
-            ))}
-          </div>
+          {features.length > 0 && (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 28,
+              }}
+            >
+              {features.map((f, i) => (
+                <div key={i}>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 2,
+                      backgroundColor: DANCHEONG,
+                      marginBottom: 16,
+                    }}
+                  />
+                  <h3
+                    style={{
+                      fontFamily: FONT_MYEONGJO,
+                      fontSize: 16,
+                      fontWeight: 700,
+                      lineHeight: 1.4,
+                      color: INK,
+                      margin: '0 0 8px 0',
+                      wordBreak: 'keep-all',
+                    }}
+                  >
+                    {f.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontFamily: FONT_BATANG,
+                      fontSize: 14,
+                      lineHeight: 1.7,
+                      color: INK_MUTED,
+                      margin: 0,
+                      wordBreak: 'keep-all',
+                    }}
+                  >
+                    {f.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {Boolean(featureChart) && (
+            <section style={{ marginTop: features.length > 0 ? 34 : 0, breakInside: 'avoid' }}>
+              <SatgatVisual visual={featureChart} />
+            </section>
+          )}
         </SatgatDocument>
       )}
 

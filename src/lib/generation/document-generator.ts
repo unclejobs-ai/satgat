@@ -7,6 +7,7 @@ import { buildGenerationPrompt } from '@/lib/bridge/prompt-builder';
 import { buildSlotsSchema } from '@/lib/generation/slot-schema';
 import { validateDocumentData } from '@/lib/engine/validator';
 import { normalizeImageSlot } from '@/lib/engine/slot-image';
+import { normalizeVisualSlot } from '@/lib/engine/slot-visual';
 
 function isEmptySlotValue(value: unknown): boolean {
   if (value == null) return true;
@@ -44,6 +45,8 @@ function fallbackForRequiredSlot(slot: TemplateSlot, userPrompt: string): unknow
         headers: [slot.label],
         rows: [[summary || slot.placeholder || slot.label]],
       };
+    case 'visual':
+      return undefined;
     case 'text':
     case 'textarea':
     case 'markdown':
@@ -137,6 +140,9 @@ function normalizeSlotValue(value: unknown, slotType: string): unknown {
         if (rows.length > 0) return { headers, rows };
       }
       return undefined;
+
+    case 'visual':
+      return normalizeVisualSlot(value);
 
     case 'text':
     case 'textarea':

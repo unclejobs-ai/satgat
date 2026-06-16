@@ -7,7 +7,7 @@
 
 export type DocumentFormat = 'a4' | 'a4-landscape' | 'slide-16x9';
 
-export type SlotType = 'text' | 'textarea' | 'image' | 'image-list' | 'list' | 'markdown' | 'table';
+export type SlotType = 'text' | 'textarea' | 'image' | 'image-list' | 'list' | 'markdown' | 'table' | 'visual';
 
 export interface TemplateSlot {
   id: string;
@@ -26,6 +26,7 @@ export type SectionType =
   | 'image'
   | 'image-text'
   | 'table'
+  | 'visual'
   | 'divider'
   | 'footer'
   | 'spacer';
