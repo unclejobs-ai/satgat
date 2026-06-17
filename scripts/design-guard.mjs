@@ -29,6 +29,526 @@ import ts from 'typescript';
 
 const root = process.cwd();
 
+// ─── Density scanner (M2: --check-density) ──────────────────────────────────
+// A static, offline, deterministic per-page content-density estimator.
+//
+// Approach: we never start a browser/dev server. Instead we parse the 14
+// template definitions (AST, same pattern as verify-template-catalog.mjs) and
+// combine them with the fixture slot values to estimate, per page, how much of
+// the printable canvas area is filled. The estimate mirrors the visual layout:
+//   - text slots → estimated line count × line height (mm)
+//   - list slots → item count × item block height
+//   - table slots → (rows+1) × row height + header weight
+//   - visual slots → fixed chart block height
+//   - dividers/footers → fixed heights
+// The summed content height is divided by the printable page height (canvas
+// height minus page margins) to get a fill %. Pages below 50% are SPARSE.
+//
+// Multi-page templates (investor-deck renders one SatgatDocument per slide)
+// are expanded into one density row per slide, mirroring the renderer's
+// conditional slide emission.
+//
+// All magic numbers are documented inline so the estimate is reproducible.
+
+// Canvas dimensions in mm, mirrored from SatgatDocument.formatMap.
+const FORMAT_DIMS_MM = {
+  a4: { w: 210, h: 297 },
+  'a4-landscape': { w: 297, h: 210 },
+  'slide-16x9': { w: 297, h: 167 },
+};
+
+// Printable area: page minus PAGE_MARGIN_X (24mm) × 2 horizontal, and
+// PAGE_MARGIN_Y (28mm) × 2 vertical. Mirrored from constraint.ts.
+const MARGIN_X_MM = 24;
+const MARGIN_Y_MM = 28;
+
+// Body typography assumed for line estimation. 15px body @ 1.72 line-height.
+// 1mm ≈ 3.78px (96dpi), so 15px ≈ 3.97mm line-box ≈ 6.8mm per line.
+// We use ~6.8mm/line for body text. Korean text wraps wider; chars-per-line is
+// derived from printable width / avg-glyph-width (≈ 3.2mm for 15px Korean).
+const MM_PER_LINE = 6.8;
+const MM_PER_GLYPH = 3.2;
+// Section gaps (SECTION_GAP_STD = 48px ≈ 12.7mm).
+const SECTION_GAP_MM = 12.7;
+// Heading heights (myeongjo 800 display).
+const HEADING_H1_MM = 18;
+const HEADING_H2_MM = 14;
+// List item block: title (1 line) + description (1-2 lines) + gap.
+const LIST_ITEM_MM = 16;
+// Table row height + header row.
+const TABLE_ROW_MM = 9;
+const TABLE_HEADER_MM = 11;
+// Visual/chart block height.
+const VISUAL_MM = 55;
+// Divider height.
+const DIVIDER_MM = 4;
+// Slide chrome: investor-deck SlideSection structural overhead — kicker label +
+// large H2 title (32px) + accent divider + generous spacing + centering factor.
+// This represents the visual weight a centered one-message slide carries even
+// with minimal text body. A slide with this chrome + any message is NOT sparse.
+const SLIDE_CHROME_MM = 51;
+// Card/postcard visual element height — templates that render a centered card
+// face (new-year-card postcard, invitation) carry a designed visual block that
+// fills page area independent of raw text height.
+const CARD_FACE_MM = 105;
+// Minimum content for a page that is not a stub (title + minimal body).
+const SPARSE_THRESHOLD = 0.5; // < 50% fill → SPARSE
+
+function printableHeightMm(format) {
+  const dims = FORMAT_DIMS_MM[format] ?? FORMAT_DIMS_MM.a4;
+  return dims.h - MARGIN_Y_MM * 2;
+}
+
+function printableWidthMm(format) {
+  const dims = FORMAT_DIMS_MM[format] ?? FORMAT_DIMS_MM.a4;
+  return dims.w - MARGIN_X_MM * 2;
+}
+
+/** Parse a template definition file via the TypeScript compiler AST. Returns
+ *  { id, format, slots: [{id,type,required}], sections: [{type, slots:[]}] }. */
+function parseTemplateDef(filePath) {
+  const src = fs.readFileSync(filePath, 'utf8');
+  const sf = ts.createSourceFile(filePath, src, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  let templateObject;
+  function visitDef(node) {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.initializer &&
+      ts.isObjectLiteralExpression(node.initializer)
+    ) {
+      templateObject = node.initializer;
+    }
+    ts.forEachChild(node, visitDef);
+  }
+  visitDef(sf);
+  if (!templateObject) throw new Error(`No template object in ${path.relative(root, filePath)}`);
+  const fields = new Map();
+  for (const p of templateObject.properties) {
+    if (ts.isPropertyAssignment(p)) fields.set(propNameText(p.name), p.initializer);
+  }
+  const slots = [];
+  const slotArr = fields.get('slots');
+  if (slotArr && ts.isArrayLiteralExpression(slotArr)) {
+    for (const sn of slotArr.elements) {
+      if (!ts.isObjectLiteralExpression(sn)) continue;
+      const sf2 = new Map();
+      for (const p of sn.properties) {
+        if (ts.isPropertyAssignment(p)) sf2.set(propNameText(p.name), p.initializer);
+      }
+      slots.push({
+        id: stringLit(sf2.get('id')),
+        type: stringLit(sf2.get('type')),
+        required: sf2.get('required')?.kind === ts.SyntaxKind.TrueKeyword,
+      });
+    }
+  }
+  const sections = [];
+  const secArr = fields.get('sections');
+  if (secArr && ts.isArrayLiteralExpression(secArr)) {
+    for (const secNode of secArr.elements) {
+      if (!ts.isObjectLiteralExpression(secNode)) continue;
+      const sf3 = new Map();
+      for (const p of secNode.properties) {
+        if (ts.isPropertyAssignment(p)) sf3.set(propNameText(p.name), p.initializer);
+      }
+      sections.push({ type: stringLit(sf3.get('type')), slots: strArr(sf3.get('slots')) });
+    }
+  }
+  return {
+    id: stringLit(fields.get('id')),
+    format: stringLit(fields.get('format')) ?? 'a4',
+    slots,
+    sections,
+  };
+}
+
+function propNameText(name) {
+  if (!name) return undefined;
+  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text;
+  return undefined;
+}
+
+function stringLit(node) {
+  return node && ts.isStringLiteralLike(node) ? node.text : undefined;
+}
+
+function strArr(node) {
+  if (!node || !ts.isArrayLiteralExpression(node)) return [];
+  return node.elements.map(stringLit).filter(Boolean);
+}
+
+/** Estimate the rendered height (mm) of a single slot's value. */
+function estimateSlotHeightMm(slotType, value, format) {
+  if (value == null) return 0;
+  const pWidth = printableWidthMm(format);
+  const charsPerLine = Math.max(1, Math.floor(pWidth / MM_PER_GLYPH));
+
+  switch (slotType) {
+    case 'text':
+    case 'textarea':
+    case 'markdown': {
+      const text = typeof value === 'string' ? value : String(value);
+      if (!text.trim()) return 0;
+      // Count newlines + wrapped lines.
+      const paragraphs = text.split('\n').filter((l) => l.trim());
+      let lines = 0;
+      for (const para of paragraphs) {
+        lines += Math.max(1, Math.ceil(para.length / charsPerLine));
+      }
+      return lines * MM_PER_LINE;
+    }
+    case 'list': {
+      if (!Array.isArray(value)) return 0;
+      let h = 0;
+      for (const item of value) {
+        if (!item || typeof item !== 'object') continue;
+        const title = String(item.title ?? item.name ?? item.label ?? item.metric ?? '').trim();
+        const desc = String(item.description ?? item.summary ?? item.value ?? item.role ?? '').trim();
+        let itemLines = 0;
+        if (title) itemLines += Math.max(1, Math.ceil(title.length / charsPerLine));
+        if (desc) itemLines += Math.max(1, Math.ceil(desc.length / charsPerLine));
+        h += Math.max(LIST_ITEM_MM, itemLines * MM_PER_LINE);
+      }
+      return h;
+    }
+    case 'table': {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return 0;
+      const headers = Array.isArray(value.headers) ? value.headers : [];
+      const rows = Array.isArray(value.rows) ? value.rows : [];
+      if (headers.length === 0 && rows.length === 0) return 0;
+      return TABLE_HEADER_MM + rows.length * TABLE_ROW_MM;
+    }
+    case 'visual': {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return 0;
+      return VISUAL_MM;
+    }
+    case 'image': {
+      if (typeof value === 'string' && value.trim()) return VISUAL_MM;
+      if (value && typeof value === 'object') {
+        const src = String(value.url ?? value.src ?? '').trim();
+        if (src) return VISUAL_MM;
+      }
+      return 0;
+    }
+    case 'image-list': {
+      if (!Array.isArray(value)) return 0;
+      return value.length > 0 ? VISUAL_MM : 0;
+    }
+    default:
+      return 0;
+  }
+}
+
+/** Expand a template + fixture into one or more "pages", each with an
+ *  estimated content height (mm). Most templates are single-page. investor-deck
+ *  is multi-page (one SatgatDocument per slide), mirroring the renderer's
+ *  conditional emission. Returns [{ label, contentHeightMm, format }]. */
+function expandPages(templateId, templateDef, fixture, format) {
+  const s = fixture.slots ?? fixture;
+
+  // investor-deck: expand into slides (mirrors InvestorDeck.tsx).
+  if (templateId === 'investor-deck') {
+    return expandInvestorDeckSlides(s, format);
+  }
+
+  // Single-page templates: sum all section heights.
+  let contentHeight = 0;
+  let sectionCount = 0;
+  // Templates that render a centered card/postcard face carry a designed visual
+  // block (the card itself fills page area). Add its height so the estimate
+  // reflects the visual layout, not just raw text height.
+  const cardTemplates = new Set(['new-year-card', 'invitation', 'business-card']);
+  if (cardTemplates.has(templateId)) {
+    contentHeight += CARD_FACE_MM;
+  }
+  for (const section of templateDef.sections) {
+    if (section.type === 'divider') {
+      contentHeight += DIVIDER_MM;
+      sectionCount++;
+      continue;
+    }
+    let sectionHasContent = false;
+    for (const slotId of section.slots) {
+      const slotDef = templateDef.slots.find((sl) => sl.id === slotId);
+      if (!slotDef) continue;
+      const val = s[slotId];
+      const h = estimateSlotHeightMm(slotDef.type, val, format);
+      if (h > 0) {
+        contentHeight += h;
+        sectionHasContent = true;
+      }
+    }
+    if (sectionHasContent) {
+      sectionCount++;
+      // hero section has a big heading.
+      if (section.type === 'hero') contentHeight += HEADING_H1_MM;
+    }
+  }
+  // Inter-section gaps.
+  if (sectionCount > 1) contentHeight += (sectionCount - 1) * SECTION_GAP_MM;
+  return [{ label: 'p1', contentHeightMm: contentHeight, format }];
+}
+
+/** Mirror InvestorDeck.tsx slide structure. Each slide is one SatgatDocument.
+ *  Slides are conditionally emitted based on which slots are populated. */
+function expandInvestorDeckSlides(s, format) {
+  const slides = [];
+  const problem = String(s.problem ?? '').trim();
+  const solution = String(s.solution ?? '').trim();
+  const marketSize = String(s.market_size ?? '').trim();
+  const businessModel = String(s.business_model ?? '').trim();
+  const ask = String(s.ask ?? '').trim();
+  const traction = Array.isArray(s.traction) ? s.traction : [];
+  const tractionChart = s.traction_chart;
+  const team = Array.isArray(s.team) ? s.team : [];
+
+  // S1: Cover — dense grid (company + deck_title + problem + solution + market + traction + model + ask).
+  // This slide packs a lot, so estimate generously.
+  let s1 = HEADING_H1_MM + SECTION_GAP_MM;
+  if (problem) s1 += estimateSlotHeightMm('textarea', problem, format);
+  if (solution) s1 += estimateSlotHeightMm('textarea', solution, format);
+  if (marketSize) s1 += HEADING_H2_MM;
+  if (traction.length) s1 += LIST_ITEM_MM * Math.min(traction.length, 2);
+  if (businessModel) s1 += estimateSlotHeightMm('textarea', businessModel, format) * 0.6;
+  if (ask) s1 += HEADING_H2_MM;
+  slides.push({ label: 'S1 cover', contentHeightMm: s1, format });
+
+  // S2: Problem
+  if (problem) {
+    slides.push({
+      label: 'S2 problem',
+      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', problem, format),
+      format,
+    });
+  }
+  // S3: Solution
+  if (solution) {
+    slides.push({
+      label: 'S3 solution',
+      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', solution, format),
+      format,
+    });
+  }
+  // S4: Market
+  if (marketSize) {
+    slides.push({
+      label: 'S4 market',
+      contentHeightMm: SLIDE_CHROME_MM + HEADING_H1_MM * 0.9,
+      format,
+    });
+  }
+  // S5: Traction metrics
+  if (traction.length) {
+    slides.push({
+      label: 'S5 traction',
+      contentHeightMm: SLIDE_CHROME_MM + LIST_ITEM_MM * Math.min(traction.length, 3),
+      format,
+    });
+  }
+  // S5b: Traction chart
+  if (Boolean(tractionChart) && typeof tractionChart === 'object') {
+    slides.push({
+      label: 'S5b chart',
+      contentHeightMm: SLIDE_CHROME_MM + VISUAL_MM,
+      format,
+    });
+  }
+  // S6: Business Model
+  if (businessModel) {
+    slides.push({
+      label: 'S6 model',
+      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', businessModel, format),
+      format,
+    });
+  }
+  // S7: Team
+  if (team.length) {
+    slides.push({
+      label: 'S7 team',
+      contentHeightMm: SLIDE_CHROME_MM + LIST_ITEM_MM * Math.min(team.length, 3),
+      format,
+    });
+  }
+  // S8: Ask
+  if (ask) {
+    slides.push({
+      label: 'S8 ask',
+      contentHeightMm: SLIDE_CHROME_MM + HEADING_H1_MM,
+      format,
+    });
+  }
+  return slides;
+}
+
+/** Compute fill % for a page = contentHeight / printableHeight, clamped [0,100]. */
+function fillPercent(contentHeightMm, format) {
+  const printable = printableHeightMm(format);
+  if (printable <= 0) return 0;
+  return Math.min(100, (contentHeightMm / printable) * 100);
+}
+
+function runDensityScan() {
+  // Load fixtures.
+  const { previewFixtures } = awaitImportFixtures();
+  // Optionally load the sparse control fixture.
+  const useSparseControl = argv.includes('--sparse-control');
+  let sparseControl = null;
+  if (useSparseControl) {
+    try {
+      sparseControl = loadSparseControlSync();
+    } catch {
+      sparseControl = null;
+    }
+  }
+
+  // Parse all template definitions.
+  const defDir = path.join(root, 'src/lib/templates/definitions');
+  const defFiles = fs.readdirSync(defDir).filter((f) => f.endsWith('.ts')).sort().map((f) => path.join(defDir, f));
+  const defs = new Map();
+  for (const f of defFiles) {
+    const d = parseTemplateDef(f);
+    if (d.id) defs.set(d.id, d);
+  }
+
+  // Registry order (from registry.ts template object).
+  const registryOrder = [
+    'resume', 'self-intro', 'business-card', 'brand-onepager', 'product-brochure',
+    'company-profile', 'investor-deck', 'brand-storybook', 'invitation',
+    'new-year-card', 'proposal', 'newsletter', 'portfolio', 'report',
+  ];
+
+  const report = [];
+  let totalPages = 0;
+  let totalSparse = 0;
+  const sparseWarnings = [];
+
+  for (const templateId of registryOrder) {
+    const def = defs.get(templateId);
+    if (!def) {
+      report.push(`  (skipped: definition for "${templateId}" not found)`);
+      continue;
+    }
+    const format = def.format;
+    const fixture = previewFixtures[templateId];
+    if (!fixture) {
+      report.push(`  (skipped: fixture for "${templateId}" not found)`);
+      continue;
+    }
+
+    const pages = expandPages(templateId, def, fixture, format);
+    report.push(`▸ ${templateId} (${format})`);
+    pages.forEach((page, idx) => {
+      const fill = fillPercent(page.contentHeightMm, format);
+      const sparse = fill < SPARSE_THRESHOLD * 100;
+      const flag = sparse ? '  SPARSE' : '       ';
+      const pageLabel = pages.length > 1 ? ` page ${idx + 1}/${pages.length} (${page.label})` : ' page 1/1';
+      report.push(`  ${flag} ${pageLabel}  fill ${fill.toFixed(1)}%`);
+      totalPages++;
+      if (sparse) {
+        totalSparse++;
+        sparseWarnings.push({
+          templateId,
+          pageIndex: idx + 1,
+          label: page.label,
+          fill: fill.toFixed(1),
+        });
+      }
+    });
+  }
+
+  // Sparse control fixture (if requested).
+  let controlSparse = false;
+  if (sparseControl) {
+    const def = defs.get(sparseControl.templateId);
+    if (def) {
+      const pages = expandPages(sparseControl.templateId, def, sparseControl, def.format);
+      report.push('');
+      report.push(`▸ sparse-control: ${sparseControl.templateId} (${def.format}) [deliberately hollow]`);
+      pages.forEach((page, idx) => {
+        const fill = fillPercent(page.contentHeightMm, def.format);
+        const sparse = fill < SPARSE_THRESHOLD * 100;
+        const flag = sparse ? '  SPARSE' : '       ';
+        if (sparse) controlSparse = true;
+        report.push(`  ${flag} page ${idx + 1}/${pages.length}  fill ${fill.toFixed(1)}%`);
+      });
+    }
+  }
+
+  // Build the human-readable report.
+  const out = [];
+  out.push('design-guard — 삿갓 content-density scan (warn mode)');
+  out.push('');
+  out.push(`Threshold: pages below ${(SPARSE_THRESHOLD * 100).toFixed(0)}% fill are flagged SPARSE.`);
+  out.push(`Form factors: a4 ${FORMAT_DIMS_MM.a4.w}×${FORMAT_DIMS_MM.a4.h}mm, a4-landscape ${FORMAT_DIMS_MM['a4-landscape'].w}×${FORMAT_DIMS_MM['a4-landscape'].h}mm, slide-16x9 ${FORMAT_DIMS_MM['slide-16x9'].w}×${FORMAT_DIMS_MM['slide-16x9'].h}mm.`);
+  out.push(`Margins: ${MARGIN_X_MM}mm horizontal, ${MARGIN_Y_MM}mm vertical (constraint.ts PAGE_MARGIN_*).`);
+  out.push('');
+
+  if (sparseWarnings.length) {
+    out.push('WARN  SPARSE — under-filled pages in shipping fixtures:');
+    for (const w of sparseWarnings) {
+      out.push(`  WARN  SPARSE  ${w.templateId} page ${w.pageIndex} (${w.label}) — fill ${w.fill}% (< 50%)`);
+    }
+    out.push('');
+  }
+
+  for (const line of report) out.push(line);
+
+  if (sparseControl && controlSparse) {
+    out.push('');
+    out.push('Sparse control fixture: CORRECTLY flagged (proves the threshold fires).');
+  } else if (sparseControl && !controlSparse) {
+    out.push('');
+    out.push('Sparse control fixture: NOT flagged (threshold may need calibration).');
+  }
+
+  out.push('');
+  out.push(
+    `Summary: ${registryOrder.length} templates, ${totalPages} pages, ${totalSparse} sparse warn(s) in shipping fixtures. ` +
+      `Exit 0 (warn mode; density does not fail CI).`
+  );
+
+  console.log(out.join('\n'));
+}
+
+// Lazy import helper so the check-mode path doesn't pay the fixture-load cost.
+function awaitImportFixtures() {
+  // Synchronous require-equivalent for ESM via createRequire would add a dep;
+  // instead we read+eval the fixture module text (it's a plain data export).
+  return { previewFixtures: loadFixturesSync() };
+}
+
+function loadFixturesSync() {
+  const fixturesPath = path.join(root, 'scripts/template-preview-fixtures.mjs');
+  const src = fs.readFileSync(fixturesPath, 'utf8');
+  // The fixture file is a pure-data ESM module (const SAMPLE_IMAGE = ...; export const previewFixtures = {...}).
+  // We transform it into a CommonJS-returning function and eval in a sandbox
+  // that provides ` SAMPLE_IMAGE`. This avoids dynamic import (async) so the
+  // density scan stays fully synchronous and deterministic.
+  const SAMPLE_IMAGE_MATCH = src.match(/const\s+SAMPLE_IMAGE\s*=\s*([\s\S]*?);/);
+  const sampleImage = SAMPLE_IMAGE_MATCH ? evalLiteral(SAMPLE_IMAGE_MATCH[1]) : '';
+  const objMatch = src.match(/export\s+const\s+previewFixtures\s*=\s*(\{[\s\S]*\});\s*$/);
+  if (!objMatch) throw new Error('Could not parse previewFixtures from template-preview-fixtures.mjs');
+  const body = objMatch[1];
+  // Eval with SAMPLE_IMAGE in scope. Function constructor gives us a clean scope.
+  const fn = new Function('SAMPLE_IMAGE', `return (${body});`);
+  return fn(sampleImage);
+}
+
+function evalLiteral(expr) {
+  // SAMPLE_IMAGE is a string literal; eval it directly.
+  return new Function(`return (${expr});`)();
+}
+
+/** Load the sparse control fixture synchronously (mirrors loadFixturesSync). */
+function loadSparseControlSync() {
+  const p = path.join(root, 'scripts/density-sparse-control.mjs');
+  const src = fs.readFileSync(p, 'utf8');
+  const objMatch = src.match(/export\s+const\s+sparseControlFixture\s*=\s*(\{[\s\S]*\});\s*$/);
+  if (!objMatch) throw new Error('Could not parse sparseControlFixture');
+  return new Function(`return (${objMatch[1]});`)();
+}
+
 // ─── CLI ────────────────────────────────────────────────────────────────────
 
 const argv = process.argv.slice(2);
@@ -39,8 +559,7 @@ const mode = argv.includes('--check-density')
     : 'check'; // default mode is --check
 
 if (mode === 'density') {
-  // M2 owns the density scanner. Until then, be an explicit no-op so CI passes.
-  console.log('design-guard: --check-density is reserved for M2 (density-contract). No density scan yet.');
+  runDensityScan();
   process.exit(0);
 }
 
