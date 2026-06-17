@@ -1,54 +1,66 @@
 /**
  * 삿갓 디자인 토큰 (Layer 3 — 한국화)
  *
- * Kami CSS 변수를 TypeScript 상수로 미러링.
- * 자동 생성 아님 — Kami styles.css + kami-overrides.css와 손으로 동기 유지.
- * CSS cascade가 진실원천. 이 파일은 TS/React 컴포넌트 편의용.
+ * 본 파일은 TS/React 컴포넌트(chrome) 편의용 토큰 모음입니다.
+ * 색 토큰의 단일 권위원천(Single Source of Truth)은 constraint.ts 입니다.
+ * 이 파일의 모든 색 값은 constraint.ts 의 정식 토큰과 정확히 일치해야 하며,
+ * drift 가 발견되면 constraint.ts 값을 기준으로 정렬합니다.
+ * (design-guard 가 design-system/ 계층의 색 drift 를 감지합니다.)
  *
  * 변경 사유 → docs/FORK-LOG.md
  */
 
 // ─── Color Tokens ───────────────────────────────────────────────────────────
+// constraint.ts 가 색 토큰의 단일 권위원천(Single Source of Truth).
+// 이 블록의 색 이름(parchment/brand/jade/...)은 constraint.ts 의 정식 토큰과
+// 1:1 로 대응하며, hex 값이 정확히 일치해야 함. drift 재발 방지.
+// 값을 바꿀 때는 반드시 constraint.ts 를 먼저 고치고 여기로 복사할 것.
 
 export const colors = {
-  /** 백자지(白瓷紙) — 누런 양피지 대신 맑은 닥종이. #FFF 금지 */
+  /** 백자지(白瓷紙) — 누런 양피지 대신 맑은 닥종이. #FFF 금지. = constraint.CANVAS */
   parchment: '#F7F7F2',
-  ivory: '#FFFFFB',
-  warmSand: '#E7E8DD',
+  ivory: '#FFFFFB',            // = constraint.IVORY
+  warmSand: '#E7E8DD',         // = constraint.CANVAS_DARK
 
-  /** 단청(丹靑) — 조선왕실 적색. 단 하나의 강조색, 5% 이내 */
+  /** 단청(丹靑) — 조선왕실 적색. 단 하나의 강조색, 5% 이내.
+   *  constraint.ts 가 단일 권위원천 — 이 값은 constraint.DANCHEONG 와 일치해야 함. */
   brand: '#9B1B1B',
-  brandLight: '#B53030',
+  brandLight: '#B92D2D',
 
-  /** 취색(翠色) — 청자 깊이. 보조 */
+  /** 취색(翠色) — 청자 깊이. 보조. = constraint.JADE */
   jade: '#2E6B5E',
-  jadeLight: '#3D8B7A',
+  jadeLight: '#3D8B7A',        // = constraint.JADE_LIGHT
 
-  /** 금박(金箔) — 절제된 고급감. 최소 사용 */
+  /** 금박(金箔) — 절제된 고급감. 최소 사용. = constraint.GOLD */
   gold: '#B8954F',
-  goldLight: '#D4B76A',
+  goldLight: '#D4B76A',        // = constraint.GOLD_LIGHT
 
-  /** 먹(墨) — 따뜻한 흑. cool gray 금지 */
-  nearBlack: '#1C1916',
-  darkWarm: '#3A3833',
-  olive: '#4D4B46',
-  stone: '#6B6862',
+  /** 먹(墨) — 따뜻한 흑. cool gray 금지. = constraint.INK */
+  nearBlack: '#1C1916',        // = constraint.INK
+  darkWarm: '#3A3833',         // = constraint.INK_LIGHT
+  olive: '#4D4B46',            // = constraint.INK_MUTED
+  stone: '#6B6862',            // legacy extra (constraint.MUTED 계보, 별도 토큰)
 
-  /** 엷음(淡) — 구분선·테두리 */
-  border: '#D2D6CB',
-  borderSoft: '#E6E8DE',
+  /** 엷음(淡) — 구분선·테두리. = constraint.HAIRLINE / BORDER */
+  border: '#D2D6CB',           // = constraint.HAIRLINE
+  borderSoft: '#E6E8DE',       // legacy extra (constraint.BORDER 계보, 별도 토큰)
 
   // ── Legacy 별칭 (기존 컴포넌트 호환) ─────────────────────────────────────
-  canvas: '#F7F7F2',
-  canvasDark: '#E7E8DD',
-  ink: '#1C1916',
-  inkLight: '#3A3833',
-  inkMuted: '#5C5C5C',
-  dancheong: '#9B1B1B',
-  dancheongLight: '#B53030',
-  hairline: '#D2D6CB',
-  muted: '#73786F',
-  placeholder: '#969B91',
+  // constraint.ts 가 색 토큰의 단일 권위원천(Single Source of Truth).
+  // 이 별칭 블록의 모든 색 값은 constraint.ts 의 정식 토큰과 정확히 일치해야 함.
+  // drift 재발 방지: 값을 바꿀 때 반드시 constraint.ts 를 먼저 고치고 여기로 복사.
+  canvas: '#F7F7F2',          // = constraint.CANVAS
+  canvasDark: '#E7E8DD',      // = constraint.CANVAS_DARK
+  ink: '#1C1916',             // = constraint.INK
+  inkLight: '#3A3833',        // = constraint.INK_LIGHT
+  inkMuted: '#4D4B46',        // = constraint.INK_MUTED  (drift fixed M1 — was a cool gray)
+  dancheong: '#9B1B1B',       // = constraint.DANCHEONG
+  dancheongLight: '#B92D2D',  // = constraint.DANCHEONG_LIGHT  (aligned M1 — was a brighter red)
+  hairline: '#D2D6CB',        // = constraint.HAIRLINE
+  muted: '#73786F',           // = constraint.MUTED
+  placeholder: '#969B91',     // = constraint.PLACEHOLDER
+  // NOTE: shadow* 값은 rgba() 표현 — design-guard RGBA_USAGE 가 info 로 기록.
+  // constraint.ts 의 SHADOW_* 토큰이 권위원천이며, 텍스트 캐스트용 legacy alias 임.
   shadow: 'rgba(28, 25, 22, 0.04)',
   shadowMedium: 'rgba(28, 25, 22, 0.08)',
   shadowDeep: 'rgba(28, 25, 22, 0.12)',
@@ -169,20 +181,10 @@ export const textures = {
     'radial-gradient(ellipse at 18% 28%, rgba(184,149,79,0.04) 0%, transparent 55%), radial-gradient(ellipse at 82% 72%, rgba(46,107,94,0.025) 0%, transparent 55%)',
 } as const;
 
-// ─── 한자 인장 글자 매핑 (satgat 확장) ──────────────────────────────────────
-
-export const sealGlyphs = {
-  resume: { glyph: '履', variant: 'ink' },
-  portfolio: { glyph: '作', variant: 'jade' },
-  brandOnepager: { glyph: '標', variant: 'dancheong' },
-  brandStorybook: { glyph: '誌', variant: 'gold' },
-  productBrochure: { glyph: '品', variant: 'jade' },
-  investorDeck: { glyph: '投', variant: 'dancheong' },
-  companyProfile: { glyph: '社', variant: 'ink' },
-  newsletter: { glyph: '報', variant: 'gold' },
-} as const;
-
-export type SealVariant = 'dancheong' | 'jade' | 'gold' | 'ink';
+// ─── 한자 인장(印章) 글자 매핑 ───────────────────────────────────────────────
+// REMOVED (M1): tokens.ts 의 8-entry sealGlyphs 는 stale subset 이었습니다.
+// 인장 진실원천은 registry.TEMPLATE_SEAL (14종 전 매핑, verify:templates 가 검증).
+// import { TEMPLATE_SEAL } from '@/lib/templates/registry' 로 사용하세요.
 
 // ─── Legacy compat: typography 단일 export (theme.ts + 기존 컴포넌트용) ──────
 export const typography = {
@@ -223,7 +225,6 @@ export const satgatTheme = {
   layout,
   shadows,
   textures,
-  sealGlyphs,
 } as const;
 
 export type SatgatTheme = typeof satgatTheme;
