@@ -37,6 +37,87 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
   const { data, error } = preview;
   const template = data ? getTemplate(data.templateId) : undefined;
   const langPath = `/${encodeURIComponent(lang)}`;
+  const docStageRef = React.useRef<HTMLDivElement>(null);
+
+  // Render-time density hint (VAL-DENSITY-005). After the bespoke renderer
+  // paints each `.satgat-document` page, measure how much of the printable
+  // content box is filled. Pages under 50% fill are tagged
+  // `data-density="sparse"` and get a `.density-warn` badge so a human reviewer
+  // (or agent-browser) can see the page is under-filled without reading the
+  // design-guard report. Healthy pages are tagged `data-density="ok"` with no
+  // badge. The badge is preview-only (no-print) and never reaches PDF export.
+  React.useLayoutEffect(() => {
+    if (!data) return;
+    const stage = docStageRef.current;
+    if (!stage) return;
+
+    const measurePage = (el: HTMLElement) => {
+      const cs = window.getComputedStyle(el);
+      const padTop = parseFloat(cs.paddingTop) || 0;
+      const padBot = parseFloat(cs.paddingBottom) || 0;
+      const bt = parseFloat(cs.borderTopWidth) || 0;
+      const innerH = el.clientHeight - padTop - padBot;
+      // Remove any previously injected badge so it does not pollute the fill
+      // measurement (the badge is absolute-positioned overlay content).
+      el.querySelectorAll(".density-warn, [data-density-hint]").forEach((n) => n.remove());
+      if (innerH <= 0) {
+        el.setAttribute("data-density", "unknown");
+        el.removeAttribute("data-density-fill");
+        return;
+      }
+      const pageRect = el.getBoundingClientRect();
+      const contentTop = pageRect.top + bt + padTop;
+      let lowest = 0;
+      const nodes = el.querySelectorAll<HTMLElement>("*");
+      nodes.forEach((node) => {
+        if (node.closest(".density-warn, [data-density-hint]")) return;
+        const r = node.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) return; // skip invisible/zero-size
+        const bottomRel = r.bottom - contentTop;
+        if (bottomRel > lowest) lowest = bottomRel;
+      });
+      const fill = Math.min(1, Math.max(0, innerH > 0 ? lowest / innerH : 0));
+      const pct = Math.round(fill * 100);
+      const sparse = fill < 0.5;
+      el.setAttribute("data-density", sparse ? "sparse" : "ok");
+      el.setAttribute("data-density-fill", String(pct));
+      if (sparse) {
+        const badge = document.createElement("div");
+        badge.className = "density-warn no-print";
+        badge.setAttribute("data-density-hint", "");
+        badge.setAttribute("role", "status");
+        badge.setAttribute("aria-label", `밀도 경고 — 희소 페이지, 채움 ${pct}%`);
+        badge.textContent = `희소 ${pct}%`;
+        el.appendChild(badge);
+      }
+    };
+
+    const measure = () => {
+      stage.querySelectorAll<HTMLElement>(".satgat-document").forEach(measurePage);
+    };
+
+    measure();
+    // Re-measure after the lazy-loaded renderer mounts and after webfonts
+    // settle (self-hosted woff2 reflow). ResizeObserver catches later shifts.
+    const t1 = window.setTimeout(measure, 350);
+    const t2 = window.setTimeout(measure, 900);
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(stage);
+    stage.querySelectorAll<HTMLElement>(".satgat-document").forEach((p) => ro.observe(p));
+    let cancelled = false;
+    const onFonts = () => {
+      if (!cancelled) measure();
+    };
+    if (typeof document !== "undefined" && document.fonts) {
+      document.fonts.ready.then(onFonts).catch(() => {});
+    }
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [data]);
 
   const copyLink = async () => {
     try {
@@ -168,7 +249,7 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
       </div>
 
       {/* Document */}
-      <div className="doc-stage">
+      <div className="doc-stage" ref={docStageRef}>
         <SatgatTemplateRenderer template={template} data={data} />
       </div>
 
@@ -369,6 +450,36 @@ function PreviewStyles() {
       .doc-stage .satgat-document + .satgat-document {
         margin-top: 0 !important;
       }
+      /* Render-time density hint (VAL-DENSITY-005). Preview-only badge injected
+         onto .satgat-document[data-density="sparse"] pages. Never printed. */
+      .satgat-document[data-density="sparse"] {
+        position: relative;
+      }
+      .density-warn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 5;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        background: var(--brand, #9B1B1B);
+        color: var(--parchment, #FFFFFB);
+        font-family: var(--sans);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        border-radius: 4px;
+        pointer-events: none;
+        white-space: nowrap;
+        box-shadow: 0 2px 6px rgba(28,25,22,0.16);
+      }
+      .density-warn::before {
+        content: "△";
+        font-size: 10px;
+        line-height: 1;
+      }
       .empty-state {
         max-width: 520px;
         margin: 80px auto;
@@ -519,6 +630,7 @@ function PreviewStyles() {
 
       @media print {
         .preview-toolbar { display: none !important; }
+        .density-warn, .no-print { display: none !important; }
         .preview-wrap { padding: 0; max-width: none; }
         .doc-stage {
           display: block !important;
