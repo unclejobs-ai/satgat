@@ -35,21 +35,36 @@ jobs:
         env:
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
 
-  korean-design-guard:
-    name: 단청 5% · 한지 톤 검증
+  design-guard:
+    name: 디자인 8조 · 카탈로그 계약 검증
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: 순백 #FFFFFF 사용 검사
-        run: |
-          ! grep -rE "background.*#?[fF]{6}\b|background.*#[fF]{3}\b" \
-            --include="*.tsx" --include="*.ts" --include="*.css" \
-            app/ src/ public/satgat/ \
-            | grep -v "node_modules" | grep -v "// .*permit" \
-            && echo "✓ 순백 사용 없음" || (echo "✗ 한지 위에 순백 사용 감지" && exit 1)
+      - name: Node 환경 준비
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
+      - name: 의존성 설치
+        run: npm ci
+
+      # design-guard 정적 분석기 (8조 위반 리포트). M1 warn 모드 — 위반이 있어도
+      # exit 0 (PURE_WHITE 포함 6 룰). 순백/rgba/단청/합성볼드/cool-gray/이중강조.
+      # 이전 korean-design-guard 잡의 취약한 `background #FFFFFF` grep을 대체한다
+      # (PURE_WHITE 룰이 더 넓은 범위를 기계적으로 검사한다).
+      - name: design-guard (8조 정적 분석, warn 모드)
+        run: node scripts/design-guard.mjs --check
+
+      # 14종 템플릿 카탈로그 계약 (정의·렌더러·registry·landing·fixture 동기).
+      # 로컬 전용이던 verify:templates를 CI 게이트로 승격 — 카탈로그 회귀 차단.
+      - name: verify:templates (14종 카탈로그 계약)
+        run: npm run verify:templates
+
+      # design-guard가 미처리하는 유료 폰트(TsangerJinKai/Charter) 의존 검사는
+      # 기존 grep을 유지한다. 순백 grep은 PURE_WHITE 룰로 대체되어 제거.
       - name: TsangerJinKai · Charter 유료 폰트 의존 검사
         run: |
           ! grep -rE "TsangerJinKai|Charter[^a-z]" \
