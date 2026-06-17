@@ -168,9 +168,12 @@ function hasPermit(lineText) {
 }
 
 function parseHexes(lineText) {
-  // 3- or 6-digit hex color literals (case-insensitive). Returns lowercased.
+  // 3-, 4-, 6-, or 8-digit hex color literals (case-insensitive). 4-digit is
+  // the #rgba shorthand and 8-digit is #rrggbbaa (alpha suffix). Returns
+  // lowercased 6-digit RGB (alpha dropped by normalizeHex since alpha is
+  // irrelevant to the pure-white / cool-gray checks).
   const out = [];
-  const re = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g;
+  const re = /#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/g;
   let m;
   while ((m = re.exec(lineText)) !== null) {
     out.push({ raw: m[0], value: normalizeHex(m[0]) });
@@ -179,9 +182,21 @@ function parseHexes(lineText) {
 }
 
 function normalizeHex(hex) {
+  // Reduce any hex form to a lowercase 6-digit #rrggbb (alpha dropped — it is
+  // irrelevant for the pure-white / cool-gray checks; #ffffffff is pure white
+  // regardless of alpha).
   const h = hex.slice(1).toLowerCase();
   if (h.length === 3) {
+    // #rgb → #rrggbb
     return `#${h[0]}${h[0]}${h[1]}${h[1]}${h[2]}${h[2]}`;
+  }
+  if (h.length === 4) {
+    // #rgba shorthand → #rrggbb (alpha discarded)
+    return `#${h[0]}${h[0]}${h[1]}${h[1]}${h[2]}${h[2]}`;
+  }
+  if (h.length === 8) {
+    // #rrggbbaa → #rrggbb (alpha discarded)
+    return `#${h.slice(0, 6)}`;
   }
   return `#${h}`;
 }

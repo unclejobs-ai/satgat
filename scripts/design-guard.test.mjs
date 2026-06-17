@@ -129,6 +129,36 @@ function testPureWhite() {
   assertOk('canvas #F7F7F2 and ivory #FFFFFB are NOT flagged', pw.length === 0, `got ${pw.length}`);
 }
 
+// ─── Test: PURE_WHITE 4/8-digit hex — VAL-GUARD-003 ─────────────────────────
+// The #rgba shorthand (#ffff) and #rrggbbaa (#ffffffff) pure-white literals
+// must also be detected. Alpha is irrelevant — #ffffffff is pure white
+// regardless. Regression for the parseHexes()/normalizeHex() extension.
+function testPureWhiteAlphaHex() {
+  console.log('\n[VAL-GUARD-003] PURE_WHITE detects 4-digit #ffff and 8-digit #ffffffff');
+  // 4-digit pure-white shorthand #ffff → pure white (alpha irrelevant).
+  clearSpikes();
+  writeSpike('SpikeWhite4.tsx', [
+    'export const SpikeWhite4 = () => (',
+    '  <div style={{ color: "#ffff" }}>4-digit pure white</div>',
+    ');',
+    '',
+  ].join('\n'));
+  const report4 = runGuard('SpikeWhite4.tsx');
+  const pw4 = report4.findings.filter((f) => f.rule === 'PURE_WHITE');
+  assertOk('4-digit #ffff pure white is detected', pw4.length >= 1, `got ${pw4.length}`);
+  // 8-digit pure-white #ffffffff → pure white (alpha irrelevant).
+  clearSpikes();
+  writeSpike('SpikeWhite8.tsx', [
+    'export const SpikeWhite8 = () => (',
+    '  <div style={{ color: "#ffffffff" }}>8-digit pure white</div>',
+    ');',
+    '',
+  ].join('\n'));
+  const report8 = runGuard('SpikeWhite8.tsx');
+  const pw8 = report8.findings.filter((f) => f.rule === 'PURE_WHITE');
+  assertOk('8-digit #ffffffff pure white is detected', pw8.length >= 1, `got ${pw8.length}`);
+}
+
 // ─── Test: DANCHEONG_BUDGET — VAL-GUARD-004 ─────────────────────────────────
 function testDancheongBudget() {
   console.log('\n[VAL-GUARD-004] DANCHEONG_BUDGET warns on overuse');
@@ -315,6 +345,7 @@ function testPermitHatch() {
 testWarnModeExit0();
 testRgbaUsage();
 testPureWhite();
+testPureWhiteAlphaHex();
 testDancheongBudget();
 testSyntheticBold();
 testCoolGray();
