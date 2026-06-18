@@ -464,5 +464,4 @@ fs.rmSync(tmp, { recursive: true, force: true });
 
 console.log(`\n${'='.repeat(60)}`);
 console.log(`design-guard spike tests: ${passed} passed, ${failed} failed`);
-if (failed > 0) process.exit(1);
-process.exit(0);
+if (failed > 0) throw new Error(`${failed} design-guard spike test(s) failed`);
