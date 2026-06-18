@@ -62,10 +62,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
         <section
           className="product-brochure-cover"
           style={{
-            minHeight: 760,
-            display: 'grid',
             gridTemplateColumns: heroImage ? '0.96fr 1.04fr' : '1fr',
-            gap: 42,
             alignItems: 'stretch',
           }}
         >
@@ -88,9 +85,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
               className="product-brochure-title"
               style={{
                 fontFamily: FONT_MYEONGJO,
-                fontSize: 52,
                 fontWeight: 800,
-                lineHeight: 1.08,
                 color: INK,
                 textShadow: INK_BLEED_STRONG,
                 margin: '0 0 18px',
@@ -193,8 +188,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
             <aside
               className="product-brochure-visual"
               style={{
-                borderLeft: `1px solid ${HAIRLINE}`,
-                paddingLeft: 30,
                 display: 'flex',
                 flexDirection: 'column',
                 minWidth: 0,
@@ -301,24 +294,40 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
         </section>
 
         <style jsx global>{`
+          .product-brochure-cover {
+            display: grid;
+            gap: 42px;
+            min-height: 760px;
+          }
+
+          .product-brochure-title {
+            font-size: 52px;
+            line-height: 1.08;
+          }
+
+          .product-brochure-visual {
+            border-left: 1px solid ${HAIRLINE};
+            padding-left: 30px;
+          }
+
           @media (max-width: 760px) {
             .product-brochure-cover {
-              display: flex !important;
-              flex-direction: column !important;
-              gap: 28px !important;
-              min-height: 0 !important;
+              display: flex;
+              flex-direction: column;
+              gap: 28px;
+              min-height: 0;
             }
 
             .product-brochure-title {
-              font-size: 38px !important;
-              line-height: 1.12 !important;
+              font-size: 38px;
+              line-height: 1.12;
             }
 
             .product-brochure-visual {
-              border-left: 0 !important;
-              border-top: 1px solid ${HAIRLINE} !important;
-              padding-left: 0 !important;
-              padding-top: 24px !important;
+              border-left: 0;
+              border-top: 1px solid ${HAIRLINE};
+              padding-left: 0;
+              padding-top: 24px;
             }
           }
         `}</style>

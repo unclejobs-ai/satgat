@@ -152,7 +152,7 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
     <SatgatDocument format="a4">
       {/* Preview 모드 — 화면용 큰 미리보기 (단일 명함 2× 스케일) */}
       <div className="card-preview-screen">
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '30mm' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div
             className="card-preview-large"
             style={{
@@ -165,7 +165,6 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
           <div
             className="card-preview-compact"
             style={{
-              display: 'none',
               boxShadow: '0 6pt 18pt rgba(28,25,22,0.08)',
               borderRadius: 4,
             }}
@@ -175,12 +174,10 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
         </div>
 
         <p
+          className="card-preview-caption"
           style={{
-            marginTop: '80mm',
             textAlign: 'center',
             fontFamily: FONT_DODUM,
-            fontSize: 11,
-            letterSpacing: '0.18em',
             color: INK_MUTED,
             textTransform: 'uppercase',
           }}
@@ -193,7 +190,6 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
       <div
         className="card-print-grid"
         style={{
-          display: 'none',
           gridTemplateColumns: '90mm 90mm',
           gridTemplateRows: 'repeat(4, 55mm)',
           gap: '0',
@@ -217,33 +213,55 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
       </div>
 
       <style jsx>{`
-        @media screen {
-          .card-print-grid { display: none !important; }
-          .card-preview-screen { display: block; }
+        .card-preview-screen {
+          display: block;
+        }
+        .card-preview-screen > div {
+          padding-top: 30mm;
+        }
+        .card-preview-large {
+          display: block;
+        }
+        .card-preview-compact {
+          display: none;
+        }
+        .card-preview-caption {
+          margin-top: 80mm;
+          font-size: 11px;
+          letter-spacing: 0.18em;
+        }
+        .card-print-grid {
+          display: none;
         }
         @media screen and (max-width: 760px) {
           .card-preview-screen {
             overflow: hidden;
           }
           .card-preview-screen > div {
-            padding-top: 10mm !important;
+            padding-top: 10mm;
           }
           .card-preview-large {
-            display: none !important;
+            display: none;
           }
           .card-preview-compact {
-            display: block !important;
+            display: block;
           }
-          .card-preview-screen p {
-            margin-top: 24mm !important;
-            font-size: 8px !important;
-            line-height: 1.6 !important;
-            letter-spacing: 0.08em !important;
+          .card-preview-caption {
+            margin-top: 24mm;
+            font-size: 8px;
+            line-height: 1.6;
+            letter-spacing: 0.08em;
           }
         }
+        /* Print-scoped only: force the 8-up cut grid over the screen preview
+           when rendering to PDF/paper. Not fighting any inline style. */
         @media print {
-          .card-preview-screen { display: none !important; }
-          .card-print-grid { display: grid !important; }
+          .card-preview-screen {
+            display: none !important;
+          }
+          .card-print-grid {
+            display: grid !important;
+          }
         }
       `}</style>
     </SatgatDocument>

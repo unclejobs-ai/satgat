@@ -47,10 +47,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
       <section
         className="brand-onepager-sheet"
         style={{
-          minHeight: 760,
-          display: 'grid',
           gridTemplateColumns: '1.08fr 0.92fr',
-          gap: 44,
           alignItems: 'stretch',
         }}
       >
@@ -72,9 +69,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
             className="brand-onepager-title"
             style={{
               fontFamily: FONT_MYEONGJO,
-              fontSize: 56,
               fontWeight: 800,
-              lineHeight: 1.08,
               color: INK,
               textShadow: INK_BLEED_STRONG,
               margin: '0 0 14px',
@@ -142,8 +137,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
         <aside
           className="brand-onepager-aside"
           style={{
-            borderLeft: `1px solid ${HAIRLINE}`,
-            paddingLeft: 30,
             display: 'flex',
             flexDirection: 'column',
             minWidth: 0,
@@ -346,24 +339,40 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
       </section>
 
       <style jsx global>{`
+        .brand-onepager-sheet {
+          display: grid;
+          gap: 44px;
+          min-height: 760px;
+        }
+
+        .brand-onepager-title {
+          font-size: 56px;
+          line-height: 1.08;
+        }
+
+        .brand-onepager-aside {
+          border-left: 1px solid ${HAIRLINE};
+          padding-left: 30px;
+        }
+
         @media (max-width: 760px) {
           .brand-onepager-sheet {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 30px !important;
-            min-height: 0 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            min-height: 0;
           }
 
           .brand-onepager-title {
-            font-size: 40px !important;
-            line-height: 1.12 !important;
+            font-size: 40px;
+            line-height: 1.12;
           }
 
           .brand-onepager-aside {
-            border-left: 0 !important;
-            border-top: 1px solid ${HAIRLINE} !important;
-            padding-left: 0 !important;
-            padding-top: 24px !important;
+            border-left: 0;
+            border-top: 1px solid ${HAIRLINE};
+            padding-left: 0;
+            padding-top: 24px;
           }
         }
       `}</style>

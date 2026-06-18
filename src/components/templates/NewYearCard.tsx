@@ -32,18 +32,16 @@ export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData
     <SatgatDocument format="a4">
       <div
         className="new-year-card-stage"
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100%', paddingTop: 60 }}
+        style={{ display: 'flex', justifyContent: 'center', minHeight: '100%' }}
       >
         <div
           className="new-year-card-face"
           style={{
             width: '148mm',
             maxWidth: '100%',
-            aspectRatio: '148 / 105', // 엽서 가로
             background: '#FFFFFB',
             border: `0.5pt solid ${HAIRLINE}`,
             borderRadius: 4,
-            padding: '48px 56px',
             display: 'flex',
             flexDirection: 'column',
             position: 'relative',
@@ -178,16 +176,26 @@ export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData
       </div>
 
       <style jsx>{`
+        .new-year-card-stage {
+          align-items: center;
+          padding-top: 60px;
+        }
+
+        .new-year-card-face {
+          aspect-ratio: 148 / 105;
+          padding: 48px 56px;
+        }
+
         @media screen and (max-width: 760px) {
           .new-year-card-stage {
-            padding-top: 12px !important;
-            align-items: flex-start !important;
+            padding-top: 12px;
+            align-items: flex-start;
           }
 
           .new-year-card-face {
-            aspect-ratio: auto !important;
-            min-height: 320px !important;
-            padding: 26px 28px !important;
+            aspect-ratio: auto;
+            min-height: 320px;
+            padding: 26px 28px;
           }
         }
       `}</style>

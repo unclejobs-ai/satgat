@@ -46,10 +46,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
       <section
         className="newsletter-sheet"
         style={{
-          minHeight: 760,
-          display: 'grid',
           gridTemplateColumns: '1.16fr 0.84fr',
-          gap: 38,
           alignItems: 'stretch',
         }}
       >
@@ -70,9 +67,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
             className="newsletter-title"
             style={{
               fontFamily: FONT_MYEONGJO,
-              fontSize: 52,
               fontWeight: 800,
-              lineHeight: 1.08,
               color: INK,
               textShadow: INK_BLEED_STRONG,
               margin: '0 0 20px',
@@ -158,8 +153,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
               paddingTop: 18,
               borderTop: `1px solid ${HAIRLINE}`,
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: 20,
             }}
           >
             <div>
@@ -218,8 +211,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
         <aside
           className="newsletter-aside"
           style={{
-            borderLeft: `1px solid ${HAIRLINE}`,
-            paddingLeft: 30,
             display: 'flex',
             flexDirection: 'column',
             minWidth: 0,
@@ -249,7 +240,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                   className="newsletter-date"
                   style={{
                     fontFamily: FONT_DODUM,
-                    fontSize: 11,
                     lineHeight: 1.55,
                     letterSpacing: '0.04em',
                     color: INK_LIGHT,
@@ -439,33 +429,58 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
       </section>
 
       <style jsx global>{`
+        .newsletter-sheet {
+          display: grid;
+          gap: 38px;
+          min-height: 760px;
+        }
+
+        .newsletter-title {
+          font-size: 52px;
+          line-height: 1.08;
+        }
+
+        .newsletter-aside {
+          border-left: 1px solid ${HAIRLINE};
+          padding-left: 30px;
+        }
+
+        .newsletter-date {
+          font-size: 11px;
+        }
+
+        .newsletter-digest-meta {
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
         @media (max-width: 760px) {
           .newsletter-sheet {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 30px !important;
-            min-height: 0 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            min-height: 0;
           }
 
           .newsletter-title {
-            font-size: 38px !important;
-            line-height: 1.12 !important;
+            font-size: 38px;
+            line-height: 1.12;
           }
 
           .newsletter-aside {
-            border-left: 0 !important;
-            border-top: 1px solid ${HAIRLINE} !important;
-            padding-left: 0 !important;
-            padding-top: 24px !important;
+            border-left: 0;
+            border-top: 1px solid ${HAIRLINE};
+            padding-left: 0;
+            padding-top: 24px;
           }
 
           .newsletter-date {
-            font-size: 10px !important;
+            font-size: 10px;
           }
 
           .newsletter-digest-meta {
-            grid-template-columns: 1fr !important;
-            gap: 14px !important;
+            grid-template-columns: 1fr;
+            gap: 14px;
           }
         }
       `}</style>

@@ -46,10 +46,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
       <section
         className="portfolio-sheet"
         style={{
-          minHeight: 720,
-          display: 'grid',
           gridTemplateColumns: '1.18fr 0.82fr',
-          gap: 40,
           alignItems: 'stretch',
         }}
       >
@@ -76,9 +73,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                 className="portfolio-lead-title"
                 style={{
                   fontFamily: FONT_MYEONGJO,
-                  fontSize: 36,
                   fontWeight: 800,
-                  lineHeight: 1.14,
                   color: INK,
                   textShadow: INK_BLEED_STRONG,
                   margin: '0 0 14px',
@@ -204,8 +199,6 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
         <aside
           className="portfolio-aside"
           style={{
-            borderLeft: `1px solid ${HAIRLINE}`,
-            paddingLeft: 30,
             display: 'flex',
             flexDirection: 'column',
             minWidth: 0,
@@ -236,9 +229,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                 className="portfolio-title"
                 style={{
                   fontFamily: FONT_MYEONGJO,
-                  fontSize: 42,
                   fontWeight: 800,
-                  lineHeight: 1.06,
                   color: INK,
                   textShadow: INK_BLEED_STRONG,
                   margin: '0 0 8px',
@@ -407,29 +398,50 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
       </section>
 
       <style jsx global>{`
+        .portfolio-sheet {
+          display: grid;
+          gap: 40px;
+          min-height: 720px;
+        }
+
+        .portfolio-title {
+          font-size: 42px;
+          line-height: 1.06;
+        }
+
+        .portfolio-lead-title {
+          font-size: 36px;
+          line-height: 1.14;
+        }
+
+        .portfolio-aside {
+          border-left: 1px solid ${HAIRLINE};
+          padding-left: 30px;
+        }
+
         @media (max-width: 760px) {
           .portfolio-sheet {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 28px !important;
-            min-height: 0 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            min-height: 0;
           }
 
           .portfolio-title {
-            font-size: 32px !important;
-            line-height: 1.12 !important;
+            font-size: 32px;
+            line-height: 1.12;
           }
 
           .portfolio-lead-title {
-            font-size: 28px !important;
-            line-height: 1.18 !important;
+            font-size: 28px;
+            line-height: 1.18;
           }
 
           .portfolio-aside {
-            border-left: 0 !important;
-            border-top: 1px solid ${HAIRLINE} !important;
-            padding-left: 0 !important;
-            padding-top: 24px !important;
+            border-left: 0;
+            border-top: 1px solid ${HAIRLINE};
+            padding-left: 0;
+            padding-top: 24px;
             order: -1;
           }
         }

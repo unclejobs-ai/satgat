@@ -79,10 +79,7 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
         <section
           className="company-profile-hero"
           style={{
-            minHeight: 660,
-            display: 'grid',
             gridTemplateColumns: '1.05fr 0.95fr',
-            gap: 40,
             alignItems: 'stretch',
           }}
         >
@@ -103,9 +100,7 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
               className="company-profile-title"
               style={{
                 fontFamily: FONT_MYEONGJO,
-                fontSize: 52,
                 fontWeight: 800,
-                lineHeight: 1.08,
                 color: INK,
                 textShadow: INK_BLEED_STRONG,
                 margin: '0 0 18px 0',
@@ -194,8 +189,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
             className="company-profile-aside"
             style={{
               position: 'relative',
-              borderLeft: `1px solid ${HAIRLINE}`,
-              paddingLeft: 28,
               display: 'flex',
               flexDirection: 'column',
               gap: 28,
@@ -717,24 +710,40 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
       </SatgatDocument>
 
       <style jsx global>{`
+        .company-profile-hero {
+          display: grid;
+          gap: 40px;
+          min-height: 660px;
+        }
+
+        .company-profile-title {
+          font-size: 52px;
+          line-height: 1.08;
+        }
+
+        .company-profile-aside {
+          border-left: 1px solid ${HAIRLINE};
+          padding-left: 28px;
+        }
+
         @media (max-width: 760px) {
           .company-profile-hero {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 28px !important;
-            min-height: 0 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            min-height: 0;
           }
 
           .company-profile-title {
-            font-size: 38px !important;
-            line-height: 1.12 !important;
+            font-size: 38px;
+            line-height: 1.12;
           }
 
           .company-profile-aside {
-            border-left: 0 !important;
-            border-top: 1px solid ${HAIRLINE} !important;
-            padding-left: 0 !important;
-            padding-top: 24px !important;
+            border-left: 0;
+            border-top: 1px solid ${HAIRLINE};
+            padding-left: 0;
+            padding-top: 24px;
           }
         }
       `}</style>
