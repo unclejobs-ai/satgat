@@ -1,6 +1,6 @@
 # satgat
 
-satgat is a Korean AI document generator. Korean name 삿갓. Turns natural-language briefs into structured Korean documents on baekjaji canvas with ink typography, single dancheong accent (≤ 5%/page), Korean serif hierarchy, and print/PDF-aware layouts. 13 document templates.
+satgat is a Korean AI document generator. Korean name 삿갓. Turns natural-language briefs into structured Korean documents on baekjaji canvas with ink typography, single dancheong accent (≤ 5%/page), Korean serif hierarchy, and print/PDF-aware layouts. 14 document templates.
 
 Repository: https://github.com/unclejobs-ai/satgat
 License: MIT
@@ -34,7 +34,7 @@ Important paths:
 - public/satgat/assets/examples/ko/: Korean demo pack with HTML, PDF, PNG, manifest.
 - scripts/generate-korean-demo-pack.mjs: regenerates Korean demo HTML and manifest.
 - scripts/verify-template-catalog.mjs: contract verification (definitions × renderers × landing × fixtures).
-- scripts/template-preview-fixtures.mjs: realistic slot payloads for all 13 runtime templates.
+- scripts/template-preview-fixtures.mjs: realistic slot payloads for all 14 runtime templates.
 - src/lib/templates/: runtime template definitions and registry.
 - src/lib/design-system/constraint.ts: tokens (palette, fonts, ink bleed shadows).
 - src/lib/bridge/prompt-builder.ts: type-aware AI generation contract.
@@ -42,8 +42,8 @@ Important paths:
 - src/lib/engine/slot-list.ts + slot-image.ts: shape-tolerant slot normalizers.
 - references/: Korean writing, design, anti-pattern, resume guides.
 
-Runtime template catalog (13):
-- resume, self-intro, business-card, brand-onepager, product-brochure, company-profile, investor-deck, brand-storybook, invitation, new-year-card, proposal, newsletter, portfolio.
+Runtime template catalog (14):
+- resume, self-intro, business-card, brand-onepager, product-brochure, company-profile, investor-deck, brand-storybook, invitation, new-year-card, proposal, newsletter, portfolio, report.
 
 Korean demo pack:
 - resume-kim-sumin: Korean resume.

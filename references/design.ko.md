@@ -12,12 +12,12 @@
 
 ## 1. 색 (Colors)
 
-### 한지 캔버스 (절대 #FFF 금지)
+### 백자지 캔버스 (절대 #FFF 금지)
 ```
-한지(韓紙)   #F1ECDF   페이지 본바탕
-이보리(象牙) #F8F4E8   카드 · 부상 표면
-황지(黃紙)   #E8E1CC   버튼 · 인터랙티브
-한지그늘     #E0D8C0   카드 음영
+백자지(白瓷紙) #F7F7F2   페이지 본바탕
+이보리(象牙)   #FFFFFB   카드 · 부상 표면
+황지(黃紙)     #E7E8DD   버튼 · 인터랙티브
+백자지그늘     #D2D6CB   카드 음영
 ```
 
 ### 먹(墨) 계열 — 위계
@@ -31,7 +31,7 @@
 ### 강조 — 단청만 (5% 룰)
 ```
 단청(丹靑)   #9B1B1B   단 하나의 강조색
-단청 밝게    #B53030   hover · 다크 위 링크
+단청 밝게    #B92D2D   hover · 다크 위 링크
 취색(翠色)   #2E6B5E   보조 강조 (인장 등)
 금박(金箔)   #B8954F   메달·디바이더 (최소)
 ```
@@ -47,9 +47,9 @@ tint 5  #D0B4AB
 
 ### 엷음(淡) — 보더
 ```
-보더       #DDD6C4
-보더 옅음  #E8E2D0
-헤어라인   #D2CAB5
+보더       #BEC5BA
+보더 옅음  #D8DBD1
+헤어라인   #D2D6CB
 ```
 
 **규칙:**
@@ -139,57 +139,69 @@ box-shadow: 0 4pt 24pt rgba(28, 25, 22, 0.05);
 
 ## 5. 인장(印章)
 
-8 문서마다 한 한자 인장:
+14 문서마다 한 한자 인장:
 ```
-履 이력서       ink (#1C1916)
-介 자기소개서   dancheong
-名 명함        jade
-牒 청첩장      dancheong
-賀 연하장      gold
-案 제안서      dancheong
-報 뉴스레터    gold
-作 포트폴리오  jade
+履 이력서        ink (#1C1916)
+介 자기소개서    dancheong
+名 명함         jade
+品 브랜드 원페이지 dancheong
+製 제품 소개서    jade
+社 회사 소개서    jade
+投 투자 IR 덱     gold
+話 브랜드 스토리북 gold
+牒 청첩장       dancheong
+賀 연하장       gold
+案 제안서       dancheong
+報 뉴스레터     gold
+作 포트폴리오   jade
+報 보고서       ink
 ```
 
 22×22pt 사각 · 명조 800 · 카테고리 색 · `inset` 흰 광택 1.2px.
 
 ---
 
-## 6. 한지 캔버스 (반드시)
+## 6. 백자지 캔버스 (반드시)
 
 ```css
-background-color: #F1ECDF;
+background-color: #F7F7F2;
 background-image:
   radial-gradient(ellipse 95% 70% at 50% 30%, rgba(255,252,240,0.32), transparent 62%),
   /* 닥섬유 텍스처 (긴 fiber + 짧은 cluster + grain) */
   url("data:image/svg+xml,...");
 ```
 
-순백(`#FFFFFF`) 절대 금지. `@page background` 도 한지로 묶을 것.
+순백(`#FFFFFF`) 절대 금지. `@page background` 도 백자지로 묶을 것.
 
 ---
 
 ## 7. 인쇄
 
 - 모든 색은 solid hex (rgba 금지 — 인쇄 시 패딩·글리프 농도 어긋남)
-- `@page { margin: 0; background: #F1ECDF; }`
+- `@page { margin: 0; background: #F7F7F2; }`
 - `-webkit-print-color-adjust: exact`
 - A4 = 210×297mm · A5 = 148×210mm · 명함 = 90×55mm
 
 ---
 
-## 8. 한국 문서 8종 표준
+## 8. 한국 문서 14종 표준
 
 | 인장 | 문서 | 포맷 | 핵심 슬롯 |
 |----|------|------|----------|
-| 履 | 이력서 | A4 | name, hanja_name, title, photo, summary, experience[], education[], skills |
-| 介 | 자기소개서 | A4 | name, q1_motivation, q2_competence, q3_growth, q4_aspiration |
-| 名 | 명함 | 90×55 | name, title, company, email, phone, website |
-| 牒 | 청첩장 | A5 | groom_name, bride_name, date, time, venue, parents, rsvp_url |
-| 賀 | 연하장 | 엽서 | sender_family, recipient, occasion (신년/추석), message |
-| 案 | 제안서 | A4 | title, problem, solution, metrics[], timeline, cost |
-| 報 | 뉴스레터 | A4 | issue_no, date, lead, articles[], cta |
-| 作 | 포트폴리오 | A4 가로 | name, intro, projects[], skills, contact |
+| 履 | 이력서 | A4 | name, title, summary, experiences[], skills, education[] |
+| 介 | 자기소개서 | A4 | name, target, role, q1_motivation, q2_competence, q3_growth, q4_aspiration |
+| 名 | 명함 | 90×55 | name, hanja_name, title, company, email, phone, website |
+| 品 | 브랜드 원페이지 | A4 | brand_name, tagline, description, products[], positioning_map, contact |
+| 製 | 제품 소개서 | A4 | product_name, category, overview, features[], feature_chart, specs, certifications[] |
+| 社 | 회사 소개서 | A4 | company_name, tagline, vision, mission, values[], history[], team[], growth_chart |
+| 投 | 투자 IR 덱 | 16:9 | company_name, deck_title, problem, solution, market_size, traction[], traction_chart, team[], ask |
+| 話 | 브랜드 스토리북 | A4 | brand_name, origin_story, values[], visual_concept, tone_manner, milestones[] |
+| 牒 | 청첩장 | A5 | groom_name, bride_name, groom_parents, bride_parents, date, venue, message, rsvp_url |
+| 賀 | 연하장 | 엽서 | occasion, greeting, message, sender_family, recipient |
+| 案 | 제안서 | A4 | title, problem, solution, metrics[], impact_chart, timeline, cost, team[] |
+| 報 | 뉴스레터 | A4 | issue_title, issue_date, greeting, articles[], issue_chart, promotion, cta |
+| 作 | 포트폴리오 | A4 가로 | name, title, bio, projects[], skills, contact |
+| 報 | 보고서 | A4 | title, summary, background, progress[], results, issues, plan, closing |
 
 ---
 

@@ -52,7 +52,7 @@ html[lang='ko'] {
    *  단청 적색보다 분홍이 살아 있어, 한국 정체성을 더 직접 환기.
    * ═══════════════════════════════════════════════════════════════════ */
   --brand: #b91c5c;            /* 무궁화 단심(丹心) — 메인 강조 */
-  --brand-light: #d03f7a;      /* hover · 다크 위 링크 */
+  --brand-light: #b92d2d;      /* hover · 다크 위 링크 — constraint DANCHEONG_LIGHT SSOT */
   --brand-deep: #8e1242;       /* 강조 진하기 — h2 borderbar 등 */
   --brand-tint: #f6d5de;       /* 무궁화 꽃잎 — tag 배경 light */
 
@@ -64,7 +64,7 @@ html[lang='ko'] {
 
   /* ── 단청(丹靑) — 조선왕실 적색, 보조 액센트로 보존 ─────────────────── */
   --dancheong: #9b1b1b;        /* 단청 — 사군자 매(梅)·인장·전통 표지 */
-  --dancheong-light: #b53030;
+  --dancheong-light: #b92d2d;  /* constraint DANCHEONG_LIGHT SSOT */
   --dancheong-tint: #f0d9d3;
 
   /* ── 취색(翠色) — 청자 깊이, 보조 강조 ───────────────────────────────── */
