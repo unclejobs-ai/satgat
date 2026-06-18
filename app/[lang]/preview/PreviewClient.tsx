@@ -543,7 +543,7 @@ function PreviewStyles() {
         border-color: var(--brand);
       }
       .empty-cta:hover { transform: translateY(-1px); }
-      .empty-cta.primary:hover { background: #B53030; }
+      .empty-cta.primary:hover { background: #B92D2D; }
 
       @media (max-width: 980px) {
         .preview-toolbar {

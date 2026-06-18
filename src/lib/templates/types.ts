@@ -7,7 +7,7 @@
 
 export type DocumentFormat = 'a4' | 'a4-landscape' | 'slide-16x9';
 
-export type SlotType = 'text' | 'textarea' | 'image' | 'image-list' | 'list' | 'markdown' | 'table' | 'visual';
+export type SlotType = 'text' | 'textarea' | 'image' | 'list' | 'table' | 'visual';
 
 export interface TemplateSlot {
   id: string;
@@ -20,16 +20,13 @@ export interface TemplateSlot {
 export type SectionType =
   | 'hero'
   | 'text'
-  | 'text-columns'
   | 'grid'
   | 'two-column'
-  | 'image'
   | 'image-text'
   | 'table'
   | 'visual'
   | 'divider'
-  | 'footer'
-  | 'spacer';
+  | 'footer';
 
 export interface SectionDef {
   type: SectionType;
@@ -46,7 +43,14 @@ export interface SatgatTemplate {
   format: DocumentFormat;
   /** 사용자/AI가 채워야 할 slot 정의 */
   slots: TemplateSlot[];
-  /** 문서를 구성하는 섹션 순서 */
+  /**
+   * 문서를 구성하는 섹션 순서(메타데이터 전용).
+   *
+   * 렌더러(src/components/templates/*.tsx)가 렌더의 진실 원천이다. 이 `sections`
+   * 배열은 렌더를 구동하지 않으며, 정의-일관성(verify-template-catalog.mjs)과
+   * 문서 구조 가독성을 위한 보조 메타데이터로만 쓰인다. 렌더 로직은
+   * `sections`가 아니라 각 렌더러 JSX에 직접 들어있다.
+   */
   sections: SectionDef[];
 }
 

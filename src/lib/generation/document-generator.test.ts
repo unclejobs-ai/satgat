@@ -21,9 +21,6 @@ function validSlots(template: SatgatTemplate): Record<string, unknown> {
       case 'image':
         slots[slot.id] = { url: 'https://example.com/a.png', alt: '대표 이미지' };
         break;
-      case 'image-list':
-        slots[slot.id] = [{ url: 'https://example.com/a.png', alt: '이미지' }];
-        break;
       default:
         slots[slot.id] = `${slot.label} 샘플 값`;
     }

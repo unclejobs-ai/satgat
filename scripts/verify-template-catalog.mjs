@@ -10,20 +10,17 @@ const rendererPath = path.join(root, 'src/lib/engine/renderer.tsx');
 const newClientPath = path.join(root, 'app/[lang]/new/NewDocumentClient.tsx');
 const landingPath = path.join(root, 'public/satgat/satgat-ko.html');
 const validFormats = new Set(['a4', 'a4-landscape', 'slide-16x9']);
-const validSlotTypes = new Set(['text', 'textarea', 'image', 'image-list', 'list', 'markdown', 'table', 'visual']);
+const validSlotTypes = new Set(['text', 'textarea', 'image', 'list', 'table', 'visual']);
 const validSectionTypes = new Set([
   'hero',
   'text',
-  'text-columns',
   'grid',
   'two-column',
-  'image',
   'image-text',
   'table',
   'visual',
   'divider',
   'footer',
-  'spacer',
 ]);
 
 function readSource(filePath) {
@@ -285,7 +282,6 @@ function validateFixtureSlotValue(templateId, slot, value, errors) {
   switch (slot.type) {
     case 'text':
     case 'textarea':
-    case 'markdown':
       if (typeof value !== 'string') errors.push(`${label} should be a string`);
       break;
 
@@ -312,18 +308,6 @@ function validateFixtureSlotValue(templateId, slot, value, errors) {
     case 'image':
       if (!isLikelyImageSource(imageSourceFrom(value))) {
         errors.push(`${label} should be an image URL/data URL or image object`);
-      }
-      break;
-
-    case 'image-list':
-      if (!Array.isArray(value)) {
-        errors.push(`${label} should be an image array`);
-        break;
-      }
-      for (const [index, item] of value.entries()) {
-        if (!isLikelyImageSource(imageSourceFrom(item))) {
-          errors.push(`${label}[${index}] should be an image URL/data URL or image object`);
-        }
       }
       break;
 

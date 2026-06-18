@@ -38,8 +38,6 @@ function fallbackForRequiredSlot(slot: TemplateSlot, userPrompt: string): unknow
       ];
     case 'image':
       return undefined;
-    case 'image-list':
-      return [];
     case 'table':
       return {
         headers: [slot.label],
@@ -49,7 +47,6 @@ function fallbackForRequiredSlot(slot: TemplateSlot, userPrompt: string): unknow
       return undefined;
     case 'text':
     case 'textarea':
-    case 'markdown':
     default:
       return textFallback;
   }
@@ -124,14 +121,6 @@ function normalizeSlotValue(value: unknown, slotType: string): unknown {
       }
       return undefined;
 
-    case 'image-list':
-      if (Array.isArray(value)) {
-        return value
-          .map((item) => normalizeSlotValue(item, 'image'))
-          .filter((item) => item !== undefined);
-      }
-      return [];
-
     case 'table':
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         const table = value as { headers?: unknown; rows?: unknown };
@@ -146,7 +135,6 @@ function normalizeSlotValue(value: unknown, slotType: string): unknown {
 
     case 'text':
     case 'textarea':
-    case 'markdown':
     default:
       return stringifySlotValue(value);
   }

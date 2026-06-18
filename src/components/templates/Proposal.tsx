@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { SatgatDocument } from '../document/SatgatDocument';
+import { SectionHeading, ProseSection } from '../document/SectionHeading';
 import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
@@ -14,7 +14,6 @@ import {
   INK_MUTED,
   DANCHEONG,
   HAIRLINE,
-  INK_BLEED,
   INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
@@ -107,22 +106,22 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {/* Problem */}
       {problem && (
-        <Section title="一. 문제(問題)" subtitle="현재 무엇이 어려운가">
+        <ProseSection title="一. 문제(問題)" subtitle="현재 무엇이 어려운가" size={17} weight={800} bodyMarginTop={14}>
           {problem}
-        </Section>
+        </ProseSection>
       )}
 
       {/* Solution */}
       {solution && (
-        <Section title="二. 해결안(解決案)" subtitle="우리가 제안하는 방식">
+        <ProseSection title="二. 해결안(解決案)" subtitle="우리가 제안하는 방식" size={17} weight={800} bodyMarginTop={14}>
           {solution}
-        </Section>
+        </ProseSection>
       )}
 
       {/* Metrics */}
       {metrics.length > 0 && (
         <section style={{ margin: '32px 0' }}>
-          <SectionHead title="三. 핵심 지표(指標)" subtitle="기대 효과 정량화" />
+          <SectionHeading title="三. 핵심 지표(指標)" subtitle="기대 효과 정량화" size={17} weight={800} />
           <div
             style={{
               display: 'grid',
@@ -174,7 +173,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {Boolean(impactChart) && (
         <section style={{ margin: '30px 0 34px', breakInside: 'avoid' }}>
-          <SectionHead title="四. 효과 도표(圖表)" subtitle="숫자와 흐름을 함께 보기" />
+          <SectionHeading title="四. 효과 도표(圖表)" subtitle="숫자와 흐름을 함께 보기" size={17} weight={800} />
           <div style={{ marginTop: 14 }}>
             <SatgatVisual visual={impactChart} />
           </div>
@@ -183,22 +182,22 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {/* Timeline */}
       {timeline && (
-        <Section title={Boolean(impactChart) ? '五. 추진 일정(日程)' : '四. 추진 일정(日程)'} subtitle="단계별 계획">
+        <ProseSection title={Boolean(impactChart) ? '五. 추진 일정(日程)' : '四. 추진 일정(日程)'} subtitle="단계별 계획" size={17} weight={800} bodyMarginTop={14}>
           {timeline}
-        </Section>
+        </ProseSection>
       )}
 
       {/* Cost */}
       {cost && (
-        <Section title={Boolean(impactChart) ? '六. 비용·조건(費用)' : '五. 비용·조건(費用)'} subtitle="투자 규모와 조건">
+        <ProseSection title={Boolean(impactChart) ? '六. 비용·조건(費用)' : '五. 비용·조건(費用)'} subtitle="투자 규모와 조건" size={17} weight={800} bodyMarginTop={14}>
           {cost}
-        </Section>
+        </ProseSection>
       )}
 
       {/* Team */}
       {team.length > 0 && (
         <section style={{ marginTop: 32 }}>
-          <SectionHead title={Boolean(impactChart) ? '七. 담당(擔當)' : '六. 담당(擔當)'} subtitle="추진 인력" />
+          <SectionHeading title={Boolean(impactChart) ? '七. 담당(擔當)' : '六. 담당(擔當)'} subtitle="추진 인력" size={17} weight={800} />
           <div
             style={{
               display: 'grid',
@@ -229,61 +228,5 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
         </section>
       )}
     </SatgatDocument>
-  );
-}
-
-function SectionHead({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        gap: 10,
-        marginBottom: 8,
-        paddingBottom: 6,
-        borderBottom: `0.5pt solid ${HAIRLINE}`,
-      }}
-    >
-      <h2
-        style={{
-          fontFamily: FONT_MYEONGJO,
-          fontSize: 17,
-          fontWeight: 800,
-          color: INK,
-          margin: 0,
-          letterSpacing: '-0.005em',
-          textShadow: INK_BLEED,
-        }}
-      >
-        {title}
-      </h2>
-      {subtitle && (
-        <span style={{ fontFamily: FONT_DODUM, fontSize: 10.5, color: DANCHEONG, letterSpacing: '0.06em' }}>
-          {subtitle}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
-  return (
-    <section style={{ marginTop: 32, breakInside: 'avoid' }}>
-      <SectionHead title={title} subtitle={subtitle} />
-      <p
-        style={{
-          fontFamily: FONT_BATANG,
-          fontSize: 13,
-          lineHeight: 1.85,
-          color: INK_LIGHT,
-          margin: '14px 0 0',
-          whiteSpace: 'pre-line',
-          letterSpacing: '-0.003em',
-          wordBreak: 'keep-all',
-        }}
-      >
-        {children}
-      </p>
-    </section>
   );
 }

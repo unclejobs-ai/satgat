@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
 import { SatgatDocument } from '../document/SatgatDocument';
 import { SatgatDivider } from '../document/SatgatDivider';
+import { SectionHeading } from '../document/SectionHeading';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
   FONT_MYEONGJO,
@@ -11,9 +11,6 @@ import {
   INK,
   INK_LIGHT,
   INK_MUTED,
-  DANCHEONG,
-  HAIRLINE,
-  INK_BLEED,
   INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
@@ -91,33 +88,7 @@ export default function SelfIntroRenderer({ data }: { data: SatgatDocumentData }
           if (!answer) return null;
           return (
             <section key={q.id} style={{ breakInside: 'avoid' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: 10,
-                  marginBottom: 8,
-                  paddingBottom: 6,
-                  borderBottom: `0.5pt solid ${HAIRLINE}`,
-                }}
-              >
-                <h2
-                  style={{
-                    fontFamily: FONT_MYEONGJO,
-                    fontSize: 16,
-                    fontWeight: 800,
-                    color: INK,
-                    margin: 0,
-                    letterSpacing: '-0.005em',
-                    textShadow: INK_BLEED,
-                  }}
-                >
-                  {q.label}
-                </h2>
-                <span style={{ fontFamily: FONT_DODUM, fontSize: 10.5, color: DANCHEONG, letterSpacing: '0.06em' }}>
-                  {q.sub}
-                </span>
-              </div>
+              <SectionHeading title={q.label} subtitle={q.sub} size={16} weight={800} />
               <p
                 style={{
                   fontFamily: FONT_BATANG,

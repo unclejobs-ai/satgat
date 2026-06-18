@@ -112,7 +112,7 @@ export default function NotFound() {
           border-color: var(--brand);
         }
         .nf-cta:hover { transform: translateY(-1px); }
-        .nf-cta.primary:hover { background: #B53030; }
+        .nf-cta.primary:hover { background: #B92D2D; }
       `}} />
     </div>
   );

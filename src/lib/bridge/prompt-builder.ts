@@ -12,14 +12,11 @@ function slotShapeHint(slot: TemplateSlot): string {
       return '배열. 각 항목은 {"title":"...","description":"..."} 형태의 객체';
     case 'image':
       return '{"url":"...","alt":"..."} 객체. 확실한 이미지 URL이 없으면 url을 빈 문자열로 두고 설명문을 넣지 말 것';
-    case 'image-list':
-      return '이미지 객체 배열. 각 항목은 {"url":"...","alt":"..."} 형태';
     case 'table':
       return '표 객체. {"headers":["항목","내용"],"rows":[["...","..."]]} 형태';
     case 'visual':
       return '차트/도표 객체. {"kind":"bar|line|donut|waterfall|timeline|flow|architecture|quadrant|venn|swimlane|tree|layer-stack|candlestick","title":"...","caption":"...","data":[{"label":"...","value":12}]} 형태. 흐름도는 steps[], 구성도는 nodes[]와 edges[] 사용 가능';
     case 'textarea':
-    case 'markdown':
       return '문단 문자열. 줄바꿈이 필요하면 \\n 사용';
     case 'text':
     default:
@@ -31,7 +28,6 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
   if (!slot.required) {
     switch (slot.type) {
       case 'list':
-      case 'image-list':
         return [];
       case 'table':
         return { headers: [], rows: [] };
@@ -40,7 +36,6 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
       case 'image':
         return { url: '', alt: '' };
       case 'textarea':
-      case 'markdown':
       case 'text':
       default:
         return '';
@@ -52,8 +47,6 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
       return [{ title: `${slot.label} 1`, description: '핵심 내용을 구체적으로 작성' }];
     case 'image':
       return { url: '', alt: slot.label };
-    case 'image-list':
-      return [{ url: '', alt: slot.label }];
     case 'table':
       return { headers: ['항목', '내용'], rows: [['예시', '구체적인 값']] };
     case 'visual':
@@ -67,7 +60,6 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
         ],
       };
     case 'textarea':
-    case 'markdown':
       return `${slot.label} 내용을 2-4문장으로 작성`;
     case 'text':
     default:

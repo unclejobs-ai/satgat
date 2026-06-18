@@ -2242,7 +2242,7 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
           transition: background 0.18s ease, transform 0.18s ease;
         }
         .result-link:hover {
-          background: #B53030;
+          background: #B92D2D;
           transform: translateX(2px);
         }
 

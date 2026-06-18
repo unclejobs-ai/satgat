@@ -59,13 +59,10 @@ function baseSchemaForSlot(slot: TemplateSlot): SlotSchema {
       return z.array(listItem);
     case 'image':
       return imageObject;
-    case 'image-list':
-      return z.array(imageObject);
     case 'table':
       return tableObject;
     case 'text':
     case 'textarea':
-    case 'markdown':
     default:
       return z.string();
   }

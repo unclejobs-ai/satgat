@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { SatgatDocument } from '../document/SatgatDocument';
+import { SectionHeading, ProseSection } from '../document/SectionHeading';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
@@ -105,7 +105,7 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
       {/* 一. 개요 */}
       {summary && (
         <section style={{ marginBottom: 32 }}>
-          <ReportSectionHead title="一. 개요(槪要)" />
+          <SectionHeading title="一. 개요(槪要)" />
           <p
             style={{
               fontFamily: FONT_BATANG,
@@ -125,13 +125,13 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
 
       {/* 二. 배경 */}
       {background && (
-        <ReportTextSection title="二. 배경·목적(背景)" body={background} />
+        <ProseSection title="二. 배경·목적(背景)">{background}</ProseSection>
       )}
 
       {/* 三. 추진 내용 */}
       {progress.length > 0 && (
         <section style={{ marginTop: 32 }}>
-          <ReportSectionHead title="三. 추진 내용(推進)" />
+          <SectionHeading title="三. 추진 내용(推進)" />
           <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
             {progress.map((item, i) => (
               <div
@@ -177,7 +177,7 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
       {/* 四. 성과·지표 */}
       {results && (
         <section style={{ marginTop: 32 }}>
-          <ReportSectionHead title="四. 성과·지표(成果)" />
+          <SectionHeading title="四. 성과·지표(成果)" />
           <table
             style={{
               width: '100%',
@@ -234,12 +234,12 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
 
       {/* 五. 이슈·리스크 */}
       {issues && (
-        <ReportTextSection title="五. 이슈·리스크(Issue)" body={issues} />
+        <ProseSection title="五. 이슈·리스크(Issue)">{issues}</ProseSection>
       )}
 
       {/* 六. 향후 계획 */}
       {plan && (
-        <ReportTextSection title="六. 향후 계획(計劃)" body={plan} />
+        <ProseSection title="六. 향후 계획(計劃)">{plan}</ProseSection>
       )}
 
       {/* 맺음말 */}
@@ -268,55 +268,5 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
     </SatgatDocument>
-  );
-}
-
-function ReportSectionHead({ title }: { title: string }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'baseline',
-        marginBottom: 8,
-        paddingBottom: 6,
-        borderBottom: `0.5pt solid ${HAIRLINE}`,
-      }}
-    >
-      <h2
-        style={{
-          fontFamily: FONT_MYEONGJO,
-          fontSize: 16,
-          fontWeight: 700,
-          color: INK,
-          margin: 0,
-          letterSpacing: '-0.005em',
-          textShadow: INK_BLEED,
-        }}
-      >
-        {title}
-      </h2>
-    </div>
-  );
-}
-
-function ReportTextSection({ title, body }: { title: string; body: string }) {
-  return (
-    <section style={{ marginTop: 32, breakInside: 'avoid' }}>
-      <ReportSectionHead title={title} />
-      <p
-        style={{
-          fontFamily: FONT_BATANG,
-          fontSize: 13,
-          lineHeight: 1.85,
-          color: INK_LIGHT,
-          margin: '12px 0 0',
-          whiteSpace: 'pre-line',
-          letterSpacing: '-0.003em',
-          wordBreak: 'keep-all',
-        }}
-      >
-        {body}
-      </p>
-    </section>
   );
 }
