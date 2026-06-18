@@ -60,10 +60,6 @@ body {
   color: #1C1916;
 }
 
-@media print {
-  html, body {
-    background: #F7F7F2 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-}
+/* 문서 인쇄(@media print) 규칙은 SatgatPrintStyles가 단독 소유한다(M4 단일 권위
+   전략). 백자지 캔버스 색 보존·페이지 분할·chrome 숨김을 모두 거기서 처리하므로
+   여기서 중복 정의하지 않는다. (랜딩 페이지 전용 인쇄는 overrides.css가 담당.) */

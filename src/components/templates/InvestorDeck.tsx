@@ -60,16 +60,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
     <>
       {/* ─── S1: 타이틀 ───────────────────────────────────────────────── */}
       <SatgatDocument format="slide-16x9">
-        <section
-          className="investor-cover"
-          style={{
-            height: '100%',
-            display: 'grid',
-            gridTemplateColumns: '1.08fr 0.92fr',
-            gap: 36,
-            alignItems: 'stretch',
-          }}
-        >
+        <section className="investor-cover" style={{ height: '100%' }}>
           <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <p
               style={{
@@ -87,7 +78,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
               className="investor-cover-title"
               style={{
                 fontFamily: FONT_MYEONGJO,
-                fontSize: 48,
                 fontWeight: 800,
                 lineHeight: 1.08,
                 color: INK,
@@ -196,8 +186,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
           <aside
             className="investor-cover-aside"
             style={{
-              borderLeft: `1px solid ${HAIRLINE}`,
-              paddingLeft: 30,
               display: 'flex',
               flexDirection: 'column',
               gap: 22,
@@ -591,6 +579,41 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
           </div>
         </SatgatDocument>
       )}
+
+      {/* 반응형: 데스크톱 값은 base 클래스에, 모바일은 @media 오버라이드.
+          인라인 style을 클래스로 옮겨 source-order로 모바일이 이긴다(!important 불필요). */}
+      <style jsx global>{`
+        .investor-cover {
+          display: grid;
+          grid-template-columns: 1.08fr 0.92fr;
+          gap: 36px;
+          align-items: stretch;
+        }
+        .investor-cover-title {
+          font-size: 48px;
+        }
+        .investor-cover-aside {
+          border-left: 1px solid ${HAIRLINE};
+          padding-left: 30px;
+        }
+
+        @media (max-width: 760px) {
+          .investor-cover {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+          }
+          .investor-cover-title {
+            font-size: 34px;
+          }
+          .investor-cover-aside {
+            border-left: 0;
+            border-top: 1px solid ${HAIRLINE};
+            padding-left: 0;
+            padding-top: 22px;
+          }
+        }
+      `}</style>
     </>
   );
 }

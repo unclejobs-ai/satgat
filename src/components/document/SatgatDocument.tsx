@@ -33,7 +33,7 @@ const formatMap = {
  * - 8px baseline grid (문서의 기준선)
  * - 절대 pure white 금지
  * - 브라우저 프리뷰에서는 고정 크기 + 책자 그림자
- * - @media print에서는 전체 화면, 배경색 강제
+ * - 인쇄(@media print)는 SatgatPrintStyles가 단독 소유 (M4 단일 권위 전략)
  */
 export function SatgatDocument({
   children,
@@ -74,6 +74,8 @@ export function SatgatDocument({
         {children}
       </div>
 
+      {/* @media screen 여백만 소유. 인쇄(@media print) 규칙은 SatgatPrintStyles가
+          단독 소유한다(M4 단일 권위 전략) — 여기서 print를 재정의하지 않는다. */}
       <style jsx global>{`
         @media screen {
           .satgat-document {
@@ -81,35 +83,6 @@ export function SatgatDocument({
           }
           .satgat-document + .satgat-document {
             margin-top: 48px;
-          }
-        }
-
-        @media print {
-          @page {
-            size: auto;
-            margin: 0;
-          }
-
-          body * {
-            visibility: hidden;
-          }
-
-          .satgat-document,
-          .satgat-document * {
-            visibility: visible;
-          }
-
-          .satgat-document {
-            position: relative;
-            left: auto;
-            top: auto;
-            width: 100% !important;
-            min-height: 100vh !important;
-            margin: 0 !important;
-            box-shadow: none !important;
-            break-after: page;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
           }
         }
       `}</style>

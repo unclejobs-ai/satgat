@@ -38,10 +38,12 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
   return (
     <SatgatDocument format="a4">
       {/* A5 모양 중앙 정렬 */}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100%', paddingTop: 60 }}>
+      <div className="invitation-stage" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100%', paddingTop: 60 }}>
         <div
+          className="invitation-card"
           style={{
             width: '148mm',
+            maxWidth: '100%',
             minHeight: '210mm',
             background: '#FFFFFB',
             border: `0.5pt solid ${HAIRLINE}`,
@@ -53,6 +55,7 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
             textAlign: 'center',
             boxShadow: '0 8pt 24pt rgba(28,25,22,0.06)',
             position: 'relative',
+            boxSizing: 'border-box',
           }}
         >
           {/* Eyebrow */}
@@ -221,6 +224,18 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
           )}
         </div>
       </div>
+
+      <style jsx>{`
+        @media screen and (max-width: 760px) {
+          .invitation-stage {
+            padding-top: 12px;
+          }
+          .invitation-card {
+            min-height: 0;
+            padding: 40px 24px;
+          }
+        }
+      `}</style>
     </SatgatDocument>
   );
 }

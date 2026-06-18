@@ -256,7 +256,8 @@ html[lang='ko'] h4 {
 }
 html[lang='ko'] h3,
 html[lang='ko'] h4 {
-  font-weight: 600;
+  /* 명조 위계: H3-H4는 700. serif-display(명조)는 600 미탑재 → 합성 볼드 금지 (8조 8). */
+  font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.012em;
 }

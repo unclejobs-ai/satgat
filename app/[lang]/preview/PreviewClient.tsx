@@ -628,16 +628,9 @@ function PreviewStyles() {
         }
       }
 
-      @media print {
-        .preview-toolbar { display: none !important; }
-        .density-warn, .no-print { display: none !important; }
-        .preview-wrap { padding: 0; max-width: none; }
-        .doc-stage {
-          display: block !important;
-          overflow: visible !important;
-          padding: 0 !important;
-        }
-      }
+      /* 인쇄(@media print) 규칙은 SatgatPrintStyles가 단독 소유한다(M4 단일 권위
+         전략). 프리뷰 chrome 숨김·doc-stage 인쇄 레이아웃·문서 페이지 분할은 모두
+         거기서 처리하므로 여기서 중복 정의하지 않는다. */
     `}} />
   );
 }

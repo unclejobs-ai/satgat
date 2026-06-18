@@ -3,6 +3,7 @@
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
 import { SatgatDivider } from '@/components/document/SatgatDivider';
+import { SectionHeading } from '@/components/document/SectionHeading';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
@@ -12,7 +13,6 @@ import {
   INK,
   INK_LIGHT,
   INK_MUTED,
-  INK_BLEED,
   INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
@@ -57,11 +57,14 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
       {/* ─── 헤더: 이름 + 연락처 ───────────────────────────────────────── */}
       <header style={{ marginBottom: 32 }}>
         <div
+          className="resume-head-row"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'baseline',
             marginBottom: 8,
+            gap: 16,
+            flexWrap: 'wrap',
           }}
         >
           <h1
@@ -149,27 +152,13 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
       {/* ─── 경력 ──────────────────────────────────────────────────────── */}
       {experiences.length > 0 && (
         <section style={{ marginTop: 36 }}>
-          <h2
-            style={{
-              fontFamily: FONT_MYEONGJO,
-              fontSize: 18,
-              fontWeight: 700,
-              lineHeight: 1.3,
-              color: INK,
-              textShadow: INK_BLEED,
-              margin: '0 0 20px 0',
-              wordBreak: 'keep-all',
-              paddingBottom: 8,
-              borderBottom: `2px solid ${INK}`,
-            }}
-          >
-            경력
-          </h2>
+          <SectionHeading title="경력" size={18} marginBottom={20} />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {experiences.map((exp, i) => (
               <div
                 key={i}
+                className="resume-exp-row"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 2fr',
@@ -226,22 +215,7 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
       {/* ─── 스킬 ──────────────────────────────────────────────────────── */}
       {skills && (
         <section style={{ marginTop: 36 }}>
-          <h2
-            style={{
-              fontFamily: FONT_MYEONGJO,
-              fontSize: 18,
-              fontWeight: 700,
-              lineHeight: 1.3,
-              color: INK,
-              textShadow: INK_BLEED,
-              margin: '0 0 16px 0',
-              wordBreak: 'keep-all',
-              paddingBottom: 8,
-              borderBottom: `2px solid ${INK}`,
-            }}
-          >
-            스킬
-          </h2>
+          <SectionHeading title="스킬" size={18} marginBottom={16} />
           <p
             style={{
               fontFamily: FONT_BATANG,
@@ -260,22 +234,7 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
       {/* ─── 학력 ──────────────────────────────────────────────────────── */}
       {education.length > 0 && (
         <section style={{ marginTop: 36 }}>
-          <h2
-            style={{
-              fontFamily: FONT_MYEONGJO,
-              fontSize: 18,
-              fontWeight: 700,
-              lineHeight: 1.3,
-              color: INK,
-              textShadow: INK_BLEED,
-              margin: '0 0 16px 0',
-              wordBreak: 'keep-all',
-              paddingBottom: 8,
-              borderBottom: `2px solid ${INK}`,
-            }}
-          >
-            학력
-          </h2>
+          <SectionHeading title="학력" size={18} marginBottom={16} />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {education.map((edu, i) => (
@@ -312,6 +271,15 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
           </div>
         </section>
       )}
+
+      <style jsx>{`
+        @media screen and (max-width: 760px) {
+          .resume-exp-row {
+            grid-template-columns: 1fr;
+            gap: 6px;
+          }
+        }
+      `}</style>
     </SatgatDocument>
   );
 }

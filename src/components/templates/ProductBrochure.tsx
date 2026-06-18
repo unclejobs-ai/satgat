@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '@/components/document/SatgatDocument';
+import { SectionHeading } from '@/components/document/SectionHeading';
 import { SatgatVisual } from '@/components/diagrams';
 import { normalizeListItems } from '@/lib/engine/slot-list';
 import { normalizeImageSlot } from '@/lib/engine/slot-image';
@@ -336,22 +337,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       {/* ─── P2: 주요 특징 ────────────────────────────────────────────── */}
       {(features.length > 0 || Boolean(featureChart)) && (
         <SatgatDocument format="a4">
-          <h2
-            style={{
-              fontFamily: FONT_MYEONGJO,
-              fontSize: 24,
-              fontWeight: 700,
-              lineHeight: 1.25,
-              color: INK,
-              textShadow: INK_BLEED,
-              margin: '0 0 32px 0',
-              wordBreak: 'keep-all',
-              paddingBottom: 12,
-              borderBottom: `2px solid ${INK}`,
-            }}
-          >
-            주요 특징
-          </h2>
+          <SectionHeading title="주요 특징" size={24} marginBottom={32} />
 
           {features.length > 0 && (
             <div
@@ -413,22 +399,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       <SatgatDocument format="a4">
         {specs.rows.length > 0 && (
           <section style={{ marginBottom: 40 }}>
-            <h2
-              style={{
-                fontFamily: FONT_MYEONGJO,
-                fontSize: 24,
-                fontWeight: 700,
-                lineHeight: 1.25,
-                color: INK,
-                textShadow: INK_BLEED,
-                margin: '0 0 24px 0',
-                wordBreak: 'keep-all',
-                paddingBottom: 12,
-                borderBottom: `2px solid ${INK}`,
-              }}
-            >
-              제품 스펙
-            </h2>
+            <SectionHeading title="제품 스펙" size={24} marginBottom={24} />
 
             <table
               style={{
@@ -483,22 +454,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
 
         {usage && (
           <section>
-            <h2
-              style={{
-                fontFamily: FONT_MYEONGJO,
-                fontSize: 24,
-                fontWeight: 700,
-                lineHeight: 1.25,
-                color: INK,
-                textShadow: INK_BLEED,
-                margin: '0 0 20px 0',
-                wordBreak: 'keep-all',
-                paddingBottom: 12,
-                borderBottom: `2px solid ${INK}`,
-              }}
-            >
-              사용법
-            </h2>
+            <SectionHeading title="사용법" size={24} marginBottom={20} />
             <p
               style={{
                 fontFamily: FONT_BATANG,
@@ -521,22 +477,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       <SatgatDocument format="a4">
         {certifications.length > 0 && (
           <section style={{ marginBottom: 40 }}>
-            <h2
-              style={{
-                fontFamily: FONT_MYEONGJO,
-                fontSize: 24,
-                fontWeight: 700,
-                lineHeight: 1.25,
-                color: INK,
-                textShadow: INK_BLEED,
-                margin: '0 0 24px 0',
-                wordBreak: 'keep-all',
-                paddingBottom: 12,
-                borderBottom: `2px solid ${INK}`,
-              }}
-            >
-              인증 및 수상
-            </h2>
+            <SectionHeading title="인증 및 수상" size={24} marginBottom={24} />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {certifications.map((c, i) => (
