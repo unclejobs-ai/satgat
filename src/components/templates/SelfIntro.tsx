@@ -88,7 +88,7 @@ export default function SelfIntroRenderer({ data }: { data: SatgatDocumentData }
           if (!answer) return null;
           return (
             <section key={q.id} style={{ breakInside: 'avoid' }}>
-              <SectionHeading title={q.label} subtitle={q.sub} size={16} weight={800} />
+              <SectionHeading title={q.label} subtitle={q.sub} size={16} weight={700} />
               <p
                 style={{
                   fontFamily: FONT_BATANG,

@@ -109,7 +109,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
               style={{
                 marginTop: 'auto',
                 display: 'grid',
-                gridTemplateColumns: '1fr',
+                gridTemplateColumns: 'minmax(0, 1fr)',
                 gap: 16,
               }}
             >
@@ -419,7 +419,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: `repeat(${Math.min(traction.length, 3)}, 1fr)`,
+                gridTemplateColumns: `repeat(${Math.min(traction.length, 3)}, minmax(0, 1fr))`,
                 gap: 32,
                 width: '100%',
               }}
@@ -497,7 +497,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: `repeat(${Math.min(team.length, 3)}, 1fr)`,
+                gridTemplateColumns: `repeat(${Math.min(team.length, 3)}, minmax(0, 1fr))`,
                 gap: 32,
                 width: '100%',
               }}

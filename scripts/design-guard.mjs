@@ -9,7 +9,7 @@
  * Modes:
  *   --check          Run the 6 design rules (RGBA_USAGE, PURE_WHITE,
  *                    DANCHEONG_BUDGET, SYNTHETIC_BOLD, COOL_GRAY, DUAL_ACCENT).
- *   --check-density  (Reserved for M2 — prints a notice and exits 0.)
+ *   --check-density  Run the content-density estimator (per-page fill %, SPARSE warns).
  *
  * Severity contract (M1 = WARN mode):
  *   - Rules emit `warn` findings. The script ALWAYS exits 0 so existing

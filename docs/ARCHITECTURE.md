@@ -76,6 +76,7 @@ Phase 2: 사주명리(四柱) · 가계부 · 연차계획서 · 백서(白書)
 삿갓/                              # 🏠 Hangul dir, package.json name "satgat"
 ├ app/                            # Next.js App Router
 │  ├ layout.tsx                   # lang="ko", globals.css 글로벌 로드
+│  ├ globals.css                  # React 앱 CSS 진입점 (Tailwind + overrides.css import)
 │  ├ page.tsx                     # / → redirect /ko
 │  ├ [lang]/
 │  │  ├ page.tsx                  # → rewrite /satgat/satgat-ko.html (specimen)
@@ -90,9 +91,6 @@ Phase 2: 사주명리(四柱) · 가계부 · 연차계획서 · 백서(白書)
 │  ├ overrides.css                # 한국화 토큰 + 한국 폰트 import
 │  ├ satgat-ko.html               # specimen 페이지 (한국 narrative)
 │  └ assets/                      # 이미지 / 폰트 / 데모
-│
-├ app/
-│  └ globals.css                  # React 앱 CSS 진입점 (Tailwind + overrides.css import)
 │
 ├ src/
 │  ├ lib/

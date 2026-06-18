@@ -14,7 +14,6 @@ import {
   INK_MUTED,
   HAIRLINE,
   JADE,
-  GOLD,
   INK_BLEED,
   INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
@@ -200,7 +199,7 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                 alignSelf: 'flex-end',
                 width: 74,
                 height: 74,
-                border: `1px solid ${GOLD}`,
+                border: `1px solid ${JADE}`,
                 display: 'grid',
                 placeItems: 'center',
                 fontFamily: FONT_MYEONGJO,

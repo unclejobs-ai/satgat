@@ -13,8 +13,6 @@ import {
   INK_LIGHT,
   INK_MUTED,
   DANCHEONG,
-  JADE,
-  GOLD,
   HAIRLINE,
   INK_BLEED,
   INK_BLEED_STRONG,
@@ -148,7 +146,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
               alignSelf: 'flex-end',
               width: 78,
               height: 78,
-              border: `1px solid ${GOLD}`,
+              border: `1px solid ${DANCHEONG}`,
               display: 'grid',
               placeItems: 'center',
               fontFamily: FONT_MYEONGJO,
@@ -259,7 +257,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                 fontFamily: FONT_DODUM,
                 fontSize: 10,
                 letterSpacing: '0.14em',
-                color: JADE,
+                color: DANCHEONG,
                 margin: '0 0 10px',
               }}
             >

@@ -106,14 +106,14 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {/* Problem */}
       {problem && (
-        <ProseSection title="一. 문제(問題)" subtitle="현재 무엇이 어려운가" size={17} weight={800} bodyMarginTop={14}>
+        <ProseSection title="一. 문제(問題)" subtitle="현재 무엇이 어려운가" size={17} weight={700} bodyMarginTop={14}>
           {problem}
         </ProseSection>
       )}
 
       {/* Solution */}
       {solution && (
-        <ProseSection title="二. 해결안(解決案)" subtitle="우리가 제안하는 방식" size={17} weight={800} bodyMarginTop={14}>
+        <ProseSection title="二. 해결안(解決案)" subtitle="우리가 제안하는 방식" size={17} weight={700} bodyMarginTop={14}>
           {solution}
         </ProseSection>
       )}
@@ -121,7 +121,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
       {/* Metrics */}
       {metrics.length > 0 && (
         <section style={{ margin: '32px 0' }}>
-          <SectionHeading title="三. 핵심 지표(指標)" subtitle="기대 효과 정량화" size={17} weight={800} />
+          <SectionHeading title="三. 핵심 지표(指標)" subtitle="기대 효과 정량화" size={17} weight={700} />
           <div
             style={{
               display: 'grid',
@@ -173,7 +173,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {Boolean(impactChart) && (
         <section style={{ margin: '30px 0 34px', breakInside: 'avoid' }}>
-          <SectionHeading title="四. 효과 도표(圖表)" subtitle="숫자와 흐름을 함께 보기" size={17} weight={800} />
+          <SectionHeading title="四. 효과 도표(圖表)" subtitle="숫자와 흐름을 함께 보기" size={17} weight={700} />
           <div style={{ marginTop: 14 }}>
             <SatgatVisual visual={impactChart} />
           </div>
@@ -182,14 +182,14 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {/* Timeline */}
       {timeline && (
-        <ProseSection title={Boolean(impactChart) ? '五. 추진 일정(日程)' : '四. 추진 일정(日程)'} subtitle="단계별 계획" size={17} weight={800} bodyMarginTop={14}>
+        <ProseSection title={Boolean(impactChart) ? '五. 추진 일정(日程)' : '四. 추진 일정(日程)'} subtitle="단계별 계획" size={17} weight={700} bodyMarginTop={14}>
           {timeline}
         </ProseSection>
       )}
 
       {/* Cost */}
       {cost && (
-        <ProseSection title={Boolean(impactChart) ? '六. 비용·조건(費用)' : '五. 비용·조건(費用)'} subtitle="투자 규모와 조건" size={17} weight={800} bodyMarginTop={14}>
+        <ProseSection title={Boolean(impactChart) ? '六. 비용·조건(費用)' : '五. 비용·조건(費用)'} subtitle="투자 규모와 조건" size={17} weight={700} bodyMarginTop={14}>
           {cost}
         </ProseSection>
       )}
@@ -197,7 +197,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
       {/* Team */}
       {team.length > 0 && (
         <section style={{ marginTop: 32 }}>
-          <SectionHeading title={Boolean(impactChart) ? '七. 담당(擔當)' : '六. 담당(擔當)'} subtitle="추진 인력" size={17} weight={800} />
+          <SectionHeading title={Boolean(impactChart) ? '七. 담당(擔當)' : '六. 담당(擔當)'} subtitle="추진 인력" size={17} weight={700} />
           <div
             style={{
               display: 'grid',
