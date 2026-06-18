@@ -88,16 +88,6 @@ export const fonts = {
   mono: "'JetBrains Mono', 'IBM Plex Mono', 'Fira Code', 'SF Mono', Consolas, Monaco, monospace",
 } as const;
 
-export const typeScale = {
-  display: { size: '48pt', lineHeight: 1.1, weight: 800 },
-  h1: { size: '22pt', lineHeight: 1.2, weight: 700 },
-  h2: { size: '16pt', lineHeight: 1.25, weight: 700 },
-  h3: { size: '13pt', lineHeight: 1.3, weight: 600 },
-  body: { size: '10pt', lineHeight: 1.55, weight: 400 },
-  caption: { size: '9pt', lineHeight: 1.45, weight: 400 },
-  label: { size: '8pt', lineHeight: 1.35, weight: 600 },
-} as const;
-
 // ─── Spacing (Kami 4pt base) ────────────────────────────────────────────────
 
 export const spacing = {
@@ -211,7 +201,6 @@ export const typography = {
   weights: { regular: 400, medium: 500, semibold: 600, bold: 700, extraBold: 800 },
   inkBleed: '0 0 0.3px rgba(28,25,22,0.12), 0 0 0.6px rgba(28,25,22,0.06)',
   inkBleedStrong: '0 0 0.5px rgba(28,25,22,0.18), 0 0 1px rgba(28,25,22,0.09)',
-  typeScale,
 } as const;
 
 // ─── Theme bundle ───────────────────────────────────────────────────────────
@@ -220,7 +209,6 @@ export const satgatTheme = {
   colors,
   fonts,
   typography,
-  typeScale,
   spacing,
   layout,
   shadows,

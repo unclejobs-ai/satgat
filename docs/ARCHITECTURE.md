@@ -40,7 +40,7 @@
 - **Validation**: `zod` runtime schema
 - **No DB / No Auth (Phase 1)** — Stateless. base64 URL로 결과 공유.
 - **Phase 2**: Supabase auth + 저장된 문서 + 결제 (Polar.sh)
-- **CSS**: 우리 `styles/satgat-theme.css` + `public/satgat/overrides.css` (한국화 토큰) + Kami에서 영감받아 정제한 `public/satgat/satgat.css`
+- **CSS**: React 앱은 `app/globals.css` (Tailwind 4) → `@import "public/satgat/overrides.css"` (한국화 토큰). specimen 페이지(`satgat-ko.html`)는 `public/satgat/satgat.css` (디자인 시스템 베이스, Kami 영감)를 직접 로드.
 - **Fonts**: Google Fonts OFL — Nanum Myeongjo / Gowun Batang / Gowun Dodum / Cormorant Garamond / Pretendard Variable
 
 ---
@@ -75,7 +75,7 @@ Phase 2: 사주명리(四柱) · 가계부 · 연차계획서 · 백서(白書)
 ```
 삿갓/                              # 🏠 Hangul dir, package.json name "satgat"
 ├ app/                            # Next.js App Router
-│  ├ layout.tsx                   # lang="ko", satgat-theme.css 글로벌 로드
+│  ├ layout.tsx                   # lang="ko", globals.css 글로벌 로드
 │  ├ page.tsx                     # / → redirect /ko
 │  ├ [lang]/
 │  │  ├ page.tsx                  # → rewrite /satgat/satgat-ko.html (specimen)
@@ -91,8 +91,8 @@ Phase 2: 사주명리(四柱) · 가계부 · 연차계획서 · 백서(白書)
 │  ├ satgat-ko.html               # specimen 페이지 (한국 narrative)
 │  └ assets/                      # 이미지 / 폰트 / 데모
 │
-├ styles/
-│  └ satgat-theme.css             # CSS source (public/ 와 사본 동기)
+├ app/
+│  └ globals.css                  # React 앱 CSS 진입점 (Tailwind + overrides.css import)
 │
 ├ src/
 │  ├ lib/
