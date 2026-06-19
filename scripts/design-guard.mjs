@@ -658,18 +658,9 @@ const fileLines = new Map();
 
 function readLines(file) {
   if (!fileLines.has(file)) {
-    // Parse each scanned file into a TypeScript SourceFile (same AST entry
-    // point as scripts/verify-template-catalog.mjs's readSource). This gives a
-    // valid parse tree per file and keeps the analyzer on the documented
-    // compiler-API path; the line-level rules then operate on sourceFile.text
-    // so line numbers map 1:1 to the on-disk source.
+    // Line-level rules scan raw source text; template-structure parsing is
+    // done separately by parseTemplateDef(). Caching avoids re-reading.
     const src = fs.readFileSync(file, 'utf8');
-    const scriptKind = file.endsWith('.tsx')
-      ? ts.ScriptKind.TSX
-      : file.endsWith('.ts')
-        ? ts.ScriptKind.TS
-        : ts.ScriptKind.CSS;
-    ts.createSourceFile(path.basename(file), src, ts.ScriptTarget.Latest, true, scriptKind);
     fileLines.set(file, src.split('\n'));
   }
   return fileLines.get(file);
