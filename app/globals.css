@@ -1,5 +1,8 @@
-/* 한글 무료 OFL 폰트 — Google Fonts + Pretendard CDN */
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Serif+KR:wght@400;500;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Hahmlet:wght@400;500;700;900&family=IBM+Plex+Sans+KR:wght@300;400;500;700&family=Black+Han+Sans&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap");
+/* 한글 무료 OFL 폰트 — Google Fonts + Pretendard CDN
+   로드 대상: 명조(Nanum Myeongjo)·바탕(Gowun Batang)·돋움(Gowun Dodum)·
+   한자fallback(Noto Serif KR)·Latin(Cormorant)·mono(JetBrains Mono).
+   Hahmlet/Black Han Sans/IBM Plex는 데드로드 → 제거. */
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Serif+KR:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap");
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
 @import "../public/satgat/overrides.css";
 @import "tailwindcss";
@@ -30,15 +33,15 @@
   --color-border-soft: #E6E8DE;
   --color-muted: #63675F;
 
-  /* 폰트 — 모두 OFL 무료 한글 폰트 */
-  --font-myeongjo: "Nanum Myeongjo", "Noto Serif KR", "Hahmlet", "Batang", Georgia, serif;
-  --font-batang: "Gowun Batang", "Hahmlet", "Nanum Myeongjo", "Noto Serif KR", "Batang", Georgia, serif;
-  --font-dodum: "Gowun Dodum", "Pretendard", "IBM Plex Sans KR", "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-sans-kr: "Pretendard", "IBM Plex Sans KR", "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-display-bold: "Black Han Sans", "Nanum Myeongjo", Georgia, serif;
-  --font-serif-kr: "Hahmlet", "Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
+  /* 폰트 — 모두 OFL 무료 한글 폰트. 명조·바탕·돋움 위계. */
+  --font-myeongjo: "Nanum Myeongjo", "Noto Serif KR", "Batang", Georgia, serif;
+  --font-batang: "Gowun Batang", "Nanum Myeongjo", "Noto Serif KR", "Batang", Georgia, serif;
+  --font-dodum: "Gowun Dodum", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans-kr: "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-display-bold: "Nanum Myeongjo", Georgia, serif;
+  --font-serif-kr: "Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
   --font-latin: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Meno, monospace;
 }
 
 html {

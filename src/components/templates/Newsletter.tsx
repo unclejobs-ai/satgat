@@ -449,7 +449,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
 
           .newsletter-title {
             font-size: 38px !important;
-            line-height: 1.12 !important;
+            line-height: 1.2 !important;
           }
 
           .newsletter-aside {

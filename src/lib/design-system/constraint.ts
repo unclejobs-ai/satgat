@@ -28,6 +28,15 @@ export const INK_MUTED = '#4D4B46';
 export const DANCHEONG = '#9B1B1B';
 export const DANCHEONG_LIGHT = '#B92D2D';
 
+// 단청 opacity 레이어링 — 단일 액센트를 농도로 운용(3조 정합).
+// 벤치마크(Blue Professional) 기법을 한국 정체성에 적용:
+// 다색이 아닌 단청 1색의 농도로 위계·배경·강조를 모두 해결.
+// 사용처: 카드 배경(06)·보더(12)·태그(20)·강조 숫자(100).
+// 주의: 태그·배지는 solid hex 토큰을 우선. 이 값은 보조 surface용.
+export const DANCHEONG_TINT_06 = '#F8EAEA';  // 옅은 surface — 카드 배경 미약 구분
+export const DANCHEONG_TINT_12 = '#F3DCDC';  // 보더 옅음 — hover ring, 구역 구분
+export const DANCHEONG_TINT_20 = '#E8C9C9';  // 태그·배지 기본 tint
+
 // ─── 4. SECONDARY ACCENT ────────────────────────────────────────────────────
 // 취色(翠色). 청자(靑瓷)/청록의 깊이. 보조 accent.
 // 사용처: table header, secondary seal, image caption accent.
@@ -57,10 +66,10 @@ export const FONT_BATANG = "'Gowun Batang', 'Nanum Myeongjo', 'Noto Serif KR', '
 export const FONT_DODUM = "'Gowun Dodum', 'Nanum Myeongjo', 'Noto Serif KR', sans-serif";
 export const FONT_LATIN = "'Cormorant Garamond', 'Nanum Myeongjo', Georgia, 'Times New Roman', serif";
 
-// Weight 규칙:
-// - Display/H1: 800 (extra bold) — 장중한 무게감
+// Weight 규칙 (8조 합성 볼드 금지 · 5조 위계는 크기로):
+// - Display/H1: 700 (bold) — 크기로 위계, 굵기 남용 금지
 // - H2: 700 (bold)
-// - H3-H4: 700 (bold) — 바탕체는 bold만 사용, synthetic bold 금지
+// - H3-H4: 700 (bold) — Gowun Batang은 400/700만 로드, synthetic bold 금지
 // - Body: 400 (regular)
 // - Label/Caption: 400-500
 
@@ -75,6 +84,15 @@ export const LH_BODY = 1.8;       // 한글 장문 최적화
 export const LH_BODY_SMALL = 1.75;
 export const LH_CAPTION = 1.65;
 export const LH_LABEL = 1.5;
+
+// ─── 8b. LETTER-SPACING (CJK) ────────────────────────────────────────────────
+// 한글은 받침이 있어 Latin보다 자간을 살짝 조임. CJK는 pre-spaced이므로
+// 디스플레이라도 음수 트래킹은 미세하게(-0.02em 이하 금지 → 뭉침).
+// label uppercase만 양수로 넓힘. 단일 진실원천 — 다른 파일은 이 값을 따를 것.
+export const LS_DISPLAY = '-0.018em';  // Display · H1 — 큰 글씨 미세 조임
+export const LS_HEADING = '-0.012em';  // H2 · H3 — 제목
+export const LS_BODY = '-0.005em';     // 본문 · 캡션 — 한글 가독의 기본
+export const LS_LABEL = '0.08em';      // uppercase label — 넓힘
 
 // ─── 9. BASELINE GRID ───────────────────────────────────────────────────────
 // 8px 기반. 모든 요소의 세로 위치, margin, padding은 8px의 배수.
@@ -95,6 +113,7 @@ export const SECTION_GAP_LARGE = 64;
 // ─── 12. SHADOWS ─────────────────────────────────────────────────────────────
 // 종이 두께감만. multi-layer subtle.
 // hard drop shadow, large blur 금지.
+// 6조 예외: 색 토큰은 solid hex만 쓰되, opacity가 필요한 shadow·texture는 rgba 허용.
 export const SHADOW_PAPER = '0 1px 2px rgba(28,28,28,0.04), 0 2px 4px rgba(28,28,28,0.02)';
 export const SHADOW_BOOK = '0 8px 24px rgba(28,28,28,0.08), 0 2px 8px rgba(28,28,28,0.04)';
 

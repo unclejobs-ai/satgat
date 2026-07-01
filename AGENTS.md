@@ -17,7 +17,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 3. 보조 액센트 취색/금박 중 하나만.
 4. 모든 회색은 회녹빛, cool blue 금지.
 5. 제목 명조 600-700, 본문 바탕 400. 위계는 크기.
-6. solid hex만 사용. rgba 금지.
+6. 색 토큰·태그·배지는 solid hex만. shadow·texture(opacity 필요)는 rgba 예외 허용.
 7. xl/2xl 여백을 두려워하지 말 것.
 8. 합성 볼드 금지. 한자는 본문 옆 괄호 보조만.
 

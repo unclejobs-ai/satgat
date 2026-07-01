@@ -417,7 +417,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
 
           .portfolio-title {
             font-size: 32px !important;
-            line-height: 1.12 !important;
+            line-height: 1.2 !important;
           }
 
           .portfolio-lead-title {

@@ -58,7 +58,13 @@ html[lang='ko'] {
   --brand: #9B1B1B;            /* 단청홍 — 메인 강조 */
   --brand-light: #B92D2D;      /* hover · 다크 위 링크 */
   --brand-deep: #7A1313;       /* 강조 진하기 — h2 borderbar 등 */
-  --brand-tint: #F3DCDC;       /* 옅은 단청 — tag 배경 light */
+
+  /* 단청 opacity 레이어링 — 단일 액센트를 농도로 운용(3조 정합).
+     다색 팔레트 대신 단청 1색의 농도 4단계로 위계·surface·강조 해결. */
+  --brand-tint-06: #F8EAEA;    /* 옅은 surface — 카드 배경 미약 구분 */
+  --brand-tint-12: #F3DCDC;    /* 보더 옅음 — hover ring, 구역 구분 */
+  --brand-tint-20: #E8C9C9;    /* 태그·배지 기본 tint */
+  --brand-tint: var(--brand-tint-12);  /* legacy alias */
 
   --mugunghwa: #9B1B1B;        /* alias (legacy 호환) */
   --mugunghwa-petal: #F3DCDC;
@@ -311,7 +317,7 @@ html[lang='ko'] .satgat-seal {
   align-items: center;
   justify-content: center;
   font-family: var(--serif-display);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-shadow: 0 0 0.3px rgba(28, 25, 22, 0.15);
   box-shadow:
@@ -329,7 +335,7 @@ html[lang='ko'] .satgat-seal[data-variant='ink'] { background: var(--near-black)
 html[lang='ko'] .manifesto-num,
 html[lang='ko'] .rules .n {
   font-family: var(--serif-display);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand);
 }
 
@@ -387,7 +393,7 @@ html[lang='ko'] .usage-step:hover {
 html[lang='ko'] .usage-num {
   font-family: var(--serif-display);
   font-size: 56px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand);
   line-height: 1;
   text-align: center;
@@ -403,7 +409,7 @@ html[lang='ko'] .usage-body {
 html[lang='ko'] .usage-title {
   font-family: var(--serif-display);
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--near-black);
   margin: 0 0 8pt 0;
   letter-spacing: -0.01em;
@@ -671,10 +677,10 @@ html[lang='ko'] .specimen-name {
 html[lang='ko'] .specimen-name-ko {
   font-family: var(--serif-display);
   font-size: 44px;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-weight: 700;
+  letter-spacing: -0.018em;
   color: var(--near-black);
-  line-height: 1;
+  line-height: 1.1;
 }
 
 html[lang='ko'] .specimen-name-cn {
@@ -728,7 +734,7 @@ html[lang='ko'] .specimen-statement {
 html[lang='ko'] .specimen-sec {
   font-family: var(--serif-display);
   font-size: 14.5px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--near-black);
   margin: 0 0 12pt 0;
@@ -851,7 +857,7 @@ html[lang='ko'] .specimen-metric li {
 html[lang='ko'] .specimen-metric b {
   font-family: var(--serif-display);
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand);
   font-variant-numeric: tabular-nums;
   min-width: 60pt;
@@ -915,7 +921,7 @@ html[lang='ko'] .specimen-seal {
   background: var(--brand);
   color: var(--parchment);
   font-family: var(--serif-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 17px;
   display: flex;
   align-items: center;
@@ -1024,7 +1030,7 @@ html[lang='ko'] .equity-head {
 html[lang='ko'] .equity-name {
   font-family: var(--serif-display);
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--near-black);
   letter-spacing: -0.018em;
   line-height: 1;
@@ -1054,7 +1060,7 @@ html[lang='ko'] .equity-price {
 html[lang='ko'] .equity-curr {
   font-family: var(--serif-display);
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--near-black);
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -1269,7 +1275,7 @@ html[lang='ko'] .slide-num {
 html[lang='ko'] .slide-title {
   font-family: var(--serif-display);
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.018em;
   color: var(--near-black);
   margin: 6pt 0 6pt 0;
@@ -1279,7 +1285,7 @@ html[lang='ko'] .slide-title {
 html[lang='ko'] .slide-h {
   font-family: var(--serif-display);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.012em;
   color: var(--near-black);
   margin: 0 0 8pt 0;
@@ -1380,7 +1386,7 @@ html[lang='ko'] .slide-metrics b {
   display: block;
   font-family: var(--serif-display);
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand);
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -1421,7 +1427,7 @@ html[lang='ko'] .slide-roadmap li:last-child {
 
 html[lang='ko'] .slide-roadmap span {
   font-family: var(--serif-display);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand);
 }
 
@@ -1462,7 +1468,7 @@ html[lang='ko'] .slide-end .slide-footer {
 html[lang='ko'] .slide-end-mark {
   font-family: var(--serif-display);
   font-size: 60px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand);
   text-align: center;
   margin: 6pt 0;
@@ -1495,10 +1501,11 @@ html[lang='ko'] .slide-end-mark {
 html[lang='ko'] body main.page > .hero h1 {
     font-weight: 700;
     font-size: clamp(72px, 9vw, 106px);
-    line-height: 1.05;
-    letter-spacing: -0.03em;
+    line-height: 1.15;
+    letter-spacing: -0.018em;
     margin: 8px 0 26px;
     position: relative;
+    word-break: keep-all;
   }
   html[lang='ko'] body main.page > .hero h1::before {
     content: "";
@@ -1720,7 +1727,7 @@ html[lang='ko'] body main.page > .hero h1 {
     align-items: center;
     justify-content: center;
     font-family: var(--serif-display);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 14px;
     letter-spacing: 0.04em;
     border-radius: 3px;
@@ -1738,7 +1745,7 @@ html[lang='ko'] body main.page > .hero h1 {
   /* 이력서 */
   .resume-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
   .resume-name { display: flex; flex-direction: column; gap: 1px; }
-  .resume-name .ko { font-family: var(--serif-display); font-weight: 800; font-size: 21px; color: var(--near-black); letter-spacing: -0.02em; line-height: 1.05; }
+  .resume-name .ko { font-family: var(--serif-display); font-weight: 700; font-size: 21px; color: var(--near-black); letter-spacing: -0.012em; line-height: 1.2; }
   .resume-name .hanja { font-family: var(--serif-display); font-size: 9px; color: var(--olive); letter-spacing: 0.06em; }
   .resume-photo { width: 28px; height: 36px; background: var(--warm-sand); border: 0.5pt solid var(--border-soft); border-radius: 1.5px; flex-shrink: 0; }
   .resume-meta { font-size: 9.5px; color: var(--olive); margin: 4px 0 12px; letter-spacing: -0.005em; }
@@ -1752,7 +1759,7 @@ html[lang='ko'] body main.page > .hero h1 {
   .card-inner { padding: 14px 16px; display: flex; flex-direction: column; height: 100%; position: relative; font-family: var(--serif); }
   .card-rule { position: absolute; top: 50%; left: 16px; right: 16px; height: 0.6pt; background: var(--brand); opacity: 0.85; transform: translateY(-50%); }
   .card-name { display: flex; align-items: baseline; gap: 6px; margin-bottom: 1px; }
-  .card-name .ko { font-family: var(--serif-display); font-weight: 800; font-size: 15px; color: var(--near-black); letter-spacing: -0.015em; }
+  .card-name .ko { font-family: var(--serif-display); font-weight: 700; font-size: 15px; color: var(--near-black); letter-spacing: -0.015em; }
   .card-name .hanja { font-family: var(--serif-display); font-size: 8px; color: var(--olive); letter-spacing: 0.06em; }
   .card-title { font-size: 7.5px; color: var(--olive); letter-spacing: 0.04em; margin-bottom: auto; }
   .card-foot { display: flex; flex-direction: column; gap: 2px; margin-top: auto; }
@@ -1764,7 +1771,7 @@ html[lang='ko'] body main.page > .hero h1 {
   .invitation-divider { width: 36px; height: 0.8pt; background: var(--brand); }
   .invitation-divider.thin { width: 24px; height: 0.4pt; opacity: 0.5; }
   .invitation-couple { display: flex; align-items: baseline; gap: 10px; margin: 4px 0; }
-  .invitation-couple .i-name { font-family: var(--serif-display); font-weight: 800; font-size: 18px; color: var(--near-black); letter-spacing: -0.015em; }
+  .invitation-couple .i-name { font-family: var(--serif-display); font-weight: 700; font-size: 18px; color: var(--near-black); letter-spacing: -0.015em; }
   .invitation-couple .i-and { font-family: var(--serif-latin); font-style: italic; font-size: 14px; color: var(--brand); }
   .invitation-date { display: flex; flex-direction: column; gap: 1px; align-items: center; margin: 2px 0; }
   .i-date-ko { font-size: 9px; color: var(--near-black); }
@@ -1775,11 +1782,11 @@ html[lang='ko'] body main.page > .hero h1 {
   /* 제안서 */
   .proposal-inner { padding: 22px 20px 18px; display: flex; flex-direction: column; height: 100%; font-family: var(--serif); gap: 0; }
   .proposal-eyebrow { font-family: var(--mono); font-size: 7.5px; color: var(--olive); letter-spacing: 0.18em; margin-bottom: 8px; }
-  .proposal-title { font-family: var(--serif-display); font-weight: 800; font-size: 16px; line-height: 1.1; color: var(--near-black); letter-spacing: -0.022em; margin-bottom: 10px; }
+  .proposal-title { font-family: var(--serif-display); font-weight: 700; font-size: 16px; line-height: 1.25; color: var(--near-black); letter-spacing: -0.012em; margin-bottom: 10px; }
   .proposal-bar { width: 32px; height: 2pt; background: var(--brand); margin-bottom: 12px; }
   .proposal-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .proposal-metrics > div { display: flex; flex-direction: column; gap: 1px; padding: 6px 4px; border-top: 0.4pt solid var(--border-soft); }
-  .proposal-metrics b { font-family: var(--serif-display); font-weight: 800; font-size: 13px; color: var(--brand); line-height: 1; letter-spacing: -0.015em; }
+  .proposal-metrics b { font-family: var(--serif-display); font-weight: 700; font-size: 13px; color: var(--brand); line-height: 1; letter-spacing: -0.015em; }
   .proposal-metrics span { font-size: 6.5px; color: var(--olive); letter-spacing: 0.04em; }
   .proposal-body { display: flex; flex-direction: column; gap: 3px; margin-bottom: auto; }
   .proposal-body p { font-size: 8px; line-height: 1.6; color: var(--dark-warm); margin: 0; letter-spacing: -0.005em; }
@@ -1791,7 +1798,7 @@ html[lang='ko'] body main.page > .hero h1 {
   /* meta typography */
   .satgat-sample .demo-title {
     font-family: var(--serif-display);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 16px;
     color: var(--near-black);
     margin: 14px 0 2px;
@@ -2097,7 +2104,7 @@ html[lang='ko'] body main.page > .hero h1 {
   html[lang='ko'] body main.page .lc-name {
     font-family: var(--serif-display);
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--near-black);
     letter-spacing: -0.012em;
   }
@@ -2109,7 +2116,7 @@ html[lang='ko'] body main.page > .hero h1 {
     height: 28px;
     font-family: var(--serif-display);
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 700;
     text-align: center;
     border-radius: 3px;
   }
@@ -2151,9 +2158,9 @@ html[lang='ko'] body main.page > .hero h1 {
     font-size: 20px;
     font-weight: 700;
     color: var(--near-black);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.012em;
     margin: 0 0 4px;
-    line-height: 1.1;
+    line-height: 1.25;
   }
   html[lang='ko'] body main.page .tp-mini-role {
     font-size: 11px;
@@ -2196,19 +2203,19 @@ html[lang='ko'] body main.page > .hero h1 {
   html[lang='ko'] body main.page .tp-mini-headline {
     font-family: var(--serif-display);
     font-size: 18px;
-    font-weight: 800;
-    line-height: 1.15;
+    font-weight: 700;
+    line-height: 1.3;
     color: var(--near-black);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.012em;
     margin: 0 0 12px;
   }
   html[lang='ko'] body main.page .tp-mini-headline-sm {
     font-family: var(--serif-display);
     font-size: 19px;
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.3;
     color: var(--near-black);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.012em;
     margin: 0 0 10px;
   }
   html[lang='ko'] body main.page .tp-mini-metrics {
@@ -2226,7 +2233,7 @@ html[lang='ko'] body main.page > .hero h1 {
   }
   html[lang='ko'] body main.page .tp-mini-metrics b {
     font-family: var(--serif-display);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 15px;
     color: var(--brand);
     line-height: 1;

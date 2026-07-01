@@ -8,14 +8,14 @@
 
 ### ❌ 순백·푸른빛 회색
 ```css
-background: #ffffff;    /* 한지의 따뜻함이 사라짐 */
+background: #ffffff;    /* 백자지의 맑음이 사라짐 */
 background: #f3f4f6;    /* 푸른빛 — 한국말이 차갑게 떠 보임 */
-color: #6b7280;         /* slate-500 — cool gray, 한지 위 어긋남 */
+color: #6b7280;         /* slate-500 — cool gray, 백자지 위 어긋남 */
 ```
 
-### ✅ 한지·따뜻한 회색
+### ✅ 백자지·따뜻한 회색
 ```css
-background: #F1ECDF;    /* 한지(韓紙) */
+background: #F7F7F2;    /* 백자지(白瓷紙) — 회녹 undertone */
 color: #4D4B46;         /* 숯(炭) — 따뜻한 황갈 */
 ```
 
@@ -29,7 +29,7 @@ color: #4D4B46;         /* 숯(炭) — 따뜻한 황갈 */
 
 ### ✅ solid hex tint
 ```css
-.tag { background: #E8D0C9; }  /* 한지 위 단청 tint 3 (미리 계산) */
+.tag { background: #E8C9C9; }  /* 백자지 위 단청 tint 3 (미리 계산) */
 ```
 
 ---
@@ -98,7 +98,7 @@ body { word-break: keep-all; word-wrap: break-word; }
 ### ❌ 하드 드롭 그림자
 ```css
 .card { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
-/* 한지 위 얼룩처럼 보이고 시선을 빼앗음 */
+/* 백자지 위 얼룩처럼 보이고 시선을 빼앗음 */
 ```
 
 ### ✅ 가는 테 또는 옅은 whisper
@@ -146,12 +146,12 @@ body { word-break: keep-all; word-wrap: break-word; }
 ### ❌ 흰 테두리
 ```css
 @page { margin: 1in; background: white; }
-/* 본바탕은 한지인데 인쇄 시 흰 테두리 → 미감 깨짐 */
+/* 본바탕은 백자지인데 인쇄 시 흰 테두리 → 미감 깨짐 */
 ```
 
-### ✅ 한지 배경 끝까지
+### ✅ 백자지 배경 끝까지
 ```css
-@page { margin: 0; background: #F1ECDF; }
+@page { margin: 0; background: #F7F7F2; }
 body { -webkit-print-color-adjust: exact; }
 ```
 
@@ -167,8 +167,8 @@ body { -webkit-print-color-adjust: exact; }
 
 ### ✅ 한국 단정문
 ```
-"삿갓은 한지 위에 옮겨 적습니다."
-"평균 10초 안에 완성된 문서가 한지 위에 옮겨 적힙니다."
+"삿갓은 백자지 위에 옮겨 적습니다."
+"평균 10초 안에 완성된 문서가 백자지 위에 옮겨 적힙니다."
 ```
 
 ---
@@ -216,7 +216,7 @@ font-family: 'Pretendard Variable', sans-serif;  /* Apple SD Gothic 호환 */
 ### ✅ 독립 프로덕트
 ```
 "삿갓 · 한국 AI 문서 생성기"
-"한지 위에 먹글씨로 옮겨 적는 시스템"
+"백자지 위에 먹글씨로 옮겨 적는 시스템"
 ```
 
 (영감은 받았지만 메인 origin은 우리)

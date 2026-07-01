@@ -727,7 +727,7 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
 
           .company-profile-title {
             font-size: 38px !important;
-            line-height: 1.12 !important;
+            line-height: 1.2 !important;
           }
 
           .company-profile-aside {

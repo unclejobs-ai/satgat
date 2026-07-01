@@ -356,7 +356,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
 
           .brand-onepager-title {
             font-size: 40px !important;
-            line-height: 1.12 !important;
+            line-height: 1.2 !important;
           }
 
           .brand-onepager-aside {

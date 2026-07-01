@@ -79,7 +79,7 @@
       border: 1.1mm solid var(--dan);
       color: var(--dan);
       font-family: var(--serif);
-      font-size: 26px; font-weight: 800; line-height: 1;
+      font-size: 26px; font-weight: 700; line-height: 1;
       border-radius: 1.4mm;
       transform: rotate(-3.5deg);
       box-shadow: 0 0 0 1px rgba(155,27,27,.12);
@@ -93,10 +93,10 @@
       font-family: var(--sans); font-size: 10.5px; letter-spacing: .34em;
       color: var(--stone); text-transform: uppercase; margin: 0 0 18px;
     }
-    h1 { margin: 0; padding-right: 24mm; font-size: 42px; line-height: 1.12; font-weight: 800; letter-spacing: -.01em; }
+    h1 { margin: 0; padding-right: 24mm; font-size: 42px; line-height: 1.2; font-weight: 700; letter-spacing: -.018em; word-break: keep-all; }
     h1 .hanja, .hanja { font-family: var(--serif); color: var(--stone); font-weight: 400; }
     h1 .hanja { font-size: .42em; margin-left: .3em; letter-spacing: .04em; }
-    .subtitle { margin: 13px 0 0; font-size: 16.5px; color: var(--muted); max-width: 60ch; line-height: 1.5; }
+    .subtitle { margin: 13px 0 0; font-size: 16.5px; color: var(--muted); max-width: 60ch; line-height: 1.55; }
     .meta { font-family: var(--sans); color: var(--stone); font-size: 12px; letter-spacing: .01em; margin: 9px 0 0; }
     .latin { font-family: var(--latin); font-style: italic; }
 
@@ -116,9 +116,9 @@
     }
     h2.bar.jade { border-color: var(--jade); }
     h2.bar.gold { border-color: var(--gold); }
-    .kicker { font-family: var(--sans); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--jade); margin: 0 0 6px; }
-    p { margin: 0 0 11px; color: var(--body); font-size: 15px; }
-    .lead { font-size: 16px; color: #322e29; line-height: 1.72; }
+    .kicker { font-family: var(--sans); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--jade); margin: 0 0 6px; }
+    p { margin: 0 0 11px; color: var(--body); font-size: 15px; line-height: 1.75; letter-spacing: -0.005em; word-break: keep-all; }
+    .lead { font-size: 16px; color: #322e29; line-height: 1.8; letter-spacing: -0.005em; word-break: keep-all; }
     .muted { color: var(--muted); }
     .two { display: grid; grid-template-columns: 1.12fr .88fr; gap: 30px; align-items: start; }
     .two.even { grid-template-columns: 1fr 1fr; }
@@ -127,7 +127,7 @@
     .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 22px 0; }
     .metrics.four { grid-template-columns: repeat(4, 1fr); }
     .metric { background: var(--ivory); border: 1px solid var(--line); border-radius: 7px; padding: 14px 14px 13px; }
-    .metric b { display: block; font-family: var(--serif); color: var(--dan); font-size: 25px; font-weight: 800; line-height: 1.05; letter-spacing: -.01em; }
+    .metric b { display: block; font-family: var(--serif); color: var(--dan); font-size: 25px; font-weight: 700; line-height: 1.05; letter-spacing: -.01em; }
     .metric span { display: block; font-family: var(--sans); color: var(--muted); font-size: 11.5px; margin-top: 5px; }
 
     /* ---------- 타임라인 / 연혁 ---------- */
@@ -138,7 +138,7 @@
     .item h3 { margin: 0 0 5px; font-size: 16px; font-weight: 700; }
     .item ul { margin: 7px 0 0; padding-left: 0; list-style: none; }
     .item li { position: relative; padding-left: 14px; font-size: 14px; color: var(--body); margin-bottom: 4px; line-height: 1.6; }
-    .item li:before { content: ""; position: absolute; left: 1px; top: 9px; width: 4px; height: 4px; background: var(--jade); border-radius: 50%; }
+    .item li:before { content: ""; position: absolute; left: 1px; top: 9px; width: 4px; height: 4px; background: var(--dan); border-radius: 50%; }
     .history { border-top: 1px solid var(--line); }
     .history-row { display: grid; grid-template-columns: 78px 1fr; gap: 18px; padding: 13px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
     .history-row b { font-family: var(--sans); color: var(--dan); font-size: 13px; font-weight: 700; }
@@ -286,14 +286,14 @@
     .newsletter-sheet .nl-aside { padding: 13px 16px; margin-top: 18px; }
     .newsletter-sheet .colophon { margin-top: 21px; }
 
-    /* 16:9 덱 */
+    /* 16:9 덱 — 한 슬라이드 한 메시지. 행간 이중스케일(디스플레이 타이트·본문 숨쉼). */
     .deck-page {
       page: deck;
       position: relative;
       width: 297mm;
       height: 167mm;
       margin: 26px auto;
-      padding: 22mm 24mm 18mm;
+      padding: 24mm 28mm 20mm;
       background: var(--paper);
       border: 1px solid var(--line);
       box-shadow: 0 24px 70px -28px rgba(28,25,22,.34);
@@ -302,20 +302,31 @@
     .deck-page:before {
       content: "";
       position: absolute;
-      left: 24mm;
-      right: 24mm;
-      top: 17mm;
+      left: 28mm;
+      right: 28mm;
+      top: 18mm;
       height: 2px;
       background: var(--ink);
     }
-    .deck-page:after { content: attr(data-no) " / " attr(data-of); position: absolute; right: 24mm; bottom: 12mm; font-family: var(--sans); color: var(--stone); font-size: 12px; letter-spacing: .14em; }
-    .deck-page .seal { right: 24mm; top: 23mm; width: 15mm; height: 15mm; font-size: 22px; }
+    .deck-page:after { content: attr(data-no) " / " attr(data-of); position: absolute; right: 28mm; bottom: 13mm; font-family: var(--sans); color: var(--stone); font-size: 12px; letter-spacing: .14em; }
+    .deck-page .seal { right: 28mm; top: 24mm; width: 15mm; height: 15mm; font-size: 22px; }
+    /* 크롬 프레임 — 콘텐츠 길이와 무관하게 여백 일관 보장 (PPT 틀) */
+    .deck-chrome-eyebrow {
+      position: absolute; left: 28mm; top: 12mm; margin: 0;
+      font-family: var(--sans); font-size: 10.5px; letter-spacing: .2em;
+      color: var(--stone); text-transform: uppercase;
+    }
+    .deck-chrome-footer {
+      position: absolute; left: 28mm; bottom: 13mm; margin: 0;
+      font-family: var(--sans); font-size: 10.5px; letter-spacing: .14em;
+      color: var(--stone);
+    }
     .deck-kicker,
     .deck-slide-label {
       margin: 0;
       font-family: var(--sans);
       font-size: 11px;
-      letter-spacing: .22em;
+      letter-spacing: .08em;
       color: var(--stone);
       text-transform: uppercase;
     }
@@ -342,22 +353,23 @@
       margin: 0;
       padding-right: 0;
       font-family: var(--batang);
-      font-size: 42px;
+      font-size: 40px;
       font-weight: 700;
-      line-height: 1.18;
-      letter-spacing: 0;
-      max-width: 19ch;
+      line-height: 1.3;
+      letter-spacing: -0.012em;
+      max-width: 22ch;
       text-wrap: balance;
+      word-break: keep-all;
     }
     .deck-cover .deck-title {
       font-family: var(--serif);
-      font-size: 84px;
-      font-weight: 800;
-      line-height: 1.02;
-      letter-spacing: 0;
+      font-size: 80px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.018em;
     }
-    .deck-lead { font-size: 21px; color: var(--muted); max-width: 42ch; margin-top: 18px; line-height: 1.48; }
-    .deck-cover .deck-lead { font-size: 25px; margin-top: 24px; }
+    .deck-lead { font-size: 20px; color: var(--muted); max-width: 42ch; margin-top: 18px; line-height: 1.6; letter-spacing: -0.005em; word-break: keep-all; }
+    .deck-cover .deck-lead { font-size: 24px; margin-top: 24px; }
     .deck-cover-panel {
       align-self: center;
       background: var(--ivory);
@@ -372,47 +384,51 @@
       margin-bottom: 12px;
       color: var(--gold);
       font-size: 11px;
-      letter-spacing: .2em;
+      letter-spacing: .08em;
     }
     .deck-cover-panel span {
       display: block;
       padding: 9px 0;
       border-top: 1px solid var(--line);
       font-size: 13px;
-      letter-spacing: .03em;
+      letter-spacing: -0.005em;
     }
-    .deck-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 34px; }
+    .deck-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
     .deck-card { background: var(--ivory); border: 1px solid var(--line); border-radius: 8px; padding: 20px; }
-    .deck-card h4 { margin: 0 0 8px; font-size: 17px; font-weight: 700; color: var(--dan); }
-    .deck-card p { font-size: 14px; line-height: 1.52; margin: 0; color: var(--body); }
-    .deck-metrics { display: flex; gap: 34px; margin-top: 31px; }
-    .deck-metrics div b { display: block; font-family: var(--serif); font-size: 42px; font-weight: 800; color: var(--dan); line-height: 1; letter-spacing: 0; }
-    .deck-metrics div span { display: block; margin-top: 7px; font-family: var(--sans); font-size: 13px; color: var(--muted); line-height: 1.35; }
+    .deck-card h4 { margin: 0 0 8px; font-size: 17px; font-weight: 700; color: var(--dan); letter-spacing: -0.012em; }
+    .deck-card p { font-size: 14px; line-height: 1.7; margin: 0; color: var(--body); letter-spacing: -0.005em; word-break: keep-all; }
+    /* 시각화 슬라이드 아래 축소 카드 — visual이 주이므로 카드는 보조 */
+    .deck-grid-mini { grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .deck-grid-mini .deck-card { padding: 13px 15px; }
+    .deck-grid-mini .deck-card h4 { font-size: 14px; margin-bottom: 4px; }
+    .deck-grid-mini .deck-card p { font-size: 12.5px; line-height: 1.6; }
+    .deck-metrics { display: flex; gap: 34px; margin-top: 30px; }
+    .deck-metrics div b { display: block; font-family: var(--serif); font-size: 42px; font-weight: 700; color: var(--dan); line-height: 1.1; letter-spacing: -0.018em; }
+    .deck-metrics div span { display: block; margin-top: 7px; font-family: var(--sans); font-size: 13px; color: var(--muted); line-height: 1.5; }
+    /* text-only 슬라이드: 카드/메트릭이 주 — 콘텐츠 중앙 정렬로 여백 강조 */
+    .deck-page.text-only { display: grid; grid-template-rows: 1fr; align-content: center; }
+    .deck-page.text-only .deck-copy { max-width: 60ch; }
     .deck-page.has-visual {
       display: grid;
-      grid-template-columns: .86fr 1.14fr;
-      gap: 36px;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
       align-items: center;
     }
     .deck-page.has-visual .deck-copy { min-width: 0; }
     .deck-page.has-visual .deck-title {
-      font-size: 32px;
-      line-height: 1.2;
-      max-width: 18ch;
+      font-size: 30px;
+      line-height: 1.3;
+      max-width: 20ch;
       padding-right: 0;
       font-weight: 700;
     }
-    .deck-page.has-visual .deck-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
-    .deck-page.has-visual .deck-card { padding: 13px 15px; }
-    .deck-page.has-visual .deck-card h4 { font-size: 15px; }
-    .deck-page.has-visual .deck-card p { font-size: 12.6px; }
     .deck-page.has-visual .deck-metrics {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
       margin-top: 22px;
     }
-    .deck-page.has-visual .deck-metrics div b { font-size: 31px; }
+    .deck-page.has-visual .deck-metrics div b { font-size: 30px; }
     .deck-page.has-visual .deck-metrics div span { font-size: 11.5px; }
     .viz-deck {
       margin: 0;
@@ -420,20 +436,20 @@
       padding: 20px 22px 17px;
       border-radius: 10px;
     }
-    .viz-deck .viz-title { font-size: 12px; }
-    .viz-deck text { font-size: 11px; }
-    .viz-deck text.value { font-size: 13px; }
+    .viz-deck .viz-title { font-size: 12.5px; }
+    .viz-deck text { font-size: 12px; }
+    .viz-deck text.value { font-size: 13.5px; }
 
     /* 명함 8-up 대지 + 단일 카드 미리보기 */
     .card-stage { display: flex; flex-direction: column; gap: 7mm; align-items: center; margin-top: 8mm; }
     .namecard { position: relative; width: 90mm; height: 55mm; background: var(--ivory); border: 1px solid var(--line); border-radius: 2.4mm; padding: 8mm 9mm; box-shadow: 0 14px 34px -20px rgba(28,25,22,.4); overflow: hidden; }
     .namecard.back { background: var(--paper); display: grid; place-items: center; text-align: center; }
-    .namecard .nm { font-family: var(--serif); font-size: 22px; font-weight: 800; }
+    .namecard .nm { font-family: var(--serif); font-size: 22px; font-weight: 700; }
     .namecard .nm .hanja { font-size: .5em; }
     .namecard .role { font-family: var(--sans); font-size: 11px; color: var(--jade); letter-spacing: .06em; margin-top: 3px; }
     .namecard .info { position: absolute; left: 9mm; bottom: 7mm; font-family: var(--sans); font-size: 10px; color: var(--muted); line-height: 1.6; }
-    .namecard .cseal { position: absolute; right: 8mm; top: 7mm; width: 11mm; height: 11mm; border: .9mm solid var(--dan); color: var(--dan); display: grid; place-items: center; font-family: var(--serif); font-weight: 800; font-size: 16px; border-radius: 1mm; transform: rotate(-4deg); }
-    .namecard.back .bigmark { font-family: var(--serif); font-size: 40px; font-weight: 800; color: var(--dan); }
+    .namecard .cseal { position: absolute; right: 8mm; top: 7mm; width: 11mm; height: 11mm; border: .9mm solid var(--dan); color: var(--dan); display: grid; place-items: center; font-family: var(--serif); font-weight: 700; font-size: 16px; border-radius: 1mm; transform: rotate(-4deg); }
+    .namecard.back .bigmark { font-family: var(--serif); font-size: 40px; font-weight: 700; color: var(--dan); }
     .namecard.back .url { font-family: var(--sans); font-size: 11px; color: var(--stone); letter-spacing: .14em; margin-top: 7px; }
 
     /* 엽서 (청첩장·연하장) */
@@ -445,20 +461,20 @@
     .card-sheet > * { position: relative; z-index: 1; }
     .card-sheet .seal { position: absolute; right: 11mm; top: 11mm; width: 13mm; height: 13mm; font-size: 18px; }
     .card-title { font-family: var(--serif); font-size: 15px; letter-spacing: .5em; color: var(--stone); margin: 6mm 0 0; padding-left: .5em; }
-    .card-names { font-family: var(--serif); font-size: 30px; font-weight: 800; letter-spacing: .14em; margin: 7mm 0 2mm; }
+    .card-names { font-family: var(--serif); font-size: 30px; font-weight: 700; letter-spacing: .14em; margin: 7mm 0 2mm; }
     .card-msg { font-size: 13.5px; line-height: 1.95; color: var(--body); margin: 7mm auto; max-width: 74mm; }
     .card-when b { font-family: var(--serif); font-size: 16px; }
     .card-line { font-size: 12.5px; color: var(--muted); margin: 3mm 0 0; }
     .card-foot { font-family: var(--sans); font-size: 10.5px; color: var(--stone); margin-top: 6mm; line-height: 1.7; }
-    .ygreet { font-family: var(--serif); font-size: 34px; font-weight: 800; color: var(--dan); letter-spacing: .12em; margin: 9mm 0 1mm; }
+    .ygreet { font-family: var(--serif); font-size: 34px; font-weight: 700; color: var(--dan); letter-spacing: .12em; margin: 9mm 0 1mm; }
     .yyear { font-family: var(--latin); font-style: italic; font-size: 19px; color: var(--gold); }
 
     /* 뉴스레터 */
     .masthead { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid var(--ink); padding-bottom: 12px; }
-    .masthead .mh-title { font-family: var(--serif); font-size: 34px; font-weight: 800; letter-spacing: -.01em; }
+    .masthead .mh-title { font-family: var(--serif); font-size: 34px; font-weight: 700; letter-spacing: -.01em; }
     .masthead .mh-meta { font-family: var(--sans); font-size: 11.5px; color: var(--stone); text-align: right; line-height: 1.6; }
     .nl-lead { margin-top: 22px; }
-    .nl-lead h2 { font-size: 24px; font-weight: 800; line-height: 1.25; margin: 0 0 10px; }
+    .nl-lead h2 { font-size: 24px; font-weight: 700; line-height: 1.25; margin: 0 0 10px; }
     .nl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 8px; }
     .nl-item { border-top: 1px solid var(--line); padding-top: 12px; }
     .nl-item h3 { font-size: 15.5px; font-weight: 700; margin: 0 0 6px; }
@@ -473,14 +489,14 @@
     .work .thumb { aspect-ratio: 7/3; background:
         repeating-linear-gradient(135deg, rgba(46,107,94,.05) 0 8px, transparent 8px 18px), var(--paper-2);
       border-bottom: 1px solid var(--line); display: grid; place-items: center; }
-    .work .thumb b { font-family: var(--serif); font-size: 26px; font-weight: 800; color: rgba(155,27,27,.5); }
+    .work .thumb b { font-family: var(--serif); font-size: 26px; font-weight: 700; color: rgba(155,27,27,.5); }
     .work .wb { padding: 9px 13px 10px; }
     .work .wb h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
     .work .wb p { font-family: var(--sans); font-size: 11.5px; color: var(--muted); margin: 0; line-height: 1.5; }
 
     /* 브랜드 원페이지 (가로) */
     .op-showcase { display: grid; grid-template-columns: 1fr .82fr; gap: 34px; align-items: center; margin-top: 8px; }
-    .op-hero { font-family: var(--serif); font-size: 40px; font-weight: 800; line-height: 1.2; max-width: 24ch; letter-spacing: -.01em; }
+    .op-hero { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1.2; max-width: 24ch; letter-spacing: -.01em; }
     .op-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 6px; }
     .op-pillar h3 { font-size: 17px; font-weight: 700; color: var(--dan); margin: 0 0 7px; padding-top: 12px; border-top: 2px solid var(--ink); }
     .op-pillar p { font-size: 13.5px; line-height: 1.6; margin: 0; }
@@ -512,7 +528,7 @@
 
     .gallery { max-width: 1200px; margin: 0 auto; padding: 64px 28px 90px; }
     .gallery .eyebrow { color: var(--stone); }
-    .gallery h1 { font-size: clamp(40px, 6vw, 70px); max-width: 18ch; line-height: 1.08; }
+    .gallery h1 { font-size: clamp(40px, 6vw, 70px); max-width: 18ch; line-height: 1.2; letter-spacing: -0.018em; word-break: keep-all; }
     .gallery-lead { max-width: 64ch; font-size: 18px; color: var(--muted); margin-top: 20px; line-height: 1.7; }
     .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 44px; }
     .card { background: var(--ivory); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; transition: box-shadow .2s, transform .2s; }

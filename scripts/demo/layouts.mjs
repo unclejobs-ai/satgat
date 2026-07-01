@@ -348,7 +348,7 @@ function resume(ex) {
       .join("")}</div></section>
     <div class="two even" style="margin-top:26px">
       <section><h2 class="bar">핵심 역량</h2>${chips(p.skills)}</section>
-      <section><h2 class="bar jade">학력 · 활동</h2><div class="history">${p.education
+      <section><h2 class="bar">학력 · 활동</h2><div class="history">${p.education
         .map(([what, when]) => `<div class="history-row"><b>${e(when)}</b><span>${e(what)}</span></div>`)
         .join("")}</div></section>
     </div>
@@ -491,11 +491,14 @@ function portfolio(ex) {
 }
 
 // ---------- 16:9 덱 ----------
+// 밀도 모델: 한 슬라이드에 한 메시지. visual·cards·metrics 중
+// 주된 것 하나만 풀사이즈로 — 정보 과적(뭉침) 방지.
 function deck(ex) {
   const p = ex.payload;
   const total = p.slides.length + 1;
   const no = (n) => String(n).padStart(2, "0");
   const cover = `<section class="deck-page deck-cover" data-no="${no(1)}" data-of="${no(total)}">${seal(ex)}
+    <p class="deck-chrome-eyebrow">${e(p.company)} · IR OUTLINE</p>
     <div class="deck-cover-copy">
       <p class="deck-kicker">${e(p.round)}</p>
       <h1 class="deck-title">${e(p.company)}</h1>
@@ -509,19 +512,30 @@ function deck(ex) {
       <span>Traction</span>
       <span>Ask</span>
     </aside>
+    <p class="deck-chrome-footer">${e(p.round)}</p>
   </section>`;
   const slides = p.slides
     .map(([title, lead, cards, mets, visual], i) => {
-      const grid = cards
-        ? `<div class="deck-grid">${cards.map(([h, t]) => `<div class="deck-card"><h4>${e(h)}</h4><p>${e(t)}</p></div>`).join("")}</div>`
-        : "";
-      const mrow = mets
+      // 밀도 분기: visual이 있으면 카드는 시각화 컬럼 아래 축소 배치(정보 과적 방지).
+      const hasVisual = Boolean(visual);
+      const hasCards = Boolean(cards);
+      const hasMets = Boolean(mets);
+      const gridHtml = (mini) =>
+        hasCards
+          ? `<div class="deck-grid${mini ? " deck-grid-mini" : ""}">${cards.map(([h, t]) => `<div class="deck-card"><h4>${e(h)}</h4><p>${e(t)}</p></div>`).join("")}</div>`
+          : "";
+      const mrow = hasMets
         ? `<div class="deck-metrics">${mets.map(([b, s]) => `<div><b>${e(b)}</b><span>${e(s)}</span></div>`).join("")}</div>`
         : "";
+      // visual 슬라이드: copy엔 title+mets만(카드는 시각화 아래로).
       const copy = `<div class="deck-copy"><p class="deck-slide-label"><b>${no(i + 2)}</b><span>${e(p.company)} · ${e(title)}</span></p>
-        <h1 class="deck-title">${e(lead)}</h1>${grid}${mrow}</div>`;
-      return `<section class="deck-page ${visual ? "has-visual" : ""}" data-no="${no(i + 2)}" data-of="${no(total)}">
-        ${copy}${visualBlock(visual, "deck")}</section>`;
+        <h1 class="deck-title">${e(lead)}</h1>${hasVisual ? "" : gridHtml(false)}${mrow}</div>`;
+      const visualCol = hasVisual
+        ? `${visualBlock(visual, "deck")}${gridHtml(true)}`
+        : "";
+      return `<section class="deck-page ${hasVisual ? "has-visual" : "text-only"}" data-no="${no(i + 2)}" data-of="${no(total)}">
+        <p class="deck-chrome-eyebrow">${e(p.company)} · ${e(title)}</p>
+        ${copy}${visualCol}</section>`;
     })
     .join("");
   return `${cover}${slides}${promptPanel(ex, "deck")}`;

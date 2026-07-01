@@ -311,7 +311,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
 
             .product-brochure-title {
               font-size: 38px !important;
-              line-height: 1.12 !important;
+              line-height: 1.2 !important;
             }
 
             .product-brochure-visual {

@@ -6,18 +6,18 @@
 
 ## 0. 단 하나의 미감
 
-한지(韓紙) 위에 먹(墨)으로 옮겨 적습니다. 화려한 그림자도 두 번째 색도 두지 않습니다. **인쇄에 견디는 색만, 합성 볼드 없이, 옛 종이 위 글씨의 단정함으로.**
+백자지(白瓷紙) 위에 먹(墨)으로 옮겨 적습니다. 화려한 그림자도 두 번째 색도 두지 않습니다. **인쇄에 견디는 색만, 합성 볼드 없이, 맑은 종이 위 글씨의 단정함으로.**
 
 ---
 
 ## 1. 색 (Colors)
 
-### 한지 캔버스 (절대 #FFF 금지)
+### 백자지 캔버스 (절대 #FFF 금지)
 ```
-한지(韓紙)   #F1ECDF   페이지 본바탕
-이보리(象牙) #F8F4E8   카드 · 부상 표면
-황지(黃紙)   #E8E1CC   버튼 · 인터랙티브
-한지그늘     #E0D8C0   카드 음영
+백자지(白瓷紙) #F7F7F2   페이지 본바탕 — 회녹 undertone의 맑은 닥종이
+백자(白磁)     #FFFFFB   카드 · 부상 표면 — 백자 흰빛
+분청(粉靑)     #E7E8DD   접힌 닥종이 — 카드 음영 · 인터랙티브
+백자지그늘     #D2D6CB   카드 음영 — 닥섬유 클러스터
 ```
 
 ### 먹(墨) 계열 — 위계
@@ -31,25 +31,25 @@
 ### 강조 — 단청만 (5% 룰)
 ```
 단청(丹靑)   #9B1B1B   단 하나의 강조색
-단청 밝게    #B53030   hover · 다크 위 링크
+단청 밝게    #B92D2D   hover · 다크 위 링크
 취색(翠色)   #2E6B5E   보조 강조 (인장 등)
 금박(金箔)   #B8954F   메달·디바이더 (최소)
 ```
 
-### 한지 위 단청 tint 5단계 (solid hex)
+### 백자지 위 단청 tint 5단계 (solid hex)
 ```
-tint 1  #F4ECE9
-tint 2  #EEDED9
-tint 3  #E8D0C9   ← 기본
-tint 4  #DDC3BB
-tint 5  #D0B4AB
+tint 1  #F8EAEA
+tint 2  #F3DCDC
+tint 3  #E8C9C9   ← 기본
+tint 4  #DDB6B6
+tint 5  #CFA0A0
 ```
 
-### 엷음(淡) — 보더
+### 엷음(淡) — 보더 (회녹빛, cool blue 금지)
 ```
-보더       #DDD6C4
-보더 옅음  #E8E2D0
-헤어라인   #D2CAB5
+보더       #BEC5BA
+보더 옅음  #E6E8DE
+헤어라인   #D2D6CB
 ```
 
 **규칙:**
@@ -62,26 +62,27 @@ tint 5  #D0B4AB
 ## 2. 자 (Typography)
 
 ### 폰트 페어링 (전부 OFL 무료)
-- **명조** (Display·H1): Nanum Myeongjo 800 — 장중함·표지·인장
+- **명조** (Display·H1): Nanum Myeongjo 700 — 장중함·표지·인장
 - **바탕** (본문): Gowun Batang 400 / 700 — 따뜻한 곡선
 - **돋움** (라벨·UI): Gowun Dodum 400 — 정갈한 직선
 - **Latin** italic: Cormorant Garamond — 영문 보조 일점
 
 ### 스케일 (인쇄 pt 기준)
 ```
-Display    36-48pt  weight 800  line 1.10
-H1 섹션    18-22pt  weight 800  line 1.20
-H2 소제목  14-16pt  weight 700  line 1.25
-H3 항목    12-13pt  weight 700  line 1.30
-본문       10-11pt  weight 400  line 1.72  ← 한글은 1.7+
-캡션       8.5-9pt  weight 400  line 1.55
-라벨       7.5-8pt  weight 600  line 1.35  uppercase
+Display    36-48pt  weight 700  line 1.15
+H1 섹션    18-22pt  weight 700  line 1.20
+H2 소제목  14-16pt  weight 700  line 1.30
+H3 항목    12-13pt  weight 700  line 1.40   ← Gowun Batang은 400/700만, 600 합성볼드 금지
+본문       10-11pt  weight 400  line 1.80   ← 한글은 1.7+
+캡션       8.5-9pt  weight 400  line 1.65
+라벨       7.5-8pt  weight 500  line 1.50   uppercase
 ```
 
 ### 한글 자간 (letter-spacing)
-- 본문: `-0.005em` (약간 조이기)
-- 제목: `-0.018em` (더 조이기)
-- 라벨 uppercase: `+0.18em` (넓히기)
+- 디스플레이·H1: `-0.018em` (큰 글씨 미세 조임, -0.02em 이하 금지 → 뭉침)
+- H2·H3: `-0.012em` (제목)
+- 본문·캡션: `-0.005em` (한글 가독의 기본)
+- 라벨 uppercase: `+0.08em` (넓히기)
 
 ### 합성 볼드 금지
 실제 weight (400 / 700 / 800)만. `font-weight: 600` 가짜 굵기 절대 금지.
@@ -130,7 +131,7 @@ box-shadow: 0 4pt 24pt rgba(28, 25, 22, 0.05);
 크기와 굵기가 위계를 짓는다. 장식 금지.
 
 ```
-표지 Display 800   →   섹션 H1 800   →   H2 700   →   본문 400
+표지 Display 700   →   섹션 H1 700   →   H2 700   →   본문 400
 ```
 
 좌측 단청 2pt 바 또는 hairline 0.5pt 점선으로 섹션 구분.
@@ -151,28 +152,28 @@ box-shadow: 0 4pt 24pt rgba(28, 25, 22, 0.05);
 作 포트폴리오  jade
 ```
 
-22×22pt 사각 · 명조 800 · 카테고리 색 · `inset` 흰 광택 1.2px.
+22×22pt 사각 · 명조 700 · 카테고리 색 · `inset` 흰 광택 1.2px.
 
 ---
 
-## 6. 한지 캔버스 (반드시)
+## 6. 백자지 캔버스 (반드시)
 
 ```css
-background-color: #F1ECDF;
+background-color: #F7F7F2;
 background-image:
-  radial-gradient(ellipse 95% 70% at 50% 30%, rgba(255,252,240,0.32), transparent 62%),
-  /* 닥섬유 텍스처 (긴 fiber + 짧은 cluster + grain) */
+  radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.55) 0%, transparent 60%),
+  /* 닥섬유 텍스처 (미세 노이즈) */
   url("data:image/svg+xml,...");
 ```
 
-순백(`#FFFFFF`) 절대 금지. `@page background` 도 한지로 묶을 것.
+순백(`#FFFFFF`) 절대 금지. `@page background` 도 백자지로 묶을 것.
 
 ---
 
 ## 7. 인쇄
 
-- 모든 색은 solid hex (rgba 금지 — 인쇄 시 패딩·글리프 농도 어긋남)
-- `@page { margin: 0; background: #F1ECDF; }`
+- 색 토큰·태그·배지는 solid hex. shadow·texture(opacity 필요)는 rgba 예외 허용
+- `@page { margin: 0; background: #F7F7F2; }`
 - `-webkit-print-color-adjust: exact`
 - A4 = 210×297mm · A5 = 148×210mm · 명함 = 90×55mm
 

@@ -684,7 +684,7 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
 
           .brand-story-title {
             font-size: 40px !important;
-            line-height: 1.12 !important;
+            line-height: 1.2 !important;
           }
 
           .brand-story-cover-aside {
