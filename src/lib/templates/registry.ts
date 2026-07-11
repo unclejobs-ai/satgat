@@ -1,4 +1,4 @@
-import type { SatgatTemplate } from './types';
+import type { PageSpec, PageSpecId, SatgatTemplate } from './types';
 import { resume } from './definitions/resume';
 import { selfIntro } from './definitions/self-intro';
 import { businessCard } from './definitions/business-card';
@@ -13,6 +13,44 @@ import { companyProfile } from './definitions/company-profile';
 import { investorDeck } from './definitions/investor-deck';
 import { productBrochure } from './definitions/product-brochure';
 import { report } from './definitions/report';
+
+export const PAGE_SPECS: Readonly<Record<PageSpecId, PageSpec>> = {
+  a4Portrait: {
+    id: 'a4Portrait',
+    label: 'A4 세로',
+    canvas: { widthMm: 210, heightMm: 297 },
+    cssSize: '210mm 297mm',
+  },
+  a4Landscape: {
+    id: 'a4Landscape',
+    label: 'A4 가로',
+    canvas: { widthMm: 297, heightMm: 210 },
+    cssSize: '297mm 210mm',
+  },
+  slide16x9: {
+    id: 'slide16x9',
+    label: '16:9 슬라이드',
+    canvas: { widthMm: 297, heightMm: 167 },
+    cssSize: '297mm 167mm',
+  },
+  businessCard8Up: {
+    id: 'businessCard8Up',
+    label: '명함 8-up',
+    canvas: { widthMm: 210, heightMm: 297 },
+    cssSize: '210mm 297mm',
+    imposition: { columns: 2, rows: 4, cardWidthMm: 90, cardHeightMm: 55 },
+  },
+  postcardPortrait: {
+    id: 'postcardPortrait',
+    label: '엽서 세로',
+    canvas: { widthMm: 105, heightMm: 148 },
+    cssSize: '105mm 148mm',
+  },
+};
+
+export function getPageSpec(id: PageSpecId): PageSpec {
+  return PAGE_SPECS[id];
+}
 
 /**
  * 삿갓 — 한국 문서 14종 라인업

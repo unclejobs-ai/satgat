@@ -5,6 +5,34 @@
  * 데이터 = slot에 채워질 실제 콘텐츠
  */
 
+export const PAGE_SPEC_IDS = [
+  'a4Portrait',
+  'a4Landscape',
+  'slide16x9',
+  'businessCard8Up',
+  'postcardPortrait',
+] as const;
+
+export type PageSpecId = (typeof PAGE_SPEC_IDS)[number];
+
+export interface PageCanvas {
+  readonly widthMm: number;
+  readonly heightMm: number;
+}
+
+export interface PageSpec {
+  readonly id: PageSpecId;
+  readonly label: string;
+  readonly canvas: PageCanvas;
+  readonly cssSize: `${number}mm ${number}mm`;
+  readonly imposition?: {
+    readonly columns: number;
+    readonly rows: number;
+    readonly cardWidthMm: number;
+    readonly cardHeightMm: number;
+  };
+}
+
 export type DocumentFormat = 'a4' | 'a4-landscape' | 'slide-16x9';
 
 export type SlotType = 'text' | 'textarea' | 'image' | 'list' | 'table' | 'visual';
