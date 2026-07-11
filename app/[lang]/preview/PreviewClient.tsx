@@ -5,20 +5,33 @@ import Link from "next/link";
 import { Check, Download, Link2, Printer, RotateCcw } from "lucide-react";
 import { SatgatTemplateRenderer } from "@/components/templates/SatgatTemplateRenderer";
 import { getPageSpec, getTemplate } from "@/lib/templates/registry";
+import { validateDocumentData } from "@/lib/engine/validator";
+import {
+  DraftStorageError,
+  isDocumentData,
+  readDraft,
+} from "@/lib/preview/draft-storage";
+import {
+  encodeSharePayload,
+  SharePayloadTooLargeError,
+  SHARE_PAYLOAD_TOO_LARGE_MESSAGE,
+  resolvePreviewSource,
+} from "@/lib/preview/share-payload";
 import {
   calculatePreviewScale,
   millimetersToCssPixels,
 } from "./preview-scale";
+import { finishPdfAttempt, invalidatePdfAttempt, startPdfAttempt, type PdfAttemptState } from "@/lib/preview/pdf-attempt";
 import type { SatgatDocumentData } from "@/lib/templates/types";
 import { SatgatPrintStyles } from "@/components/document";
 
 type PreviewPayload =
-  | { data: SatgatDocumentData; error: null }
-  | { data: null; error: string };
+  | { data: SatgatDocumentData; error: null; sourceKey: string }
+  | { data: null; error: string; sourceKey: string };
 
 type PreviewClientProps = {
   lang: string;
-  preview: PreviewPayload;
+  draftId: string | null;
 };
 
 function hasSlotValue(value: unknown): boolean {
@@ -29,11 +42,33 @@ function hasSlotValue(value: unknown): boolean {
   return true;
 }
 
+function subscribeToHashChange(onStoreChange: () => void): () => void {
+  window.addEventListener("hashchange", onStoreChange);
+  return () => window.removeEventListener("hashchange", onStoreChange);
+}
 
-export default function PreviewClient({ lang, preview }: PreviewClientProps) {
-  const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "failed">("idle");
-  const [pdfStatus, setPdfStatus] = React.useState<"idle" | "loading" | "error">("idle");
-  const { data, error } = preview;
+function currentHash(): string {
+  return window.location.hash;
+}
+
+
+export default function PreviewClient({ lang, draftId }: PreviewClientProps) {
+  const hash = React.useSyncExternalStore(subscribeToHashChange, currentHash, () => "");
+  const sourceKey = `${draftId ?? ""}:${hash}`;
+  const [preview, setPreview] = React.useState<PreviewPayload | null>(null);
+  const [shareOpen, setShareOpen] = React.useState(false);
+  const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "failed" | "too-large">("idle");
+  const [pdfState, setPdfState] = React.useState<PdfAttemptState>({ attempt: 0, status: "idle" });
+  const pdfStatus = pdfState.status;
+  const pdfAttemptRef = React.useRef(0);
+  const pdfAbortRef = React.useRef<AbortController | null>(null);
+  const copyAttemptRef = React.useRef(0);
+  const shareTriggerRef = React.useRef<HTMLButtonElement>(null);
+  const shareDialogRef = React.useRef<HTMLDivElement>(null);
+  const shareCancelRef = React.useRef<HTMLButtonElement>(null);
+  const currentPreview = preview?.sourceKey === sourceKey ? preview : null;
+  const data = currentPreview?.data ?? null;
+  const error = currentPreview?.error ?? null;
   const template = data ? getTemplate(data.templateId) : undefined;
   const langPath = `/${encodeURIComponent(lang)}`;
   const pageSpec = template ? getPageSpec(template.pageSpec) : undefined;
@@ -45,6 +80,52 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
     : 0;
   const docStageRef = React.useRef<HTMLDivElement>(null);
   const [previewScale, setPreviewScale] = React.useState(1);
+
+  React.useEffect(() => {
+    pdfAbortRef.current?.abort();
+    pdfAbortRef.current = null;
+    const invalidatedPdf = invalidatePdfAttempt(pdfAttemptRef.current);
+    pdfAttemptRef.current = invalidatedPdf.attempt;
+    setPdfState(invalidatedPdf);
+    copyAttemptRef.current += 1;
+    setShareOpen(false);
+    setCopyStatus("idle");
+    setPreview(null);
+    try {
+      const resolved = resolvePreviewSource(hash, draftId, readDraft);
+      const candidate = resolved.value;
+      if (resolved.source === "invalid-share") {
+        setPreview({ data: null, error: "공유 링크의 문서 형식이 올바르지 않습니다.", sourceKey });
+        return;
+      }
+      if (!isDocumentData(candidate)) {
+        setPreview({
+          data: null,
+          error: "문서를 찾을 수 없습니다. 새 문서를 만들거나 공유 링크를 확인해 주세요.",
+          sourceKey,
+        });
+        return;
+      }
+
+      const candidateTemplate = getTemplate(candidate.templateId);
+      const validation = candidateTemplate
+        ? validateDocumentData(candidateTemplate, candidate)
+        : { valid: false };
+      setPreview(
+        validation.valid
+          ? { data: candidate, error: null, sourceKey }
+          : { data: null, error: "문서 형식이 올바르지 않습니다.", sourceKey },
+      );
+    } catch (caught) {
+      setPreview({
+        data: null,
+        error: caught instanceof DraftStorageError
+          ? caught.userMessage
+          : "문서를 찾을 수 없습니다. 새 문서를 만들거나 공유 링크를 확인해 주세요.",
+        sourceKey,
+      });
+    }
+  }, [draftId, hash, sourceKey]);
   React.useEffect(() => {
     const stage = docStageRef.current;
     if (!stage || pageWidth === 0 || pageHeight === 0) return;
@@ -76,45 +157,128 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
   // a hydration-mismatch error on templates with a sparse page (M4 visual-qa).
   // The `.density-warn` styling below still applies to that React-rendered badge.
 
-  const copyLink = async () => {
+  const closeShareDialog = () => {
+    copyAttemptRef.current += 1;
+    setShareOpen(false);
+  };
+
+  React.useEffect(() => {
+    if (!shareOpen) return;
+    const previouslyFocused = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : shareTriggerRef.current;
+    shareCancelRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeShareDialog();
+        return;
+      }
+      if (event.key !== "Tab" || !shareDialogRef.current) return;
+      const controls = Array.from(
+        shareDialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      if (controls.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      copyAttemptRef.current += 1;
+      previouslyFocused?.focus();
+    };
+  }, [shareOpen]);
+
+  React.useEffect(() => () => {
+    copyAttemptRef.current += 1;
+    pdfAbortRef.current?.abort();
+  }, []);
+
+  const copyShareLink = async () => {
+    if (!data) return;
+    const attempt = copyAttemptRef.current + 1;
+    copyAttemptRef.current = attempt;
+
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      const shareUrl = `${window.location.origin}${langPath}/preview#share=${encodeSharePayload(data)}`;
+      await navigator.clipboard.writeText(shareUrl);
+      if (copyAttemptRef.current !== attempt) return;
       setCopyStatus("copied");
-    } catch {
-      setCopyStatus("failed");
+      closeShareDialog();
+    } catch (caught) {
+      if (copyAttemptRef.current !== attempt) return;
+      setCopyStatus(
+        caught instanceof SharePayloadTooLargeError ? "too-large" : "failed",
+      );
     }
-    window.setTimeout(() => setCopyStatus("idle"), 1500);
   };
 
   const downloadPdf = async () => {
     if (!data) return;
-    setPdfStatus("loading");
+    pdfAbortRef.current?.abort();
+    const controller = new AbortController();
+    pdfAbortRef.current = controller;
+    const next = startPdfAttempt({ attempt: pdfAttemptRef.current, status: pdfStatus });
+    pdfAttemptRef.current = next.attempt;
+    setPdfState(next);
     try {
       const res = await fetch("/api/export", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateId: data.templateId, slots: data.slots, lang }),
+        signal: controller.signal,
       });
       if (!res.ok) throw new Error(`export failed: ${res.status}`);
       const blob = await res.blob();
+      if (controller.signal.aborted || pdfAttemptRef.current !== next.attempt) return;
       const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `satgat-${data.templateId}.pdf`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      setPdfStatus("idle");
+      try {
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = `satgat-${data.templateId}.pdf`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+      setPdfState((state) => finishPdfAttempt(state, next.attempt, "idle"));
     } catch {
-      setPdfStatus("error");
-      window.setTimeout(() => setPdfStatus("idle"), 2500);
+      if (!controller.signal.aborted) {
+        setPdfState((state) => finishPdfAttempt(state, next.attempt, "error"));
+      }
+    } finally {
+      if (pdfAbortRef.current === controller) pdfAbortRef.current = null;
     }
   };
 
+  if (!currentPreview) {
+    return (
+      <div className="empty-state" data-render-state="loading" aria-live="polite" aria-busy="true">
+        <p className="empty-mark loading">…</p>
+        <h1>한지를 펴는 중…</h1>
+        <PreviewStyles />
+      </div>
+    );
+  }
+
   if (error) {
     return (
-      <div className="empty-state">
+      <div className="empty-state" data-render-state="error" role="alert">
         <p className="empty-mark">!</p>
         <h1>{error}</h1>
         <p className="empty-sub">새 문서를 만들거나, 처음으로 돌아가세요.</p>
@@ -128,13 +292,7 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
   }
 
   if (!data || !template || !pageSpec) {
-    return (
-      <div className="empty-state">
-        <p className="empty-mark loading">…</p>
-        <h1>한지를 펴는 중…</h1>
-        <PreviewStyles />
-      </div>
-    );
+    return null;
   }
 
   const pageSpecLabel = pageSpec.label;
@@ -148,7 +306,7 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
       <SatgatPrintStyles />
 
       {/* Toolbar */}
-      <div className="preview-toolbar no-print">
+      <div className="preview-toolbar no-print" inert={shareOpen} aria-hidden={shareOpen}>
         <div className="meta">
           <div>
             <p className="tb-name">{template.name}</p>
@@ -177,9 +335,18 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
             <RotateCcw size={14} strokeWidth={1.8} aria-hidden />
             <span>다시 만들기</span>
           </Link>
-          <button onClick={copyLink} className="tb-link tb-copy" type="button">
+          <button
+            ref={shareTriggerRef}
+            onClick={() => {
+              copyAttemptRef.current += 1;
+              setCopyStatus("idle");
+              setShareOpen(true);
+            }}
+            className="tb-link tb-copy"
+            type="button"
+          >
             {copyStatus === "copied" ? <Check size={14} strokeWidth={1.9} aria-hidden /> : <Link2 size={14} strokeWidth={1.8} aria-hidden />}
-            <span>{copyStatus === "copied" ? "복사됨" : copyStatus === "failed" ? "복사 실패" : "링크 복사"}</span>
+            <span>{copyStatus === "copied" ? "복사됨" : copyStatus === "failed" ? "복사 실패" : "공유 링크"}</span>
           </button>
           <button
             onClick={downloadPdf}
@@ -198,9 +365,39 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
           </button>
         </div>
       </div>
+      {shareOpen ? (
+        <div className="share-backdrop no-print">
+          <div
+            ref={shareDialogRef}
+            className="share-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="share-dialog-title"
+            aria-describedby="share-dialog-description"
+          >
+            <h2 id="share-dialog-title">문서 내용이 담긴 링크 공유</h2>
+            <p id="share-dialog-description">이 링크에는 문서 내용이 포함됩니다. 개인정보가 있으면 공유하지 마세요.</p>
+            {copyStatus === "failed" || copyStatus === "too-large" ? (
+              <p className="share-error" role="alert">
+                {copyStatus === "too-large"
+                  ? SHARE_PAYLOAD_TOO_LARGE_MESSAGE
+                  : "링크를 복사하지 못했습니다. 다시 시도해 주세요."}
+              </p>
+            ) : null}
+            <div className="share-actions">
+              <button ref={shareCancelRef} type="button" className="empty-cta" onClick={closeShareDialog}>
+                취소
+              </button>
+              <button type="button" className="empty-cta primary" onClick={copyShareLink}>
+                확인하고 복사
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {/* Document */}
-      <div className="doc-stage" ref={docStageRef}>
+      <div className="doc-stage" ref={docStageRef} inert={shareOpen} aria-hidden={shareOpen}>
         <div
           className="preview-canvas"
           style={{
@@ -363,6 +560,45 @@ function PreviewStyles() {
       }
       .tb-copy {
         min-width: 80px;
+      }
+      .share-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(28, 25, 22, 0.48);
+      }
+      .share-dialog {
+        width: min(100%, 460px);
+        box-sizing: border-box;
+        padding: 28px;
+        border: 1px solid var(--border-soft, #E8E2D0);
+        border-radius: 8px;
+        background: var(--parchment, #FFFFFB);
+        box-shadow: 0 24px 72px rgba(28, 25, 22, 0.2);
+      }
+      .share-dialog h2 {
+        margin: 0 0 12px;
+        font-family: var(--serif-display);
+        font-size: 20px;
+      }
+      .share-dialog p {
+        margin: 0;
+        color: var(--olive);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .share-dialog .share-error {
+        margin-top: 12px;
+        color: var(--brand);
+      }
+      .share-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 24px;
       }
       .tb-link:hover {
         color: var(--brand);

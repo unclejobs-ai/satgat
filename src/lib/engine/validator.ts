@@ -1,11 +1,9 @@
 import { z } from 'zod';
-import type { TemplateCatalogEntry, SatgatDocumentData } from '@/lib/templates/types';
+import type { TemplateCatalogEntry } from '@/lib/templates/types';
+import { buildSlotsSchema, MAX_PRIVATE_TRANSPORT_BYTES } from './slot-schema';
 
-const DocumentDataSchema = z.object({
-  templateId: z.string(),
-  title: z.string().optional(),
-  slots: z.record(z.string(), z.unknown()),
-});
+export { isSafeImageSource } from './slot-schema';
+
 
 function isMissingRequiredSlot(value: unknown): boolean {
   if (value == null) return true;
@@ -20,28 +18,38 @@ function isMissingRequiredSlot(value: unknown): boolean {
  */
 export function validateDocumentData(
   template: TemplateCatalogEntry,
-  data: SatgatDocumentData
+  data: unknown,
 ): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
-
-  // 1. 기본 shape 검증
-  const parseResult = DocumentDataSchema.safeParse(data);
+  const schema = z.object({
+    templateId: z.literal(template.id),
+    title: z.string().optional(),
+    slots: buildSlotsSchema(template),
+  }).strict().superRefine((document, context) => {
+    const bytes = new TextEncoder().encode(JSON.stringify(document)).byteLength;
+    if (bytes > MAX_PRIVATE_TRANSPORT_BYTES) {
+      context.addIssue({
+        code: 'custom',
+        message: 'Document exceeds private preview transport capacity',
+      });
+    }
+  });
+  const parseResult = schema.safeParse(data);
   if (!parseResult.success) {
-    errors.push(...parseResult.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`));
-    return { valid: false, errors };
+    return {
+      valid: false,
+      errors: parseResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
+    };
   }
 
-  // 2. templateId 일치
-  if (data.templateId !== template.id) {
-    errors.push(`templateId mismatch: expected "${template.id}", got "${data.templateId}"`);
-  }
-
-  // 3. required slot 존재 여부
+  const errors: string[] = [];
   for (const slot of template.slots) {
-    if (slot.required && (!(slot.id in data.slots) || isMissingRequiredSlot(data.slots[slot.id]))) {
+    if (
+      slot.required &&
+      (!(slot.id in parseResult.data.slots) ||
+        isMissingRequiredSlot(parseResult.data.slots[slot.id]))
+    ) {
       errors.push(`Missing required slot: "${slot.id}" (${slot.label})`);
     }
   }
-
   return { valid: errors.length === 0, errors };
 }

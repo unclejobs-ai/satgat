@@ -7,6 +7,8 @@ import Link from "next/link";
 import { SatgatVisual } from "@/components/diagrams";
 import type { SatgatVisualSlot } from "@/lib/engine/slot-visual";
 import { getPageSpec, listTemplates, getTemplate } from "@/lib/templates/registry";
+import { DraftStorageError, isDocumentData, replaceCurrentDraft } from "@/lib/preview/draft-storage";
+import { validateDocumentData } from "@/lib/engine/validator";
 
 const PROMPT_MIN_LENGTH = 10;
 const PROMPT_MAX_LENGTH = 8000;
@@ -374,31 +376,7 @@ function getPromptQuality(prompt: string) {
   return { score, label: "아직 여백이 많은 초안", tone: "quiet" };
 }
 
-async function readGenerationError(response: Response) {
-  const fallback = "한지 위에 옮기지 못했습니다. 다시 시도해 주세요.";
 
-  try {
-    const payload = (await response.clone().json()) as { message?: unknown; error?: unknown };
-    if (typeof payload.message === "string" && payload.message.trim()) return payload.message;
-    if (typeof payload.error === "string" && payload.error.trim()) return payload.error;
-  } catch {
-    const text = await response.text().catch(() => "");
-    if (text.trim()) return text;
-  }
-
-  return fallback;
-}
-
-function encodePreviewPayload(data: unknown) {
-  const bytes = new TextEncoder().encode(JSON.stringify(data));
-  let binary = "";
-
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
-  }
-
-  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
-}
 
 type NewDocumentClientProps = {
   lang: string;
@@ -458,9 +436,17 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateId: selectedTemplate, prompt }),
       });
-      if (!res.ok) throw new Error(await readGenerationError(res));
-      const data = await res.json();
-      const previewHref = `/${encodeURIComponent(lang)}/preview?data=${encodePreviewPayload(data)}`;
+      if (!res.ok) throw new Error("generation request failed");
+      const candidate = (await res.json()) as unknown;
+      if (
+        !selected ||
+        !isDocumentData(candidate) ||
+        !validateDocumentData(selected, candidate).valid
+      ) {
+        throw new Error("invalid generated document");
+      }
+      const draftId = replaceCurrentDraft(candidate);
+      const previewHref = `/${encodeURIComponent(lang)}/preview?draft=${encodeURIComponent(draftId)}`;
       flushSync(() => setResult(previewHref));
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       resultRef.current?.scrollIntoView({
@@ -468,8 +454,12 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
         block: "center",
       });
       resultLinkRef.current?.focus({ preventScroll: true });
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "한지 위에 옮기지 못했습니다. 다시 시도해 주세요.");
+    } catch (caught) {
+      setError(
+        caught instanceof DraftStorageError
+          ? caught.userMessage
+          : "한지 위에 옮기지 못했습니다. 다시 시도해 주세요.",
+      );
     } finally {
       setGenerating(false);
     }

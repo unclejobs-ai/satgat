@@ -19,11 +19,11 @@ async function readJsonBody(req: NextRequest): Promise<unknown> {
 export async function POST(req: NextRequest) {
   try {
     if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      console.error("Generate unavailable:", { reason: "missing configuration" });
       return NextResponse.json(
         {
-          error: "GOOGLE_GENERATIVE_AI_API_KEY missing",
-          message:
-            "AI 키가 설정되지 않았습니다. 프로젝트 루트에 .env.local을 만들고 GOOGLE_GENERATIVE_AI_API_KEY=<키>를 추가한 뒤 dev 서버를 다시 시작해 주세요.",
+          error: "문서 생성 서비스를 사용할 수 없습니다.",
+          message: "잠시 뒤 다시 시도해 주세요.",
         },
         { status: 503 }
       );
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     if (body === undefined) {
       return NextResponse.json(
         {
-          error: "Invalid JSON body",
+          error: "요청을 처리할 수 없습니다.",
           message: "요청 형식이 올바르지 않습니다. 다시 시도해 주세요.",
         },
         { status: 400 }
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json(
         {
-          error: "Invalid generation request",
+          error: "요청을 처리할 수 없습니다.",
           message: "종이와 원고를 조금 더 분명히 적어 주세요.",
         },
         { status: 400 }
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     if (!template) {
       return NextResponse.json(
         {
-          error: `Template not found: ${templateId}`,
+          error: "문서 형식을 찾을 수 없습니다.",
           message: "지원하지 않는 문서 형식입니다. 다른 종이를 골라 주세요.",
         },
         { status: 404 }
@@ -67,11 +67,13 @@ export async function POST(req: NextRequest) {
     const data = await generateDocumentData(template, prompt);
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Generate error:", error);
+    console.error("Generate error:", {
+      kind: error instanceof Error ? "error" : "unknown",
+    });
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Generation failed",
-        message: "문서 생성 중 문제가 생겼습니다. 잠시 뒤 다시 시도해 주세요.",
+        error: "문서를 생성하지 못했습니다.",
+        message: "잠시 뒤 다시 시도해 주세요.",
       },
       { status: 500 }
     );
