@@ -1,13 +1,13 @@
 import { test, expect } from 'bun:test';
 import { generateDocumentData, type SlotGenerator } from '@/lib/generation/document-generator';
 import { getTemplate } from '@/lib/templates/registry';
-import type { SatgatTemplate } from '@/lib/templates/types';
+import type { TemplateCatalogEntry } from '@/lib/templates/types';
 
 const resume = getTemplate('resume')!;
 const brochure = getTemplate('product-brochure')!;
 
 /** Fill every required slot with a schema-valid sample value for the given template. */
-function validSlots(template: SatgatTemplate): Record<string, unknown> {
+function validSlots(template: TemplateCatalogEntry): Record<string, unknown> {
   const slots: Record<string, unknown> = {};
   for (const slot of template.slots) {
     if (!slot.required) continue;

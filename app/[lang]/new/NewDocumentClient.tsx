@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SatgatVisual } from "@/components/diagrams";
 import type { SatgatVisualSlot } from "@/lib/engine/slot-visual";
-import { listTemplates, getTemplate, TEMPLATE_SEAL, TEMPLATE_VOICE } from "@/lib/templates/registry";
+import { getPageSpec, listTemplates, getTemplate } from "@/lib/templates/registry";
 
 const PROMPT_MIN_LENGTH = 10;
 const PROMPT_MAX_LENGTH = 8000;
@@ -352,81 +352,6 @@ function TemplatePreview({ id }: { id: string }) {
   }
 }
 
-const TEMPLATE_PROMPTS: Record<string, string[]> = {
-  resume: [
-    "김수민, 1992년생. 서울 기반 프로덕트 디자이너. 최근 3년은 B2B SaaS 온보딩 전환율을 개선했고, 숫자로 보이는 성과와 협업 방식을 강조해 주세요.",
-    "이직용 이력서입니다. 커리어 전환 이유, 대표 프로젝트 3개, 사용 도구, 수상 이력, 포트폴리오 링크를 품격 있게 정리해 주세요.",
-  ],
-  "self-intro": [
-    "지원 회사는 한옥 스테이 플랫폼입니다. 저는 고객 경험과 운영 자동화 사이를 잇는 사람이고, 실패를 개선한 사례를 진솔하게 담고 싶습니다.",
-    "문항은 성장 과정, 지원 동기, 직무 역량, 입사 후 계획입니다. 과장 없이 단단한 문장으로 자기소개서를 만들어 주세요.",
-  ],
-  "business-card": [
-    "브랜드명은 달빛서가, 대표는 윤하진입니다. 한옥 북스테이와 큐레이션 서점을 운영합니다. 연락처, 직함, 짧은 표어를 넣어 주세요.",
-    "크리에이티브 디렉터 명함입니다. 이름, 한자 이름, 이메일, 웹사이트, 인스타그램, 차분한 브랜드 문장을 포함해 주세요.",
-  ],
-  "brand-onepager": [
-    "브랜드명은 향유원입니다. 전통 향과 현대적인 웰니스 루틴을 연결하는 브랜드이며, 핵심 문장, 대표 제품 3개, 포지셔닝 사분면 도표, 웹사이트와 연락처를 담아 주세요.",
-    "AI 기반 상세페이지 제작 브랜드입니다. 빠른 제작, 한국형 문장 톤, 검수 프로세스, 경쟁 포지션 도표, 상담 CTA를 한 장짜리 소개서처럼 정리해 주세요.",
-  ],
-  "product-brochure": [
-    "제품명은 다담 노트입니다. 한지 질감의 프리미엄 기록 노트이며, 제품 개요, 주요 특징, 특징 비교 막대 차트, 스펙, 사용 장면, 구매 문의를 담아 주세요.",
-    "전통 차 선물 세트 소개서입니다. 구성품, 맛의 특징, 구성비 도넛 차트, 포장 방식, 인증 정보, 기업 선물 문의 문구를 품격 있게 정리해 주세요.",
-  ],
-  "company-profile": [
-    "회사명은 북촌랩스입니다. 로컬 문화 공간의 예약·운영을 돕는 SaaS 회사이며, 비전, 미션, 핵심 가치, 연혁 타임라인 도표, 팀, 연락처를 포함해 주세요.",
-    "사회적 기업 온기공방 소개서입니다. 시니어 장인의 수공예품을 유통하며, 설립 배경, 핵심 가치, 주요 성과 추이 차트, 팀, 협업 문의를 정리해 주세요.",
-  ],
-  "investor-deck": [
-    "회사명은 한지AI입니다. 한국형 브랜드 문서를 자동 생성하는 B2B SaaS이고, 문제, 해결안, 시장 규모, 초기 성과 추이 선 차트, 투자 요청을 IR 톤으로 구성해 주세요.",
-    "로컬 커머스 SaaS 투자 제안입니다. 소상공인의 상품 페이지 제작 병목을 해결하며, 월 반복 매출 막대 차트, 고객 사례, 팀 강점, 시드 투자 요청을 담아 주세요.",
-  ],
-  "brand-storybook": [
-    "한옥 숙박 브랜드 달빛서가의 스토리북입니다. 탄생 배경, 브랜드 가치, 공간의 장면, 고객에게 남기고 싶은 감정을 서사적으로 정리해 주세요.",
-    "로컬 식품 브랜드 고요장의 브랜드 이야기입니다. 발효 장인의 기원, 핵심 가치, 톤앤매너, 주요 연혁을 따뜻하지만 절제된 문장으로 써 주세요.",
-  ],
-  invitation: [
-    "지수와 민호의 결혼식입니다. 2026년 10월 18일 일요일 오후 2시, 서울 정동길 예식장. 부모님 성함과 감사 인사를 단정하게 담아 주세요.",
-    "전통 혼례 분위기의 초대장입니다. 두 사람의 시작, 장소 안내, 교통 안내, 짧은 초대 문구를 포함해 주세요.",
-  ],
-  "new-year-card": [
-    "고객사에 보낼 2027년 신년 인사입니다. 지난 협업에 대한 감사와 새해의 평안을 담되 지나치게 영업적으로 보이지 않게 해 주세요.",
-    "가족 어른께 드리는 연하장입니다. 건강, 평안, 오래 뵙고 싶은 마음을 따뜻하지만 격식 있게 적어 주세요.",
-  ],
-  proposal: [
-    "한지 리테일 브랜드의 온라인 상세페이지 자동 생성 도입안입니다. 문제, 목표, 일정, 기대 효과 폭포 차트, 예산을 임원 보고용으로 정리해 주세요.",
-    "지역 문화재단 제안서입니다. 전시 홍보물을 AI로 자동 제작하는 사업이며, 운영 방식과 검수 체계 흐름도를 설득력 있게 담아 주세요.",
-  ],
-  newsletter: [
-    "달빛서가 5월 뉴스레터입니다. 이번 달 큐레이션, 작가와의 밤, 신규 입고 도서, 호별 구성 도넛 차트, 멤버십 소식을 편지처럼 구성해 주세요.",
-    "사내 리더십 뉴스레터입니다. 지난달 성과 막대 차트, 다음 달 집중 과제, 구성원 인터뷰, 짧은 에디터 노트를 포함해 주세요.",
-  ],
-  portfolio: [
-    "브랜드 디자이너 이상윤의 포트폴리오입니다. 대표 작업 4개, 역할, 과정, 성과, 연락처를 전시 도록처럼 구성해 주세요.",
-    "건축 사진가 포트폴리오입니다. 작업 철학, 프로젝트 목록, 클라이언트, 전시 이력, 문의 정보를 고급스럽게 정리해 주세요.",
-  ],
-  report: [
-    "2026년 1분기 운영 보고서입니다. 사업 현황, 주요 추진 내용, 성과 지표, 이슈, 향후 계획을 임원 보고 형식으로 정리해 주세요.",
-    "프로젝트 완료 보고서입니다. 배경, 추진 과정, 결과물, 문제와 대응, 다음 단계를 명확하고 간결하게 기술해 주세요.",
-  ],
-};
-
-const TEMPLATE_CHECKLIST: Record<string, string[]> = {
-  resume: ["이름과 역할", "최근 경력", "정량 성과", "기술·도구"],
-  "self-intro": ["지원 맥락", "문항 구조", "대표 사례", "입사 후 계획"],
-  "business-card": ["이름·직함", "브랜드 문장", "연락처", "웹·SNS"],
-  "brand-onepager": ["브랜드명", "핵심 문장", "제품·서비스", "포지셔닝 도표", "연락처"],
-  "product-brochure": ["제품명", "제품 개요", "주요 특징", "비교 차트", "스펙·문의"],
-  "company-profile": ["회사명", "비전·미션", "핵심 가치", "연혁 도표", "팀·연락처"],
-  "investor-deck": ["문제", "해결안", "성과 차트", "투자 요청"],
-  "brand-storybook": ["탄생 배경", "핵심 가치", "톤앤매너", "주요 장면"],
-  invitation: ["두 사람 이름", "날짜·시간", "장소", "초대 문구"],
-  "new-year-card": ["받는 대상", "새해 연도", "감사 맥락", "인사 톤"],
-  proposal: ["문제 정의", "해결안", "일정·예산", "효과 도표"],
-  newsletter: ["발행 주제", "섹션 목록", "요약 차트", "마무리 문장"],
-  portfolio: ["작업자 소개", "대표 작업", "역할·성과", "연락처"],
-  report: ["보고 제목·기간", "개요·요약", "추진 내용", "성과 지표", "향후 계획"],
-};
 
 function getPromptQuality(prompt: string) {
   const trimmed = prompt.trim();
@@ -492,11 +417,10 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
   const resultRef = React.useRef<HTMLElement | null>(null);
   const resultLinkRef = React.useRef<HTMLAnchorElement | null>(null);
 
-  const selected = selectedTemplate ? getTemplate(selectedTemplate) : null;
-  const voice = selectedTemplate ? TEMPLATE_VOICE[selectedTemplate] : undefined;
-  const seal = selectedTemplate ? TEMPLATE_SEAL[selectedTemplate] : undefined;
-  const suggestions = selectedTemplate ? TEMPLATE_PROMPTS[selectedTemplate] ?? [] : [];
-  const checklist = selectedTemplate ? TEMPLATE_CHECKLIST[selectedTemplate] ?? [] : [];
+  const selected = selectedTemplate ? getTemplate(selectedTemplate) : undefined;
+  const suggestions = selected?.promptSeeds ?? [];
+  const checklist = selected?.factChecklist ?? [];
+  const pageSpecLabel = selected ? getPageSpec(selected.pageSpec).label : null;
   const promptQuality = React.useMemo(() => getPromptQuality(prompt), [prompt]);
   const selectedIndex = selectedTemplate ? templates.findIndex((tmpl) => tmpl.id === selectedTemplate) : -1;
   const localeLabel = lang === "ko" ? "한국어" : lang.toUpperCase();
@@ -579,7 +503,6 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
         <aside className="hero-specimen" aria-hidden="true">
           {heroSpecimenIds.map((id, index) => {
             const specimen = getTemplate(id);
-            const specimenSeal = TEMPLATE_SEAL[id] ?? { glyph: '紙', variant: 'ink' as const };
             if (!specimen) return null;
 
             return (
@@ -587,7 +510,6 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
                 <span className="hero-specimen-index">0{index + 1}</span>
                 <span className="hero-specimen-thumb">
                   <TemplatePreview id={id} />
-                  <span className={`hero-specimen-seal v-${specimenSeal.variant}`}>{specimenSeal.glyph}</span>
                 </span>
                 <span className="hero-specimen-name">{specimen.name}</span>
               </span>
@@ -699,13 +621,12 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
 
             <aside className="brief-panel" aria-label="선택한 문서 요약">
               <div className="brief-top">
-                {seal && <span className={`brief-seal v-${seal.variant}`}>{seal.glyph}</span>}
                 <div>
                   <p className="brief-kicker">
                     {selectedIndex + 1} / {templates.length}
                   </p>
                   <h3>{selected.name}</h3>
-                  {voice && <p>{voice}</p>}
+                  <p>{selected.category} · {pageSpecLabel}</p>
                 </div>
               </div>
               <div className={`quality quality-${promptQuality.tone}`}>
@@ -739,15 +660,14 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
           {selected && (
             <p className="step-note">
               현재 선택 — <strong>{selected.name}</strong>
-              {voice && <span className="voice"> · {voice}</span>}
+              <span className="voice"> · {selected.category} · {pageSpecLabel}</span>
             </p>
           )}
         </div>
 
         <div className="paper-grid">
           {templates.map((tmpl) => {
-            const seal = TEMPLATE_SEAL[tmpl.id] ?? { glyph: '紙', variant: 'ink' as const };
-            const v = TEMPLATE_VOICE[tmpl.id] ?? '';
+            const templatePageSpecLabel = getPageSpec(tmpl.pageSpec).label;
             const active = selectedTemplate === tmpl.id;
             return (
               <button
@@ -758,12 +678,11 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
               >
                 <span className="paper-thumb" aria-hidden>
                   <TemplatePreview id={tmpl.id} />
-                  <span className={`paper-seal v-${seal.variant}`}>{seal.glyph}</span>
                 </span>
                 <span className="paper-meta">
                   <span className="paper-name">{tmpl.name}</span>
-                  <span className="paper-voice">{v}</span>
-                  <span className="paper-format">{tmpl.format}</span>
+                  <span className="paper-voice">{tmpl.category}</span>
+                  <span className="paper-format">{templatePageSpecLabel}</span>
                 </span>
               </button>
             );

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { generateObject } from 'ai';
 import { google } from '@ai-sdk/google';
-import type { SatgatTemplate, SatgatDocumentData, TemplateSlot } from '@/lib/templates/types';
+import type { TemplateCatalogEntry, SatgatDocumentData, TemplateSlot } from '@/lib/templates/types';
 import type { BrandProfile } from '@/lib/design-system/brand-resolver';
 import { buildGenerationPrompt } from '@/lib/bridge/prompt-builder';
 import { buildSlotsSchema } from '@/lib/generation/slot-schema';
@@ -148,7 +148,7 @@ const GENERATION_SYSTEM =
  * 테스트는 이 함수를 주입해 모델 없이 검증한다.
  */
 export type SlotGenerator = (args: {
-  template: SatgatTemplate;
+  template: TemplateCatalogEntry;
   system: string;
   prompt: string;
   schema: z.ZodTypeAny;
@@ -166,7 +166,7 @@ const defaultSlotGenerator: SlotGenerator = async ({ system, prompt, schema }) =
 };
 
 function normalizeSlots(
-  template: SatgatTemplate,
+  template: TemplateCatalogEntry,
   rawSlots: Record<string, unknown>,
   userPrompt: string,
   withFallback: boolean
@@ -203,7 +203,7 @@ export interface GenerateOptions {
  * 스키마 위반/필수 누락 시 bounded retry(기본 2회) 후 fallback 채움으로 떨어진다.
  */
 export async function generateDocumentData(
-  template: SatgatTemplate,
+  template: TemplateCatalogEntry,
   userPrompt: string,
   brandProfile?: BrandProfile | null,
   options?: GenerateOptions

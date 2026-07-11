@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { SatgatTemplate, SatgatDocumentData } from '@/lib/templates/types';
+import type { TemplateCatalogEntry, SatgatDocumentData } from '@/lib/templates/types';
 
 // 템플릿별 고유 렌더러 (lazy import로 번들 사이즈 최적화)
 const renderers: Record<string, React.ComponentType<{ data: SatgatDocumentData }>> = {
@@ -23,7 +23,7 @@ const renderers: Record<string, React.ComponentType<{ data: SatgatDocumentData }
 };
 
 interface SatgatTemplateRendererProps {
-  template: SatgatTemplate;
+  template: TemplateCatalogEntry;
   data: SatgatDocumentData;
 }
 

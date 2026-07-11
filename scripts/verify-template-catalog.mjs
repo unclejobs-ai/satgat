@@ -9,7 +9,14 @@ const registryPath = path.join(root, 'src/lib/templates/registry.ts');
 const rendererPath = path.join(root, 'src/lib/engine/renderer.tsx');
 const newClientPath = path.join(root, 'app/[lang]/new/NewDocumentClient.tsx');
 const landingPath = path.join(root, 'public/satgat/satgat-ko.html');
-const validFormats = new Set(['a4', 'a4-landscape', 'slide-16x9']);
+const PAGE_SPEC_IDS = new Set([
+  'a4Portrait',
+  'a4Landscape',
+  'slide16x9',
+  'businessCard8Up',
+  'postcardPortrait',
+]);
+const TEMPLATE_CATEGORIES = new Set(['personal', 'business', 'occasion']);
 const validSlotTypes = new Set(['text', 'textarea', 'image', 'list', 'table', 'visual']);
 const validSectionTypes = new Set([
   'hero',
@@ -112,8 +119,8 @@ function parseTemplateDefinition(filePath) {
     }
   }
 
-  const sections = [];
-  const sectionArray = fields.get('sections');
+  const contentOutline = [];
+  const sectionArray = fields.get('contentOutline');
   if (sectionArray && ts.isArrayLiteralExpression(sectionArray)) {
     for (const sectionNode of sectionArray.elements) {
       if (!ts.isObjectLiteralExpression(sectionNode)) continue;
@@ -123,10 +130,20 @@ function parseTemplateDefinition(filePath) {
           sectionFields.set(propNameText(property.name), property.initializer);
         }
       }
-      sections.push({
+      contentOutline.push({
         type: stringLiteralValue(sectionFields.get('type')),
         slots: stringArrayValues(sectionFields.get('slots')),
       });
+    }
+  }
+
+  const specimenFields = new Map();
+  const specimenObject = fields.get('specimen');
+  if (specimenObject && ts.isObjectLiteralExpression(specimenObject)) {
+    for (const property of specimenObject.properties) {
+      if (ts.isPropertyAssignment(property)) {
+        specimenFields.set(propNameText(property.name), property.initializer);
+      }
     }
   }
 
@@ -135,9 +152,17 @@ function parseTemplateDefinition(filePath) {
     file: path.relative(root, filePath),
     id: stringLiteralValue(fields.get('id')),
     name: stringLiteralValue(fields.get('name')),
-    format: stringLiteralValue(fields.get('format')),
+    category: stringLiteralValue(fields.get('category')),
+    pageSpec: stringLiteralValue(fields.get('pageSpec')),
     slots,
-    sections,
+    contentOutline,
+    promptSeeds: stringArrayValues(fields.get('promptSeeds')),
+    factChecklist: stringArrayValues(fields.get('factChecklist')),
+    specimen: {
+      title: stringLiteralValue(specimenFields.get('title')),
+      alt: stringLiteralValue(specimenFields.get('alt')),
+      prompt: stringLiteralValue(specimenFields.get('prompt')),
+    },
   };
 }
 
@@ -163,15 +188,21 @@ function parseRegistryTemplates(definitionsByExport) {
   const templatesObject = findObjectLiteral(sourceFile, 'templates');
   if (!templatesObject) return [];
 
-  return templatesObject.properties
-    .map((property) => {
-      if (!ts.isPropertyAssignment(property) || !ts.isComputedPropertyName(property.name)) return undefined;
-      const expression = property.name.expression;
-      if (!ts.isPropertyAccessExpression(expression) || expression.name.text !== 'id') return undefined;
-      const definition = importToDefinition.get(expression.expression.getText(sourceFile));
-      return definition?.id;
-    })
-    .filter(Boolean);
+  return templatesObject.properties.map((property) => {
+    if (ts.isShorthandPropertyAssignment(property)) {
+      return {
+        key: property.name.text,
+        definition: importToDefinition.get(property.name.text),
+      };
+    }
+    if (!ts.isPropertyAssignment(property) || !ts.isIdentifier(property.initializer)) {
+      return { key: ts.isPropertyAssignment(property) ? propNameText(property.name) : undefined };
+    }
+    return {
+      key: propNameText(property.name),
+      definition: importToDefinition.get(property.initializer.text),
+    };
+  });
 }
 
 function parseRendererMap() {
@@ -368,15 +399,11 @@ const definitionFiles = fs
 const definitions = definitionFiles.map(parseTemplateDefinition);
 const definitionsByExport = new Map(definitions.map((definition) => [definition.exportName, definition]));
 const definitionIds = definitions.map((definition) => definition.id).filter(Boolean).sort();
-const registryIds = parseRegistryTemplates(definitionsByExport);
+const registryEntries = parseRegistryTemplates(definitionsByExport);
+const registryIds = registryEntries.map((entry) => entry.definition?.id).filter(Boolean);
 const registryIdsSorted = [...registryIds].sort();
-const registrySource = readSource(registryPath);
 const renderer = parseRendererMap();
 const rendererIds = [...renderer.keys].sort();
-const promptIds = objectKeys(readSource(newClientPath), 'TEMPLATE_PROMPTS').sort();
-const checklistIds = objectKeys(readSource(newClientPath), 'TEMPLATE_CHECKLIST').sort();
-const sealIds = objectKeys(registrySource, 'TEMPLATE_SEAL').sort();
-const voiceIds = objectKeys(registrySource, 'TEMPLATE_VOICE').sort();
 const previewIds = parseTemplatePreviewCases().sort();
 const landingHtml = fs.readFileSync(landingPath, 'utf8');
 const landingIds = [
@@ -385,14 +412,28 @@ const landingIds = [
 
 const errors = [];
 
+for (const entry of registryEntries) {
+  if (!entry.key) {
+    errors.push('registry templates contains an unsupported property');
+  } else if (!entry.definition) {
+    errors.push(`registry key "${entry.key}" does not reference an imported template definition`);
+  } else if (entry.key !== entry.definition.id) {
+    errors.push(
+      `registry key "${entry.key}" references definition "${entry.definition.id}"`,
+    );
+  }
+}
 for (const definition of definitions) {
   const slotIds = definition.slots.map((slot) => slot.id).filter(Boolean);
   const duplicateSlotIds = slotIds.filter((id, index) => slotIds.indexOf(id) !== index);
 
   if (!definition.id) errors.push(`${definition.file} has no literal id`);
   if (!definition.name) errors.push(`${definition.file} has no literal name`);
-  if (!validFormats.has(definition.format)) {
-    errors.push(`${definition.file} uses invalid format "${definition.format}"`);
+  if (!TEMPLATE_CATEGORIES.has(definition.category)) {
+    errors.push(`${definition.file} uses invalid category "${definition.category}"`);
+  }
+  if (!PAGE_SPEC_IDS.has(definition.pageSpec)) {
+    errors.push(`${definition.file} uses invalid page spec "${definition.pageSpec}"`);
   }
   if (definition.slots.length === 0) errors.push(`${definition.file} has no slots`);
   if (definition.slots.some((slot) => !slot.id)) errors.push(`${definition.file} has a slot without literal id`);
@@ -402,8 +443,15 @@ for (const definition of definitions) {
   }
   if (duplicateSlotIds.length) errors.push(`${definition.file} has duplicate slot id(s): ${[...new Set(duplicateSlotIds)].join(', ')}`);
   if (!definition.slots.some((slot) => slot.required)) errors.push(`${definition.file} has no required slots`);
+  if (definition.promptSeeds.length === 0) errors.push(`${definition.file} has no prompt seeds`);
+  if (definition.factChecklist.length === 0) errors.push(`${definition.file} has no fact checklist`);
+  for (const field of ['title', 'alt', 'prompt']) {
+    if (!definition.specimen[field]?.trim()) {
+      errors.push(`${definition.file} has no specimen ${field}`);
+    }
+  }
 
-  for (const section of definition.sections) {
+  for (const section of definition.contentOutline) {
     if (!validSectionTypes.has(section.type)) {
       errors.push(`${definition.file} has invalid section type "${section.type}"`);
     }
@@ -416,10 +464,6 @@ for (const definition of definitions) {
 
 assertSameSet('registry templates', definitionIds, registryIdsSorted, errors);
 assertSameSet('renderer map', registryIdsSorted, rendererIds, errors);
-assertSameSet('template seals', registryIdsSorted, sealIds, errors);
-assertSameSet('template voices', registryIdsSorted, voiceIds, errors);
-assertSameSet('new page prompt seeds', registryIdsSorted, promptIds, errors);
-assertSameSet('new page checklist', registryIdsSorted, checklistIds, errors);
 assertSameSet('new page mini previews', registryIdsSorted, previewIds, errors);
 assertSameSet('Korean landing links', registryIdsSorted, [...new Set(landingIds)].sort(), errors);
 assertSameSet('preview fixtures', registryIdsSorted, Object.keys(previewFixtures).sort(), errors);
@@ -478,6 +522,23 @@ for (const [id, importPath] of renderer.imports) {
   const missingRendererMentions = slotIds.filter((slotId) => !sourceContainsStringLiteral(rendererFile, slotId));
   if (missingRendererMentions.length) {
     errors.push(`renderer "${id}" does not mention declared slot(s): ${missingRendererMentions.join(', ')}`);
+  }
+
+  const outlineSlotIds = new Set(
+    definition.contentOutline.flatMap((section) => section.slots),
+  );
+  const missingRequiredOutlineSlots = definition.slots
+    .filter(
+      (slot) =>
+        slot.required &&
+        sourceContainsStringLiteral(rendererFile, slot.id) &&
+        !outlineSlotIds.has(slot.id),
+    )
+    .map((slot) => slot.id);
+  if (missingRequiredOutlineSlots.length) {
+    errors.push(
+      `template "${id}" contentOutline omits required rendered slot(s): ${missingRequiredOutlineSlots.join(', ')}`,
+    );
   }
 }
 

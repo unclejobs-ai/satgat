@@ -17,20 +17,17 @@ import {
 } from '@/lib/design-system/constraint';
 
 /**
- * 청첩장(請牒狀) — 두 사람의 시작
- * A5 비율 · 신랑신부 한자명 + 날짜 + 약도 + RSVP
+ * 청첩장 — 두 사람의 시작
+ * 엽서 · 날짜 + 장소 + RSVP
  */
 
 export default function InvitationRenderer({ data }: { data: SatgatDocumentData }) {
   const s = data.slots;
   const groomName = String(s['groom_name'] ?? '신랑');
-  const groomHanja = String(s['groom_hanja'] ?? '');
   const groomParents = String(s['groom_parents'] ?? '');
   const brideName = String(s['bride_name'] ?? '신부');
-  const brideHanja = String(s['bride_hanja'] ?? '');
   const brideParents = String(s['bride_parents'] ?? '');
   const date = String(s['date'] ?? '');
-  const dateHanja = String(s['date_hanja'] ?? '');
   const venue = String(s['venue'] ?? '');
   const message = String(s['message'] ?? '');
   const rsvpUrl = String(s['rsvp_url'] ?? '');
@@ -127,13 +124,6 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
               {brideName}
             </span>
           </div>
-          {(groomHanja || brideHanja) && (
-            <div style={{ fontFamily: FONT_MYEONGJO, fontSize: 13, color: INK_MUTED, letterSpacing: '0.08em', marginBottom: 28 }}>
-              {groomHanja && <span>{groomHanja}</span>}
-              {groomHanja && brideHanja && <span> · </span>}
-              {brideHanja && <span>{brideHanja}</span>}
-            </div>
-          )}
 
           {/* Parents */}
           {(groomParents || brideParents) && (
@@ -170,19 +160,6 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
               }}
             >
               {date}
-            </p>
-          )}
-          {dateHanja && (
-            <p
-              style={{
-                fontFamily: FONT_MYEONGJO,
-                fontSize: 12,
-                color: INK_MUTED,
-                letterSpacing: '0.12em',
-                margin: '0 0 32px',
-              }}
-            >
-              {dateHanja}
             </p>
           )}
 

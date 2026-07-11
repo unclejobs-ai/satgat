@@ -27,7 +27,6 @@ import {
 function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: number }) {
   const s = data.slots;
   const name = String(s['name'] ?? '이름');
-  const hanjaName = String(s['hanja_name'] ?? '');
   const title = String(s['title'] ?? '');
   const company = String(s['company'] ?? '');
   const email = String(s['email'] ?? '');
@@ -79,19 +78,6 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
         >
           {name}
         </span>
-        {hanjaName && (
-          <span
-            style={{
-              fontFamily: FONT_MYEONGJO,
-              fontSize: `${2.2 * scale}mm`,
-              fontWeight: 700,
-              color: INK_MUTED,
-              letterSpacing: '0.06em',
-            }}
-          >
-            {hanjaName}
-          </span>
-        )}
       </div>
       <span
         style={{

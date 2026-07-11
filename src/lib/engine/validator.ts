@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SatgatTemplate, SatgatDocumentData } from '@/lib/templates/types';
+import type { TemplateCatalogEntry, SatgatDocumentData } from '@/lib/templates/types';
 
 const DocumentDataSchema = z.object({
   templateId: z.string(),
@@ -19,7 +19,7 @@ function isMissingRequiredSlot(value: unknown): boolean {
  * 문서 데이터가 템플릿의 slot 정의를 만족하는지 검증
  */
 export function validateDocumentData(
-  template: SatgatTemplate,
+  template: TemplateCatalogEntry,
   data: SatgatDocumentData
 ): { valid: boolean; errors: string[] } {
   const errors: string[] = [];

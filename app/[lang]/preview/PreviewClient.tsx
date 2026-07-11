@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Check, Download, Link2, Printer, RotateCcw } from "lucide-react";
 import { SatgatTemplateRenderer } from "@/lib/engine/renderer";
-import { getTemplate, TEMPLATE_SEAL, TEMPLATE_VOICE } from "@/lib/templates/registry";
+import { getPageSpec, getTemplate } from "@/lib/templates/registry";
 import type { SatgatDocumentData } from "@/lib/templates/types";
 import { SatgatPrintStyles } from "@/components/document";
 
@@ -25,11 +25,6 @@ function hasSlotValue(value: unknown): boolean {
   return true;
 }
 
-const FORMAT_LABEL: Record<string, string> = {
-  a4: "A4 세로",
-  "a4-landscape": "A4 가로",
-  "slide-16x9": "16:9 슬라이드",
-};
 
 export default function PreviewClient({ lang, preview }: PreviewClientProps) {
   const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "failed">("idle");
@@ -108,31 +103,25 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
     );
   }
 
-  const seal = TEMPLATE_SEAL[template.id];
-  const voice = TEMPLATE_VOICE[template.id];
+  const pageSpecLabel = getPageSpec(template.pageSpec).label;
   const requiredSlots = template.slots.filter((slot) => slot.required);
   const readinessSlots = requiredSlots.length > 0 ? requiredSlots : template.slots;
   const filledSlots = readinessSlots.filter((slot) => hasSlotValue(data.slots[slot.id])).length;
   const completion = Math.round((filledSlots / Math.max(readinessSlots.length, 1)) * 100);
 
   return (
-    <div className={`preview-wrap preview-format-${template.format}`}>
+    <div className={`preview-wrap preview-format-${template.pageSpec}`}>
       <SatgatPrintStyles />
 
       {/* Toolbar */}
       <div className="preview-toolbar no-print">
         <div className="meta">
-          {seal && (
-            <span className={`tb-seal v-${seal.variant}`} aria-hidden>
-              {seal.glyph}
-            </span>
-          )}
           <div>
             <p className="tb-name">{template.name}</p>
             <p className="tb-voice">
-              {voice && <span>{voice}</span>}
-              {voice && <span aria-hidden> · </span>}
-              <span>{FORMAT_LABEL[template.format] ?? template.format}</span>
+              <span>{template.category}</span>
+              <span aria-hidden> · </span>
+              <span>{pageSpecLabel}</span>
             </p>
           </div>
         </div>
@@ -197,8 +186,8 @@ function PreviewStyles() {
         color: var(--near-black, #1C1916);
         word-break: keep-all;
       }
-      .preview-format-a4-landscape,
-      .preview-format-slide-16x9 {
+      .preview-format-a4Landscape,
+      .preview-format-slide16x9 {
         max-width: 1240px;
       }
       .preview-toolbar {
@@ -218,8 +207,8 @@ function PreviewStyles() {
         border-radius: 8px;
         box-shadow: 0 18px 48px rgba(28,25,22,0.07), inset 0 1px 0 rgba(255,255,255,0.55);
       }
-      .preview-format-a4-landscape .preview-toolbar,
-      .preview-format-slide-16x9 .preview-toolbar {
+      .preview-format-a4Landscape .preview-toolbar,
+      .preview-format-slide16x9 .preview-toolbar {
         max-width: 1120px;
       }
       .preview-toolbar .meta {
@@ -503,12 +492,12 @@ function PreviewStyles() {
           --mobile-doc-padding: 48px 28px;
           --mobile-doc-font-size: 14px;
         }
-        .preview-format-a4-landscape {
+        .preview-format-a4Landscape {
           --mobile-doc-min-height: calc(var(--mobile-doc-width) * 0.707);
           --mobile-doc-padding: 30px 24px;
           --mobile-doc-font-size: 12.75px;
         }
-        .preview-format-slide-16x9 {
+        .preview-format-slide16x9 {
           --mobile-doc-min-height: calc(var(--mobile-doc-width) * 0.5625);
           --mobile-doc-padding: 28px 24px;
           --mobile-doc-font-size: 12.5px;
@@ -551,7 +540,7 @@ function PreviewStyles() {
           padding: var(--mobile-doc-padding) !important;
           font-size: var(--mobile-doc-font-size) !important;
         }
-        .preview-format-slide-16x9 .doc-stage {
+        .preview-format-slide16x9 .doc-stage {
           gap: 22px;
         }
       }

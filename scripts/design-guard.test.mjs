@@ -342,10 +342,20 @@ function testPermitHatch() {
 
 // ─── Test: density scanner — VAL-DENSITY-001/002/003/004/007/008/010/011/012 ─
 
-function runDensity(args = []) {
+function runDensity(args = [], env = {}) {
   return execFileSync('node', ['scripts/design-guard.mjs', '--check-density', ...args], {
-    cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+    cwd: root,
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
+}
+ 
+function writeSyntheticRegistry(transform) {
+  const registry = fs.readFileSync(path.join(root, 'src/lib/templates/registry.ts'), 'utf8');
+  const syntheticPath = path.join(tmp, 'registry-density.ts');
+  fs.writeFileSync(syntheticPath, transform(registry));
+  return syntheticPath;
 }
 
 function testDensityRuns() {
@@ -364,16 +374,11 @@ function testDensityRuns() {
 }
 
 function testDensityAll14() {
-  console.log('\n[VAL-DENSITY-002] per-page density for all 14 templates');
+  console.log('\n[VAL-DENSITY-002] per-page density for all 14 registry templates');
   const stdout = runDensity();
-  const ids = [
-    'resume', 'self-intro', 'business-card', 'brand-onepager', 'product-brochure',
-    'company-profile', 'investor-deck', 'brand-storybook', 'invitation',
-    'new-year-card', 'proposal', 'newsletter', 'portfolio', 'report',
-  ];
-  for (const id of ids) {
-    assertOk(`report mentions "${id}"`, stdout.includes(`▸ ${id} `), `missing ${id}`);
-  }
+  const templateRows = stdout.split('\n').filter((line) => line.startsWith('▸ ') && !line.startsWith('▸ sparse-control:'));
+  assertOk('report contains exactly 14 registry template rows', templateRows.length === 14, `got ${templateRows.length}`);
+  assertOk('summary reports 14 templates', stdout.includes('Summary: 14 templates'), 'wrong template count');
   // investor-deck must expand to multiple pages.
   const slideLines = stdout.split('\n').filter((l) => /page \d+\/\d+/.test(l) && /S\d/.test(l));
   assertOk('investor-deck expands to ≥5 pages', slideLines.length >= 5, `got ${slideLines.length} slide rows`);
@@ -400,23 +405,94 @@ function testDensityShippingClean() {
 }
 
 function testDensityFormFactors() {
-  console.log('\n[VAL-DENSITY-007] density handles all 3 form factors');
+  console.log('\n[VAL-DENSITY-007] density preserves all five PageSpec identities');
   const stdout = runDensity();
-  assertOk('report shows a4 form factor', stdout.includes('▸ report (a4)') || stdout.includes('(a4)'));
-  assertOk('report shows a4-landscape form factor', stdout.includes('portfolio (a4-landscape)'));
-  assertOk('report shows slide-16x9 form factor', stdout.includes('investor-deck (slide-16x9)'));
-  // Extract fill % for each form factor — must be finite and not identical.
-  const reportFill = (id) => {
-    const re = new RegExp(`▸ ${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^]*?fill (\\d+\\.\\d+)%`);
-    const m2 = stdout.match(re);
-    return m2 ? parseFloat(m2[1]) : NaN;
-  };
-  const a4Fill = reportFill('report');
-  const landscapeFill = reportFill('portfolio');
-  const slideFill = reportFill('investor-deck');
-  assertOk('a4 fill is finite', Number.isFinite(a4Fill), `got ${a4Fill}`);
-  assertOk('a4-landscape fill is finite', Number.isFinite(landscapeFill), `got ${landscapeFill}`);
-  assertOk('slide-16x9 fill is finite', Number.isFinite(slideFill), `got ${slideFill}`);
+  const expectedRows = [
+    ['report', 'a4Portrait'],
+    ['brand-onepager', 'a4Landscape'],
+    ['investor-deck', 'slide16x9'],
+    ['business-card', 'businessCard8Up'],
+    ['invitation', 'postcardPortrait'],
+  ];
+  for (const [templateId, pageSpec] of expectedRows) {
+    assertOk(
+      `${templateId} uses ${pageSpec}`,
+      stdout.includes(`▸ ${templateId} (${pageSpec})`),
+      `missing exact ${pageSpec} label`,
+    );
+  }
+  assertOk('landscape does not collapse to A4 portrait', !stdout.includes('▸ brand-onepager (a4Portrait)'));
+  assertOk('slide does not collapse to A4 portrait', !stdout.includes('▸ investor-deck (a4Portrait)'));
+  assertOk('business card does not collapse to A4 portrait', !stdout.includes('▸ business-card (a4Portrait)'));
+  assertOk('postcard does not collapse to A4 portrait', !stdout.includes('▸ invitation (a4Portrait)'));
+}
+
+function testDensityReadsContentOutline() {
+  console.log('\n[VAL-DENSITY-008] density reads contentOutline slot groups');
+  const stdout = runDensity();
+  const resumeFill = stdout.match(/▸ resume \(a4Portrait\)[^]*?fill (\d+\.\d+)%/)?.[1];
+  assertOk(
+    'resume contentOutline contributes non-zero density',
+    Number.parseFloat(resumeFill ?? '0') > 0,
+    `got ${resumeFill ?? 'no fill row'}`,
+  );
+}
+
+function testDensityParsesPageSpecs() {
+  console.log('\n[VAL-DENSITY-009] density geometry is parsed from PAGE_SPECS');
+  const syntheticPath = writeSyntheticRegistry((registry) =>
+    registry.replace(
+      "canvas: { widthMm: 105, heightMm: 148 },",
+      "canvas: { widthMm: 106, heightMm: 149 },",
+    ),
+  );
+  const stdout = runDensity([], { DESIGN_GUARD_REGISTRY: syntheticPath });
+  assertOk(
+    'postcard canvas follows synthetic PAGE_SPECS geometry',
+    stdout.includes('postcardPortrait 106×149mm'),
+    'synthetic postcard dimensions were not reported',
+  );
+  assertOk(
+    'business-card imposition is reported from PAGE_SPECS',
+    stdout.includes('businessCard8Up 210×297mm (2×4, 90×55mm faces)'),
+    'business-card imposition was not reported',
+  );
+}
+
+function testDensityPhysicalBounds() {
+  console.log('\n[VAL-DENSITY-011] postcard and business-card synthetic allowances stay physically bounded');
+  const syntheticPath = writeSyntheticRegistry((registry) =>
+    registry
+      .replace(
+        'imposition: { columns: 2, rows: 4, cardWidthMm: 90, cardHeightMm: 55 }',
+        'imposition: { columns: 2, rows: 4, cardWidthMm: 90, cardHeightMm: 12 }',
+      )
+      .replace(
+        "canvas: { widthMm: 105, heightMm: 148 },",
+        "canvas: { widthMm: 105, heightMm: 12 },",
+      ),
+  );
+  const stdout = runDensity([], { DESIGN_GUARD_REGISTRY: syntheticPath });
+  for (const templateId of ['business-card', 'invitation', 'new-year-card']) {
+    const section = stdout.match(new RegExp(`▸ ${templateId} \\([^\\n]+\\)\\n([\\s\\S]*?)(?=\\n▸ |\\n\\n|$)`))?.[1] ?? '';
+    const fills = [...section.matchAll(/fill (\d+\.\d+)%/g)].map((match) => Number.parseFloat(match[1]));
+    assertOk(
+      `${templateId} density is capped at 100%`,
+      fills.length > 0 && fills.every((fill) => fill <= 100),
+      `got ${fills.join(', ') || 'no fill rows'}`,
+    );
+  }
+}
+
+function testPreviewSelectorsMatchPageSpecIds() {
+  console.log('\n[VAL-DENSITY-013] preview selectors match emitted PageSpec classes');
+  const preview = fs.readFileSync(path.join(root, 'app/[lang]/preview/PreviewClient.tsx'), 'utf8');
+  assertOk('a4Landscape selector uses exact PageSpec ID', preview.includes('.preview-format-a4Landscape'));
+  assertOk('slide16x9 selector uses exact PageSpec ID', preview.includes('.preview-format-slide16x9'));
+  assertOk(
+    'legacy kebab-case selectors are absent',
+    !preview.includes('.preview-format-a4-landscape') && !preview.includes('.preview-format-slide-16x9'),
+  );
 }
 
 function testDensityDeterminism() {
@@ -456,6 +532,10 @@ testDensityAll14();
 testDensitySparseControl();
 testDensityShippingClean();
 testDensityFormFactors();
+testDensityReadsContentOutline();
+testDensityParsesPageSpecs();
+testDensityPhysicalBounds();
+testPreviewSelectorsMatchPageSpecIds();
 testDensityDeterminism();
 testDensityOffline();
 

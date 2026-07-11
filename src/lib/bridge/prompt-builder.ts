@@ -1,4 +1,4 @@
-import type { SatgatTemplate, TemplateSlot } from '@/lib/templates/types';
+import type { TemplateCatalogEntry, TemplateSlot } from '@/lib/templates/types';
 import type { BrandProfile } from '@/lib/design-system/brand-resolver';
 
 /**
@@ -67,12 +67,12 @@ function sampleValueForSlot(slot: TemplateSlot): unknown {
   }
 }
 
-function buildOutputSkeleton(template: SatgatTemplate): Record<string, unknown> {
+function buildOutputSkeleton(template: TemplateCatalogEntry): Record<string, unknown> {
   return Object.fromEntries(template.slots.map((slot) => [slot.id, sampleValueForSlot(slot)]));
 }
 
 export function buildGenerationPrompt(
-  template: SatgatTemplate,
+  template: TemplateCatalogEntry,
   userPrompt: string,
   brandProfile?: BrandProfile | null
 ): string {
@@ -101,7 +101,7 @@ ${brandProfile.body ? `- 참고: ${brandProfile.body.slice(0, 200)}` : ''}
 
 [템플릿 정보]
 - 템플릿: ${template.name}
-- 형식: ${template.format}
+- 페이지 규격: ${template.pageSpec}
 - 설명: ${template.description}
 
 [필요한 데이터]

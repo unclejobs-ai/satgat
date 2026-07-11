@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SatgatTemplate, TemplateSlot } from '@/lib/templates/types';
+import type { TemplateCatalogEntry, TemplateSlot } from '@/lib/templates/types';
 
 /**
  * 삿갓 구조화 출력 스키마 빌더
@@ -78,7 +78,7 @@ export function schemaForSlot(slot: TemplateSlot): SlotSchema {
  * 템플릿 전체의 slots 객체 스키마. generateObject에 그대로 전달한다.
  * 키는 slot.id, 값은 slot 타입별 Gemini-safe 스키마.
  */
-export function buildSlotsSchema(template: SatgatTemplate): z.ZodObject<Record<string, SlotSchema>> {
+export function buildSlotsSchema(template: TemplateCatalogEntry): z.ZodObject<Record<string, SlotSchema>> {
   const shape: Record<string, SlotSchema> = {};
   for (const slot of template.slots) {
     shape[slot.id] = schemaForSlot(slot);

@@ -33,7 +33,31 @@ export interface PageSpec {
   };
 }
 
-export type DocumentFormat = 'a4' | 'a4-landscape' | 'slide-16x9';
+export const TEMPLATE_IDS = [
+  'resume',
+  'self-intro',
+  'business-card',
+  'brand-onepager',
+  'product-brochure',
+  'company-profile',
+  'investor-deck',
+  'brand-storybook',
+  'invitation',
+  'new-year-card',
+  'proposal',
+  'newsletter',
+  'portfolio',
+  'report',
+] as const;
+
+export type TemplateId = (typeof TEMPLATE_IDS)[number];
+export type TemplateCategory = 'personal' | 'business' | 'occasion';
+
+export interface SpecimenMetadata {
+  title: string;
+  alt: string;
+  prompt: string;
+}
 
 export type SlotType = 'text' | 'textarea' | 'image' | 'list' | 'table' | 'visual';
 
@@ -64,22 +88,23 @@ export interface SectionDef {
   config?: Record<string, unknown>;
 }
 
-export interface SatgatTemplate {
-  id: string;
+export interface TemplateCatalogEntry {
+  id: TemplateId;
   name: string;
   description: string;
-  format: DocumentFormat;
-  /** 사용자/AI가 채워야 할 slot 정의 */
+  category: TemplateCategory;
+  pageSpec: PageSpecId;
   slots: TemplateSlot[];
   /**
    * 문서를 구성하는 섹션 순서(메타데이터 전용).
    *
-   * 렌더러(src/components/templates/*.tsx)가 렌더의 진실 원천이다. 이 `sections`
-   * 배열은 렌더를 구동하지 않으며, 정의-일관성(verify-template-catalog.mjs)과
-   * 문서 구조 가독성을 위한 보조 메타데이터로만 쓰인다. 렌더 로직은
-   * `sections`가 아니라 각 렌더러 JSX에 직접 들어있다.
+   * 렌더러(src/components/templates/*.tsx)가 렌더의 진실 원천이다. 이 배열은
+   * 정의 일관성과 문서 구조 가독성을 위한 보조 메타데이터로만 쓰인다.
    */
-  sections: SectionDef[];
+  contentOutline: SectionDef[];
+  promptSeeds: readonly string[];
+  factChecklist: readonly string[];
+  specimen: SpecimenMetadata;
 }
 
 /**

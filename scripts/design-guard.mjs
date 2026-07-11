@@ -50,17 +50,17 @@ const root = process.cwd();
 //
 // All magic numbers are documented inline so the estimate is reproducible.
 
-// Canvas dimensions in mm, mirrored from SatgatDocument.formatMap.
-const FORMAT_DIMS_MM = {
-  a4: { w: 210, h: 297 },
-  'a4-landscape': { w: 297, h: 210 },
-  'slide-16x9': { w: 297, h: 167 },
-};
-
-// Printable area: page minus PAGE_MARGIN_X (24mm) × 2 horizontal, and
-// PAGE_MARGIN_Y (28mm) × 2 vertical. Mirrored from constraint.ts.
+// A4 printable area subtracts the margins mirrored from constraint.ts.
+// Non-A4 form factors use their physical PageSpec geometry below.
 const MARGIN_X_MM = 24;
 const MARGIN_Y_MM = 28;
+
+let parsedRegistryCatalog;
+
+function registryCatalog() {
+  if (!parsedRegistryCatalog) parsedRegistryCatalog = parseRegistryCatalog();
+  return parsedRegistryCatalog;
+}
 
 // Body typography assumed for line estimation. 15px body @ 1.72 line-height.
 // 1mm ≈ 3.78px (96dpi), so 15px ≈ 3.97mm line-box ≈ 6.8mm per line.
@@ -87,25 +87,41 @@ const DIVIDER_MM = 4;
 // This represents the visual weight a centered one-message slide carries even
 // with minimal text body. A slide with this chrome + any message is NOT sparse.
 const SLIDE_CHROME_MM = 51;
-// Card/postcard visual element height — templates that render a centered card
-// face (new-year-card postcard, invitation) carry a designed visual block that
-// fills page area independent of raw text height.
-const CARD_FACE_MM = 105;
 // Minimum content for a page that is not a stub (title + minimal body).
 const SPARSE_THRESHOLD = 0.5; // < 50% fill → SPARSE
 
-function printableHeightMm(format) {
-  const dims = FORMAT_DIMS_MM[format] ?? FORMAT_DIMS_MM.a4;
-  return dims.h - MARGIN_Y_MM * 2;
+function pageSpecGeometry(pageSpec) {
+  const spec = registryCatalog().pageSpecs.get(pageSpec);
+  if (!spec) throw new Error(`Unknown page spec "${pageSpec}"`);
+  return spec;
 }
 
-function printableWidthMm(format) {
-  const dims = FORMAT_DIMS_MM[format] ?? FORMAT_DIMS_MM.a4;
-  return dims.w - MARGIN_X_MM * 2;
+function usableDimensionsMm(pageSpec) {
+  const spec = pageSpecGeometry(pageSpec);
+  switch (pageSpec) {
+    case 'businessCard8Up':
+      if (!spec.imposition) throw new Error('businessCard8Up requires imposition geometry');
+      return { w: spec.imposition.cardWidthMm, h: spec.imposition.cardHeightMm };
+    case 'postcardPortrait':
+      return { w: spec.canvas.widthMm, h: spec.canvas.heightMm };
+    default:
+      return {
+        w: spec.canvas.widthMm - MARGIN_X_MM * 2,
+        h: spec.canvas.heightMm - MARGIN_Y_MM * 2,
+      };
+  }
+}
+
+function printableHeightMm(pageSpec) {
+  return usableDimensionsMm(pageSpec).h;
+}
+
+function printableWidthMm(pageSpec) {
+  return usableDimensionsMm(pageSpec).w;
 }
 
 /** Parse a template definition file via the TypeScript compiler AST. Returns
- *  { id, format, slots: [{id,type,required}], sections: [{type, slots:[]}] }. */
+ *  { id, pageSpec, slots: [{id,type,required}], contentOutline: [{type, slots:[]}] }. */
 function parseTemplateDef(filePath) {
   const src = fs.readFileSync(filePath, 'utf8');
   const sf = ts.createSourceFile(filePath, src, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
@@ -143,8 +159,8 @@ function parseTemplateDef(filePath) {
       });
     }
   }
-  const sections = [];
-  const secArr = fields.get('sections');
+  const contentOutline = [];
+  const secArr = fields.get('contentOutline');
   if (secArr && ts.isArrayLiteralExpression(secArr)) {
     for (const secNode of secArr.elements) {
       if (!ts.isObjectLiteralExpression(secNode)) continue;
@@ -152,15 +168,102 @@ function parseTemplateDef(filePath) {
       for (const p of secNode.properties) {
         if (ts.isPropertyAssignment(p)) sf3.set(propNameText(p.name), p.initializer);
       }
-      sections.push({ type: stringLit(sf3.get('type')), slots: strArr(sf3.get('slots')) });
+      contentOutline.push({ type: stringLit(sf3.get('type')), slots: strArr(sf3.get('slots')) });
     }
   }
   return {
     id: stringLit(fields.get('id')),
-    format: stringLit(fields.get('format')) ?? 'a4',
+    pageSpec: stringLit(fields.get('pageSpec')),
     slots,
-    sections,
+    contentOutline,
   };
+}
+function parseRegistryCatalog() {
+  const registryPath = process.env.DESIGN_GUARD_REGISTRY
+    ? path.resolve(process.env.DESIGN_GUARD_REGISTRY)
+    : path.join(root, 'src/lib/templates/registry.ts');
+  const sourceFile = ts.createSourceFile(
+    registryPath,
+    fs.readFileSync(registryPath, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+  let pageSpecsObject;
+  let templatesObject;
+
+  function visit(node) {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.initializer &&
+      ts.isObjectLiteralExpression(node.initializer)
+    ) {
+      if (node.name.text === 'PAGE_SPECS') pageSpecsObject = node.initializer;
+      if (node.name.text === 'templates') templatesObject = node.initializer;
+    }
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+  if (!pageSpecsObject) throw new Error('No PAGE_SPECS registry object found');
+  if (!templatesObject) throw new Error('No templates registry object found');
+
+  const pageSpecs = new Map();
+  for (const property of pageSpecsObject.properties) {
+    if (!ts.isPropertyAssignment(property) || !ts.isObjectLiteralExpression(property.initializer)) continue;
+    const id = propNameText(property.name);
+    const fields = objectFields(property.initializer);
+    const canvas = numericObject(fields.get('canvas'), ['widthMm', 'heightMm']);
+    const imposition = numericObject(
+      fields.get('imposition'),
+      ['columns', 'rows', 'cardWidthMm', 'cardHeightMm'],
+    );
+    if (!id || !canvas) throw new Error(`Invalid PageSpec geometry for "${id ?? 'unknown'}"`);
+    pageSpecs.set(id, { canvas, imposition });
+  }
+
+  const templateIds = templatesObject.properties
+    .map((property) => {
+      if (ts.isShorthandPropertyAssignment(property)) return property.name.text;
+      if (ts.isPropertyAssignment(property)) return propNameText(property.name);
+      return undefined;
+    })
+    .filter(Boolean);
+
+  return { pageSpecs, templateIds };
+}
+
+function objectFields(node) {
+  if (!node || !ts.isObjectLiteralExpression(node)) return new Map();
+  const fields = new Map();
+  for (const property of node.properties) {
+    if (ts.isPropertyAssignment(property)) fields.set(propNameText(property.name), property.initializer);
+  }
+  return fields;
+}
+
+function numericObject(node, keys) {
+  if (!node) return undefined;
+  const fields = objectFields(node);
+  const result = {};
+  for (const key of keys) {
+    const value = fields.get(key);
+    if (!value || !ts.isNumericLiteral(value)) return undefined;
+    result[key] = Number(value.text);
+  }
+  return result;
+}
+
+function formatPageSpecGeometry() {
+  return [...registryCatalog().pageSpecs.entries()]
+    .map(([id, spec]) => {
+      const canvas = `${id} ${spec.canvas.widthMm}×${spec.canvas.heightMm}mm`;
+      if (!spec.imposition) return canvas;
+      const { columns, rows, cardWidthMm, cardHeightMm } = spec.imposition;
+      return `${canvas} (${columns}×${rows}, ${cardWidthMm}×${cardHeightMm}mm faces)`;
+    })
+    .join(', ');
 }
 
 function propNameText(name) {
@@ -179,9 +282,9 @@ function strArr(node) {
 }
 
 /** Estimate the rendered height (mm) of a single slot's value. */
-function estimateSlotHeightMm(slotType, value, format) {
+function estimateSlotHeightMm(slotType, value, pageSpec) {
   if (value == null) return 0;
-  const pWidth = printableWidthMm(format);
+  const pWidth = printableWidthMm(pageSpec);
   const charsPerLine = Math.max(1, Math.floor(pWidth / MM_PER_GLYPH));
 
   switch (slotType) {
@@ -241,28 +344,23 @@ function estimateSlotHeightMm(slotType, value, format) {
 }
 
 /** Expand a template + fixture into one or more "pages", each with an
- *  estimated content height (mm). Most templates are single-page. investor-deck
- *  is multi-page (one SatgatDocument per slide), mirroring the renderer's
- *  conditional emission. Returns [{ label, contentHeightMm, format }]. */
-function expandPages(templateId, templateDef, fixture, format) {
+ *  estimated content height (mm). slide16x9 is multi-page, mirroring the
+ *  renderer's conditional slide emission. Returns page density inputs. */
+function expandPages(templateDef, fixture, pageSpec) {
   const s = fixture.slots ?? fixture;
 
-  // investor-deck: expand into slides (mirrors InvestorDeck.tsx).
-  if (templateId === 'investor-deck') {
-    return expandInvestorDeckSlides(s, format);
+  if (pageSpec === 'slide16x9') {
+    return expandInvestorDeckSlides(s, pageSpec);
   }
 
-  // Single-page templates: sum all section heights.
-  let contentHeight = 0;
+  // Card and postcard layouts have a designed face spanning their physical
+  // usable height. Derive that allowance from PageSpec rather than a fixed size.
+  let contentHeight =
+    pageSpec === 'businessCard8Up' || pageSpec === 'postcardPortrait'
+      ? usableDimensionsMm(pageSpec).h
+      : 0;
   let sectionCount = 0;
-  // Templates that render a centered card/postcard face carry a designed visual
-  // block (the card itself fills page area). Add its height so the estimate
-  // reflects the visual layout, not just raw text height.
-  const cardTemplates = new Set(['new-year-card', 'invitation', 'business-card']);
-  if (cardTemplates.has(templateId)) {
-    contentHeight += CARD_FACE_MM;
-  }
-  for (const section of templateDef.sections) {
+  for (const section of templateDef.contentOutline) {
     if (section.type === 'divider') {
       contentHeight += DIVIDER_MM;
       sectionCount++;
@@ -273,7 +371,7 @@ function expandPages(templateId, templateDef, fixture, format) {
       const slotDef = templateDef.slots.find((sl) => sl.id === slotId);
       if (!slotDef) continue;
       const val = s[slotId];
-      const h = estimateSlotHeightMm(slotDef.type, val, format);
+      const h = estimateSlotHeightMm(slotDef.type, val, pageSpec);
       if (h > 0) {
         contentHeight += h;
         sectionHasContent = true;
@@ -287,12 +385,12 @@ function expandPages(templateId, templateDef, fixture, format) {
   }
   // Inter-section gaps.
   if (sectionCount > 1) contentHeight += (sectionCount - 1) * SECTION_GAP_MM;
-  return [{ label: 'p1', contentHeightMm: contentHeight, format }];
+  return [{ label: 'p1', contentHeightMm: contentHeight, pageSpec }];
 }
 
 /** Mirror InvestorDeck.tsx slide structure. Each slide is one SatgatDocument.
  *  Slides are conditionally emitted based on which slots are populated. */
-function expandInvestorDeckSlides(s, format) {
+function expandInvestorDeckSlides(s, pageSpec) {
   const slides = [];
   const problem = String(s.problem ?? '').trim();
   const solution = String(s.solution ?? '').trim();
@@ -306,28 +404,28 @@ function expandInvestorDeckSlides(s, format) {
   // S1: Cover — dense grid (company + deck_title + problem + solution + market + traction + model + ask).
   // This slide packs a lot, so estimate generously.
   let s1 = HEADING_H1_MM + SECTION_GAP_MM;
-  if (problem) s1 += estimateSlotHeightMm('textarea', problem, format);
-  if (solution) s1 += estimateSlotHeightMm('textarea', solution, format);
+  if (problem) s1 += estimateSlotHeightMm('textarea', problem, pageSpec);
+  if (solution) s1 += estimateSlotHeightMm('textarea', solution, pageSpec);
   if (marketSize) s1 += HEADING_H2_MM;
   if (traction.length) s1 += LIST_ITEM_MM * Math.min(traction.length, 2);
-  if (businessModel) s1 += estimateSlotHeightMm('textarea', businessModel, format) * 0.6;
+  if (businessModel) s1 += estimateSlotHeightMm('textarea', businessModel, pageSpec) * 0.6;
   if (ask) s1 += HEADING_H2_MM;
-  slides.push({ label: 'S1 cover', contentHeightMm: s1, format });
+  slides.push({ label: 'S1 cover', contentHeightMm: s1, pageSpec });
 
   // S2: Problem
   if (problem) {
     slides.push({
       label: 'S2 problem',
-      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', problem, format),
-      format,
+      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', problem, pageSpec),
+      pageSpec,
     });
   }
   // S3: Solution
   if (solution) {
     slides.push({
       label: 'S3 solution',
-      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', solution, format),
-      format,
+      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', solution, pageSpec),
+      pageSpec,
     });
   }
   // S4: Market
@@ -335,7 +433,7 @@ function expandInvestorDeckSlides(s, format) {
     slides.push({
       label: 'S4 market',
       contentHeightMm: SLIDE_CHROME_MM + HEADING_H1_MM * 0.9,
-      format,
+      pageSpec,
     });
   }
   // S5: Traction metrics
@@ -343,7 +441,7 @@ function expandInvestorDeckSlides(s, format) {
     slides.push({
       label: 'S5 traction',
       contentHeightMm: SLIDE_CHROME_MM + LIST_ITEM_MM * Math.min(traction.length, 3),
-      format,
+      pageSpec,
     });
   }
   // S5b: Traction chart
@@ -351,15 +449,15 @@ function expandInvestorDeckSlides(s, format) {
     slides.push({
       label: 'S5b chart',
       contentHeightMm: SLIDE_CHROME_MM + VISUAL_MM,
-      format,
+      pageSpec,
     });
   }
   // S6: Business Model
   if (businessModel) {
     slides.push({
       label: 'S6 model',
-      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', businessModel, format),
-      format,
+      contentHeightMm: SLIDE_CHROME_MM + estimateSlotHeightMm('textarea', businessModel, pageSpec),
+      pageSpec,
     });
   }
   // S7: Team
@@ -367,7 +465,7 @@ function expandInvestorDeckSlides(s, format) {
     slides.push({
       label: 'S7 team',
       contentHeightMm: SLIDE_CHROME_MM + LIST_ITEM_MM * Math.min(team.length, 3),
-      format,
+      pageSpec,
     });
   }
   // S8: Ask
@@ -375,15 +473,15 @@ function expandInvestorDeckSlides(s, format) {
     slides.push({
       label: 'S8 ask',
       contentHeightMm: SLIDE_CHROME_MM + HEADING_H1_MM,
-      format,
+      pageSpec,
     });
   }
   return slides;
 }
 
 /** Compute fill % for a page = contentHeight / printableHeight, clamped [0,100]. */
-function fillPercent(contentHeightMm, format) {
-  const printable = printableHeightMm(format);
+function fillPercent(contentHeightMm, pageSpec) {
+  const printable = printableHeightMm(pageSpec);
   if (printable <= 0) return 0;
   return Math.min(100, (contentHeightMm / printable) * 100);
 }
@@ -411,35 +509,30 @@ function runDensityScan() {
     if (d.id) defs.set(d.id, d);
   }
 
-  // Registry order (from registry.ts template object).
-  const registryOrder = [
-    'resume', 'self-intro', 'business-card', 'brand-onepager', 'product-brochure',
-    'company-profile', 'investor-deck', 'brand-storybook', 'invitation',
-    'new-year-card', 'proposal', 'newsletter', 'portfolio', 'report',
-  ];
+  const registryIds = registryCatalog().templateIds;
 
   const report = [];
   let totalPages = 0;
   let totalSparse = 0;
   const sparseWarnings = [];
 
-  for (const templateId of registryOrder) {
+  for (const templateId of registryIds) {
     const def = defs.get(templateId);
     if (!def) {
       report.push(`  (skipped: definition for "${templateId}" not found)`);
       continue;
     }
-    const format = def.format;
+    const pageSpec = def.pageSpec;
     const fixture = previewFixtures[templateId];
     if (!fixture) {
       report.push(`  (skipped: fixture for "${templateId}" not found)`);
       continue;
     }
 
-    const pages = expandPages(templateId, def, fixture, format);
-    report.push(`▸ ${templateId} (${format})`);
+    const pages = expandPages(def, fixture, pageSpec);
+    report.push(`▸ ${templateId} (${pageSpec})`);
     pages.forEach((page, idx) => {
-      const fill = fillPercent(page.contentHeightMm, format);
+      const fill = fillPercent(page.contentHeightMm, pageSpec);
       const sparse = fill < SPARSE_THRESHOLD * 100;
       const flag = sparse ? '  SPARSE' : '       ';
       const pageLabel = pages.length > 1 ? ` page ${idx + 1}/${pages.length} (${page.label})` : ' page 1/1';
@@ -462,11 +555,11 @@ function runDensityScan() {
   if (sparseControl) {
     const def = defs.get(sparseControl.templateId);
     if (def) {
-      const pages = expandPages(sparseControl.templateId, def, sparseControl, def.format);
+      const pages = expandPages(def, sparseControl, def.pageSpec);
       report.push('');
-      report.push(`▸ sparse-control: ${sparseControl.templateId} (${def.format}) [deliberately hollow]`);
+      report.push(`▸ sparse-control: ${sparseControl.templateId} (${def.pageSpec}) [deliberately hollow]`);
       pages.forEach((page, idx) => {
-        const fill = fillPercent(page.contentHeightMm, def.format);
+        const fill = fillPercent(page.contentHeightMm, def.pageSpec);
         const sparse = fill < SPARSE_THRESHOLD * 100;
         const flag = sparse ? '  SPARSE' : '       ';
         if (sparse) controlSparse = true;
@@ -480,8 +573,8 @@ function runDensityScan() {
   out.push('design-guard — 삿갓 content-density scan (warn mode)');
   out.push('');
   out.push(`Threshold: pages below ${(SPARSE_THRESHOLD * 100).toFixed(0)}% fill are flagged SPARSE.`);
-  out.push(`Form factors: a4 ${FORMAT_DIMS_MM.a4.w}×${FORMAT_DIMS_MM.a4.h}mm, a4-landscape ${FORMAT_DIMS_MM['a4-landscape'].w}×${FORMAT_DIMS_MM['a4-landscape'].h}mm, slide-16x9 ${FORMAT_DIMS_MM['slide-16x9'].w}×${FORMAT_DIMS_MM['slide-16x9'].h}mm.`);
-  out.push(`Margins: ${MARGIN_X_MM}mm horizontal, ${MARGIN_Y_MM}mm vertical (constraint.ts PAGE_MARGIN_*).`);
+  out.push(`Page specs: ${formatPageSpecGeometry()}.`);
+  out.push(`Usable area: A4 and slide specs subtract ${MARGIN_X_MM}×${MARGIN_Y_MM}mm margins per edge; postcards use their canvas; business cards use each imposed face.`);
   out.push('');
 
   if (sparseWarnings.length) {
@@ -504,7 +597,7 @@ function runDensityScan() {
 
   out.push('');
   out.push(
-    `Summary: ${registryOrder.length} templates, ${totalPages} pages, ${totalSparse} sparse warn(s) in shipping fixtures. ` +
+    `Summary: ${registryIds.length} templates, ${totalPages} pages, ${totalSparse} sparse warn(s) in shipping fixtures. ` +
       `Exit 0 (warn mode; density does not fail CI).`
   );
 

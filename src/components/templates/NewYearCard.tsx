@@ -22,8 +22,7 @@ import {
 export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData }) {
   const s = data.slots;
   const occasion = String(s['occasion'] ?? '신년');
-  const yearHanja = String(s['year_hanja'] ?? '');
-  const greeting = String(s['greeting'] ?? '謹賀新年');
+  const greeting = String(s['greeting'] ?? '새해 복 많이 받으세요');
   const message = String(s['message'] ?? '');
   const senderFamily = String(s['sender_family'] ?? '');
   const recipient = String(s['recipient'] ?? '');
@@ -104,7 +103,7 @@ export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData
           >
             {greeting}
           </h1>
-          {yearHanja && (
+          {occasion && (
             <p
               style={{
                 fontFamily: FONT_MYEONGJO,
@@ -115,7 +114,7 @@ export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData
                 fontWeight: 700,
               }}
             >
-              {yearHanja} · {occasion}
+              {occasion}
             </p>
           )}
 

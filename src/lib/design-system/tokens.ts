@@ -171,10 +171,6 @@ export const textures = {
     'radial-gradient(ellipse at 18% 28%, rgba(184,149,79,0.04) 0%, transparent 55%), radial-gradient(ellipse at 82% 72%, rgba(46,107,94,0.025) 0%, transparent 55%)',
 } as const;
 
-// ─── 한자 인장(印章) 글자 매핑 ───────────────────────────────────────────────
-// REMOVED (M1): tokens.ts 의 8-entry sealGlyphs 는 stale subset 이었습니다.
-// 인장 진실원천은 registry.TEMPLATE_SEAL (14종 전 매핑, verify:templates 가 검증).
-// import { TEMPLATE_SEAL } from '@/lib/templates/registry' 로 사용하세요.
 
 // ─── Legacy compat: typography 단일 export (theme.ts + 기존 컴포넌트용) ──────
 export const typography = {

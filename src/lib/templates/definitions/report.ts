@@ -1,10 +1,11 @@
-import type { SatgatTemplate } from '../types';
+import type { TemplateCatalogEntry } from '../types';
 
-export const report: SatgatTemplate = {
+export const report: TemplateCatalogEntry = {
   id: 'report',
   name: '보고서',
   description: '일의 기록. A4 · 개요·추진·성과·계획 · 단청 강조',
-  format: 'a4',
+  category: 'business',
+  pageSpec: 'a4Portrait',
   slots: [
     { id: 'title', type: 'text', required: true, label: '보고 제목', placeholder: '2026년 1분기 운영 보고' },
     { id: 'report_no', type: 'text', required: false, label: '문서번호', placeholder: 'RPT-2026-001' },
@@ -19,7 +20,7 @@ export const report: SatgatTemplate = {
     { id: 'plan', type: 'textarea', required: false, label: '향후 계획', placeholder: '다음 분기 추진 계획' },
     { id: 'closing', type: 'textarea', required: false, label: '맺음말', placeholder: '보고를 마치며 드리는 말씀' },
   ],
-  sections: [
+  contentOutline: [
     { type: 'hero', slots: ['title'] },
     { type: 'text', slots: ['report_no', 'date', 'author', 'period'] },
     { type: 'divider', slots: [], config: { variant: 'dancheong', weight: 'medium' } },
@@ -31,4 +32,14 @@ export const report: SatgatTemplate = {
     { type: 'text', slots: ['plan'] },
     { type: 'footer', slots: ['closing'] },
   ],
+  promptSeeds: [
+    '2026년 1분기 운영 보고서입니다. 사업 현황, 주요 추진 내용, 성과 지표, 이슈, 향후 계획을 임원 보고 형식으로 정리해 주세요.',
+    '프로젝트 완료 보고서입니다. 배경, 추진 과정, 결과물, 문제와 대응, 다음 단계를 명확하고 간결하게 기술해 주세요.',
+  ],
+  factChecklist: ['보고 제목·기간', '개요·요약', '추진 내용', '성과 지표', '향후 계획'],
+  specimen: {
+    title: '2026년 1분기 운영 보고서',
+    alt: '보고서 2026년 1분기 운영 보고서 완성 예시',
+    prompt: '2026년 1분기 운영 보고서입니다. 사업 현황, 주요 추진 내용, 성과 지표, 이슈, 향후 계획을 임원 보고 형식으로 정리해 주세요.',
+  },
 };
