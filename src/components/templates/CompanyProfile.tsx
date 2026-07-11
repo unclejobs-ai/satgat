@@ -70,11 +70,11 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
     { label: 'CONTACT', value: contact },
   ].filter((item) => item.value);
   const primaryValues = values.slice(0, 4);
-  const monogram = companyName.trim().slice(0, 1) || '社';
+  const monogram = companyName.trim().slice(0, 1);
 
   return (
     <>
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <section
           className="company-profile-hero"
           style={{
@@ -377,7 +377,7 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
         </section>
       </SatgatDocument>
 
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <div
           aria-hidden="true"
           style={{
@@ -459,7 +459,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
             display: 'grid',
             gridTemplateColumns: history.length > 0 && team.length > 0 ? '1.08fr 0.92fr' : '1fr',
             gap: 40,
-            minHeight: 430,
           }}
         >
           <section>
@@ -725,26 +724,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
           padding-left: 28px;
         }
 
-        @media (max-width: 760px) {
-          .company-profile-hero {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-            min-height: 0;
-          }
-
-          .company-profile-title {
-            font-size: 38px;
-            line-height: 1.12;
-          }
-
-          .company-profile-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 24px;
-          }
-        }
       `}</style>
     </>
   );

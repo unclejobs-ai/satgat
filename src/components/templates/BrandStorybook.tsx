@@ -41,14 +41,14 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
     descriptionKeys: ['event', 'description', 'summary'],
   });
 
-  const monogram = brandName.trim().slice(0, 1) || '書';
+  const monogram = brandName.trim().slice(0, 1);
   const coverValues = values.slice(0, 3);
   const firstValue = values[0];
   const secondValue = values[1];
 
   return (
     <>
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <section
           className="brand-story-cover"
           style={{
@@ -304,7 +304,7 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
         </section>
       </SatgatDocument>
 
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <header
           style={{
             display: 'grid',
@@ -470,7 +470,7 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
         </section>
       </SatgatDocument>
 
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <div
           style={{
             display: 'grid',
@@ -683,26 +683,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
           padding-left: 30px;
         }
 
-        @media (max-width: 760px) {
-          .brand-story-cover {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            min-height: 0;
-          }
-
-          .brand-story-title {
-            font-size: 40px;
-            line-height: 1.12;
-          }
-
-          .brand-story-cover-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 24px;
-          }
-        }
       `}</style>
     </>
   );

@@ -42,7 +42,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
   const secondaryArticles = articles.slice(1, 5);
 
   return (
-    <SatgatDocument format="a4">
+    <SatgatDocument pageSpec="a4Portrait">
       <section
         className="newsletter-sheet"
         style={{
@@ -454,35 +454,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
           gap: 20px;
         }
 
-        @media (max-width: 760px) {
-          .newsletter-sheet {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            min-height: 0;
-          }
-
-          .newsletter-title {
-            font-size: 38px;
-            line-height: 1.12;
-          }
-
-          .newsletter-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 24px;
-          }
-
-          .newsletter-date {
-            font-size: 10px;
-          }
-
-          .newsletter-digest-meta {
-            grid-template-columns: 1fr;
-            gap: 14px;
-          }
-        }
       `}</style>
     </SatgatDocument>
   );

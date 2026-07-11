@@ -59,7 +59,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
   return (
     <>
       {/* ─── P1: 히어로 ───────────────────────────────────────────────── */}
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <section
           className="product-brochure-cover"
           style={{
@@ -311,32 +311,12 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
             padding-left: 30px;
           }
 
-          @media (max-width: 760px) {
-            .product-brochure-cover {
-              display: flex;
-              flex-direction: column;
-              gap: 28px;
-              min-height: 0;
-            }
-
-            .product-brochure-title {
-              font-size: 38px;
-              line-height: 1.12;
-            }
-
-            .product-brochure-visual {
-              border-left: 0;
-              border-top: 1px solid ${HAIRLINE};
-              padding-left: 0;
-              padding-top: 24px;
-            }
-          }
         `}</style>
       </SatgatDocument>
 
       {/* ─── P2: 주요 특징 ────────────────────────────────────────────── */}
       {(features.length > 0 || Boolean(featureChart)) && (
-        <SatgatDocument format="a4">
+        <SatgatDocument pageSpec="a4Portrait">
           <SectionHeading title="주요 특징" size={24} marginBottom={32} />
 
           {features.length > 0 && (
@@ -396,7 +376,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       )}
 
       {/* ─── P3: 스펙 + 사용법 ────────────────────────────────────────── */}
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         {specs.rows.length > 0 && (
           <section style={{ marginBottom: 40 }}>
             <SectionHeading title="제품 스펙" size={24} marginBottom={24} />
@@ -474,7 +454,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       </SatgatDocument>
 
       {/* ─── P4: 인증 + 연락처 ────────────────────────────────────────── */}
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         {certifications.length > 0 && (
           <section style={{ marginBottom: 40 }}>
             <SectionHeading title="인증 및 수상" size={24} marginBottom={24} />

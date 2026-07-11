@@ -43,7 +43,8 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
   });
 
   return (
-    <SatgatDocument format="a4">
+    <>
+    <SatgatDocument pageSpec="a4Portrait">
       {/* Header */}
       <header style={{ marginBottom: 28 }}>
         <p
@@ -171,6 +172,26 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
         </section>
       )}
 
+    </SatgatDocument>
+
+    <SatgatDocument pageSpec="a4Portrait">
+      <header
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          paddingBottom: 14,
+          borderBottom: `0.5pt solid ${HAIRLINE}`,
+          marginBottom: 24,
+        }}
+      >
+        <span style={{ fontFamily: FONT_MYEONGJO, fontSize: 18, fontWeight: 700, color: INK }}>
+          {title}
+        </span>
+        <span style={{ fontFamily: FONT_DODUM, fontSize: 10.5, color: INK_MUTED, letterSpacing: '0.08em' }}>
+          PROPOSAL · CONTINUED
+        </span>
+      </header>
       {Boolean(impactChart) && (
         <section style={{ margin: '30px 0 34px', breakInside: 'avoid' }}>
           <SectionHeading title="四. 효과 도표(圖表)" subtitle="숫자와 흐름을 함께 보기" size={17} weight={700} />
@@ -228,5 +249,6 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
         </section>
       )}
     </SatgatDocument>
+    </>
   );
 }

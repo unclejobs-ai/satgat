@@ -6,7 +6,7 @@ import { previewFixtures } from './template-preview-fixtures.mjs';
 const root = process.cwd();
 const definitionDir = path.join(root, 'src/lib/templates/definitions');
 const registryPath = path.join(root, 'src/lib/templates/registry.ts');
-const rendererPath = path.join(root, 'src/lib/engine/renderer.tsx');
+const rendererPath = path.join(root, 'src/components/templates/runtime-catalog.tsx');
 const newClientPath = path.join(root, 'app/[lang]/new/NewDocumentClient.tsx');
 const landingPath = path.join(root, 'public/satgat/satgat-ko.html');
 const PAGE_SPEC_IDS = new Set([
@@ -54,7 +54,16 @@ function findObjectLiteral(sourceFile, variableName) {
 
   function visit(node) {
     if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.text === variableName) {
-      if (node.initializer && ts.isObjectLiteralExpression(node.initializer)) found = node.initializer;
+      let initializer = node.initializer;
+      while (
+        initializer &&
+        (ts.isSatisfiesExpression(initializer) ||
+          ts.isAsExpression(initializer) ||
+          ts.isParenthesizedExpression(initializer))
+      ) {
+        initializer = initializer.expression;
+      }
+      if (initializer && ts.isObjectLiteralExpression(initializer)) found = initializer;
     }
     ts.forEachChild(node, visit);
   }
@@ -207,7 +216,7 @@ function parseRegistryTemplates(definitionsByExport) {
 
 function parseRendererMap() {
   const sourceFile = readSource(rendererPath);
-  const rendererObject = findObjectLiteral(sourceFile, 'renderers');
+  const rendererObject = findObjectLiteral(sourceFile, 'RENDERERS');
   const keys = [];
   const imports = new Map();
 
@@ -496,8 +505,9 @@ for (const definition of definitions) {
 }
 
 for (const [id, importPath] of renderer.imports) {
-  if (!importPath.startsWith('@/')) continue;
-  const componentPath = path.join(root, importPath.replace('@/', 'src/'));
+  const componentPath = importPath.startsWith('@/')
+    ? path.join(root, importPath.replace('@/', 'src/'))
+    : path.resolve(path.dirname(rendererPath), importPath);
   const rendererFile = fs.existsSync(`${componentPath}.tsx`)
     ? `${componentPath}.tsx`
     : fs.existsSync(`${componentPath}.ts`)

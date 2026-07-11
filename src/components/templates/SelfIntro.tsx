@@ -33,7 +33,7 @@ export default function SelfIntroRenderer({ data }: { data: SatgatDocumentData }
   const role = String(s['role'] ?? '');
 
   return (
-    <SatgatDocument format="a4">
+    <SatgatDocument pageSpec="a4Portrait">
       {/* Header */}
       <header style={{ marginBottom: 36 }}>
         <p

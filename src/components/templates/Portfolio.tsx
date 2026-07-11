@@ -37,12 +37,12 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
     descriptionKeys: ['description', 'summary', 'role', 'result'],
   });
 
-  const monogram = name.trim().slice(0, 1) || '集';
+  const monogram = name.trim().slice(0, 1);
   const lead = projects[0];
   const rest = projects.slice(1, 5);
 
   return (
-    <SatgatDocument format="a4-landscape">
+    <SatgatDocument pageSpec="a4Landscape">
       <section
         className="portfolio-sheet"
         style={{
@@ -401,7 +401,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
         .portfolio-sheet {
           display: grid;
           gap: 40px;
-          min-height: 720px;
+          height: 100%;
         }
 
         .portfolio-title {
@@ -419,32 +419,6 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
           padding-left: 30px;
         }
 
-        @media (max-width: 760px) {
-          .portfolio-sheet {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-            min-height: 0;
-          }
-
-          .portfolio-title {
-            font-size: 32px;
-            line-height: 1.12;
-          }
-
-          .portfolio-lead-title {
-            font-size: 28px;
-            line-height: 1.18;
-          }
-
-          .portfolio-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 24px;
-            order: -1;
-          }
-        }
       `}</style>
     </SatgatDocument>
   );

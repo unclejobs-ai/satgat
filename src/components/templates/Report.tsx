@@ -51,7 +51,8 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
       : null;
 
   return (
-    <SatgatDocument format="a4">
+    <>
+    <SatgatDocument pageSpec="a4Portrait">
       {/* 표제(表題) */}
       <header style={{ marginBottom: 28 }}>
         <p
@@ -174,6 +175,26 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
 
+    </SatgatDocument>
+
+    <SatgatDocument pageSpec="a4Portrait">
+      <header
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          paddingBottom: 14,
+          borderBottom: `0.5pt solid ${HAIRLINE}`,
+          marginBottom: 24,
+        }}
+      >
+        <span style={{ fontFamily: FONT_MYEONGJO, fontSize: 18, fontWeight: 700, color: INK }}>
+          {title}
+        </span>
+        <span style={{ fontFamily: FONT_DODUM, fontSize: 10.5, color: INK_MUTED, letterSpacing: '0.08em' }}>
+          REPORT · CONTINUED
+        </span>
+      </header>
       {/* 四. 성과·지표 */}
       {results && (
         <section style={{ marginTop: 32 }}>
@@ -268,5 +289,6 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
     </SatgatDocument>
+    </>
   );
 }

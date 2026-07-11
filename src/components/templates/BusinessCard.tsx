@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SatgatDocument } from '../document/SatgatDocument';
+import { getPageSpec } from '@/lib/templates/registry';
 import type { SatgatDocumentData } from '@/lib/templates/types';
 import {
   FONT_MYEONGJO,
@@ -14,14 +15,31 @@ import {
   INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
+const BUSINESS_CARD_SPEC = getPageSpec('businessCard8Up');
+
+function requireBusinessCardImposition() {
+  const { imposition } = BUSINESS_CARD_SPEC;
+  if (!imposition) {
+    throw new Error('businessCard8Up PageSpec requires imposition dimensions');
+  }
+  return imposition;
+}
+
+const BUSINESS_CARD_IMPOSITION = requireBusinessCardImposition();
+const BUSINESS_CARD_GRID_WIDTH =
+  BUSINESS_CARD_IMPOSITION.columns * BUSINESS_CARD_IMPOSITION.cardWidthMm;
+const BUSINESS_CARD_GRID_HEIGHT =
+  BUSINESS_CARD_IMPOSITION.rows * BUSINESS_CARD_IMPOSITION.cardHeightMm;
+const BUSINESS_CARD_ORIGIN_X =
+  (BUSINESS_CARD_SPEC.canvas.widthMm - BUSINESS_CARD_GRID_WIDTH) / 2;
+const BUSINESS_CARD_ORIGIN_Y =
+  (BUSINESS_CARD_SPEC.canvas.heightMm - BUSINESS_CARD_GRID_HEIGHT) / 2;
+
 /**
  * 명함(名銜) — 한 사람의 표지
  *
- * 90×55mm 명함. 두 가지 모드:
- *  ① preview (큰 단일 카드 · 데스크탑 확인용)
- *  ② print-grid (A4에 8매 절취 · 인쇄용)
- *
- * @media print 시 자동으로 grid 모드로 전환.
+ * PageSpec의 imposition 기하를 사용해 화면 미리보기와 8-up 인쇄판을 만든다.
+ * 인쇄 전환과 용지 선택은 SatgatPrintStyles가 단독 소유한다.
  */
 
 function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: number }) {
@@ -38,8 +56,8 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
     <div
       className="satgat-card-face"
       style={{
-        width: `${90 * scale}mm`,
-        height: `${55 * scale}mm`,
+        width: `${BUSINESS_CARD_IMPOSITION.cardWidthMm * scale}mm`,
+        height: `${BUSINESS_CARD_IMPOSITION.cardHeightMm * scale}mm`,
         background: '#FFFFFB',
         border: `0.4pt solid ${HAIRLINE}`,
         padding: `${5 * scale}mm ${6 * scale}mm`,
@@ -135,27 +153,17 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
 
 export default function BusinessCardRenderer({ data }: { data: SatgatDocumentData }) {
   return (
-    <SatgatDocument format="a4">
-      {/* Preview 모드 — 화면용 큰 미리보기 (단일 명함 2× 스케일) */}
+    <SatgatDocument pageSpec="businessCard8Up">
+      {/* Screen preview — one canonical enlarged card composition */}
       <div className="card-preview-screen">
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div
-            className="card-preview-large"
             style={{
               boxShadow: '0 8pt 24pt rgba(28,25,22,0.08)',
               borderRadius: 4,
             }}
           >
             <CardFace data={data} scale={1.58} />
-          </div>
-          <div
-            className="card-preview-compact"
-            style={{
-              boxShadow: '0 6pt 18pt rgba(28,25,22,0.08)',
-              borderRadius: 4,
-            }}
-          >
-            <CardFace data={data} scale={0.78} />
           </div>
         </div>
 
@@ -168,29 +176,39 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
             textTransform: 'uppercase',
           }}
         >
-          90 × 55 mm · 인쇄 시 A4 한 장에 8매 자동 배치 · 절취선 표시
+          {BUSINESS_CARD_IMPOSITION.cardWidthMm} × {BUSINESS_CARD_IMPOSITION.cardHeightMm} mm · 인쇄 시 A4 한 장에{' '}
+          {BUSINESS_CARD_IMPOSITION.columns * BUSINESS_CARD_IMPOSITION.rows}매 자동 배치 · 절취선 표시
         </p>
       </div>
 
       {/* Print 모드 — A4에 8-up grid (2열 × 4행) */}
       <div
         className="card-print-grid"
+        data-imposition-origin={`${BUSINESS_CARD_ORIGIN_X}mm ${BUSINESS_CARD_ORIGIN_Y}mm`}
+        data-imposition-count={BUSINESS_CARD_IMPOSITION.columns * BUSINESS_CARD_IMPOSITION.rows}
         style={{
-          gridTemplateColumns: '90mm 90mm',
-          gridTemplateRows: 'repeat(4, 55mm)',
+          gridTemplateColumns: `repeat(${BUSINESS_CARD_IMPOSITION.columns}, ${BUSINESS_CARD_IMPOSITION.cardWidthMm}mm)`,
+          gridTemplateRows: `repeat(${BUSINESS_CARD_IMPOSITION.rows}, ${BUSINESS_CARD_IMPOSITION.cardHeightMm}mm)`,
           gap: '0',
-          justifyContent: 'center',
-          alignContent: 'center',
-          width: '180mm',
-          margin: '0 auto',
+          position: 'absolute',
+          left: `${BUSINESS_CARD_ORIGIN_X}mm`,
+          top: `${BUSINESS_CARD_ORIGIN_Y}mm`,
+          width: `${BUSINESS_CARD_GRID_WIDTH}mm`,
+          height: `${BUSINESS_CARD_GRID_HEIGHT}mm`,
         }}
       >
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: BUSINESS_CARD_IMPOSITION.columns * BUSINESS_CARD_IMPOSITION.rows }).map((_, i) => (
           <div
             key={i}
             style={{
-              borderRight: i % 2 === 0 ? '0.4pt dashed #C9C3B4' : 'none',
-              borderBottom: i < 6 ? '0.4pt dashed #C9C3B4' : 'none',
+              borderRight:
+                i % BUSINESS_CARD_IMPOSITION.columns < BUSINESS_CARD_IMPOSITION.columns - 1
+                  ? '0.4pt dashed #C9C3B4'
+                  : 'none',
+              borderBottom:
+                i < BUSINESS_CARD_IMPOSITION.columns * (BUSINESS_CARD_IMPOSITION.rows - 1)
+                  ? '0.4pt dashed #C9C3B4'
+                  : 'none',
             }}
           >
             <CardFace data={data} scale={1} />
@@ -205,12 +223,6 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
         .card-preview-screen > div {
           padding-top: 30mm;
         }
-        .card-preview-large {
-          display: block;
-        }
-        .card-preview-compact {
-          display: none;
-        }
         .card-preview-caption {
           margin-top: 80mm;
           font-size: 11px;
@@ -218,36 +230,6 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
         }
         .card-print-grid {
           display: none;
-        }
-        @media screen and (max-width: 760px) {
-          .card-preview-screen {
-            overflow: hidden;
-          }
-          .card-preview-screen > div {
-            padding-top: 10mm;
-          }
-          .card-preview-large {
-            display: none;
-          }
-          .card-preview-compact {
-            display: block;
-          }
-          .card-preview-caption {
-            margin-top: 24mm;
-            font-size: 8px;
-            line-height: 1.6;
-            letter-spacing: 0.08em;
-          }
-        }
-        /* Print-scoped only: force the 8-up cut grid over the screen preview
-           when rendering to PDF/paper. Not fighting any inline style. */
-        @media print {
-          .card-preview-screen {
-            display: none !important;
-          }
-          .card-print-grid {
-            display: grid !important;
-          }
         }
       `}</style>
     </SatgatDocument>

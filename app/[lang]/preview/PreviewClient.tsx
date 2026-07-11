@@ -3,8 +3,12 @@
 import React from "react";
 import Link from "next/link";
 import { Check, Download, Link2, Printer, RotateCcw } from "lucide-react";
-import { SatgatTemplateRenderer } from "@/lib/engine/renderer";
+import { SatgatTemplateRenderer } from "@/components/templates/SatgatTemplateRenderer";
 import { getPageSpec, getTemplate } from "@/lib/templates/registry";
+import {
+  calculatePreviewScale,
+  millimetersToCssPixels,
+} from "./preview-scale";
 import type { SatgatDocumentData } from "@/lib/templates/types";
 import { SatgatPrintStyles } from "@/components/document";
 
@@ -32,6 +36,36 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
   const { data, error } = preview;
   const template = data ? getTemplate(data.templateId) : undefined;
   const langPath = `/${encodeURIComponent(lang)}`;
+  const pageSpec = template ? getPageSpec(template.pageSpec) : undefined;
+  const pageWidth = pageSpec
+    ? millimetersToCssPixels(pageSpec.canvas.widthMm)
+    : 0;
+  const pageHeight = pageSpec
+    ? millimetersToCssPixels(pageSpec.canvas.heightMm)
+    : 0;
+  const docStageRef = React.useRef<HTMLDivElement>(null);
+  const [previewScale, setPreviewScale] = React.useState(1);
+  React.useEffect(() => {
+    const stage = docStageRef.current;
+    if (!stage || pageWidth === 0 || pageHeight === 0) return;
+
+    const updateScale = () => {
+      if (stage.clientWidth === 0) return;
+      const nextScale = calculatePreviewScale(
+        stage.clientWidth,
+        pageWidth,
+        pageHeight,
+      ).scale;
+      setPreviewScale((currentScale) =>
+        currentScale === nextScale ? currentScale : nextScale,
+      );
+    };
+
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [pageHeight, pageWidth]);
 
   // Render-time density hint (VAL-DENSITY-005) now lives inside each
   // `SatgatDocument` page (src/components/document/SatgatDocument.tsx): the page
@@ -93,7 +127,7 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
     );
   }
 
-  if (!data || !template) {
+  if (!data || !template || !pageSpec) {
     return (
       <div className="empty-state">
         <p className="empty-mark loading">…</p>
@@ -103,7 +137,7 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
     );
   }
 
-  const pageSpecLabel = getPageSpec(template.pageSpec).label;
+  const pageSpecLabel = pageSpec.label;
   const requiredSlots = template.slots.filter((slot) => slot.required);
   const readinessSlots = requiredSlots.length > 0 ? requiredSlots : template.slots;
   const filledSlots = readinessSlots.filter((slot) => hasSlotValue(data.slots[slot.id])).length;
@@ -166,8 +200,16 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
       </div>
 
       {/* Document */}
-      <div className="doc-stage">
-        <SatgatTemplateRenderer template={template} data={data} />
+      <div className="doc-stage" ref={docStageRef}>
+        <div
+          className="preview-canvas"
+          style={{
+            width: `${pageSpec.canvas.widthMm}mm`,
+            zoom: previewScale,
+          }}
+        >
+          <SatgatTemplateRenderer template={template} data={data} />
+        </div>
       </div>
 
       <PreviewStyles />
@@ -354,17 +396,20 @@ function PreviewStyles() {
         transform: translateY(1px);
       }
       .doc-stage {
+        width: 100%;
+        padding: 4px 0 12px;
+      }
+      .preview-canvas {
         display: grid;
         justify-items: center;
         gap: 48px;
-        overflow-x: auto;
-        padding: 4px 0 12px;
+        margin: 0 auto;
       }
-      .doc-stage .satgat-document {
+      .preview-canvas .satgat-document {
         flex: 0 0 auto;
         margin-bottom: 0 !important;
       }
-      .doc-stage .satgat-document + .satgat-document {
+      .preview-canvas .satgat-document + .satgat-document {
         margin-top: 0 !important;
       }
       /* Render-time density hint (VAL-DENSITY-005). Preview-only badge injected
@@ -487,20 +532,6 @@ function PreviewStyles() {
       @media (max-width: 760px) {
         .preview-wrap {
           padding: 18px 14px 72px;
-          --mobile-doc-width: calc(100vw - 28px);
-          --mobile-doc-min-height: calc(var(--mobile-doc-width) * 1.414);
-          --mobile-doc-padding: 48px 28px;
-          --mobile-doc-font-size: 14px;
-        }
-        .preview-format-a4Landscape {
-          --mobile-doc-min-height: calc(var(--mobile-doc-width) * 0.707);
-          --mobile-doc-padding: 30px 24px;
-          --mobile-doc-font-size: 12.75px;
-        }
-        .preview-format-slide16x9 {
-          --mobile-doc-min-height: calc(var(--mobile-doc-width) * 0.5625);
-          --mobile-doc-padding: 28px 24px;
-          --mobile-doc-font-size: 12.5px;
         }
         .preview-toolbar {
           align-items: stretch;
@@ -531,23 +562,15 @@ function PreviewStyles() {
         }
         .doc-stage {
           padding-bottom: 8px;
+        }
+        .preview-canvas {
           gap: 28px;
         }
-        .doc-stage .satgat-document {
-          width: min(100%, var(--mobile-doc-width)) !important;
-          min-width: 0 !important;
-          min-height: var(--mobile-doc-min-height) !important;
-          padding: var(--mobile-doc-padding) !important;
-          font-size: var(--mobile-doc-font-size) !important;
-        }
-        .preview-format-slide16x9 .doc-stage {
+        .preview-format-slide16x9 .preview-canvas {
           gap: 22px;
         }
       }
 
-      /* 인쇄(@media print) 규칙은 SatgatPrintStyles가 단독 소유한다(M4 단일 권위
-         전략). 프리뷰 chrome 숨김·doc-stage 인쇄 레이아웃·문서 페이지 분할은 모두
-         거기서 처리하므로 여기서 중복 정의하지 않는다. */
     `}} />
   );
 }

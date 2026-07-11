@@ -1,6 +1,13 @@
 'use client';
 
 import React from 'react';
+import { getPageSpec } from '@/lib/templates/registry';
+
+const A4_PORTRAIT = getPageSpec('a4Portrait');
+const A4_LANDSCAPE = getPageSpec('a4Landscape');
+const SLIDE_16X9 = getPageSpec('slide16x9');
+const BUSINESS_CARD_8_UP = getPageSpec('businessCard8Up');
+const POSTCARD_PORTRAIT = getPageSpec('postcardPortrait');
 
 /**
  * 삿갓 문서 인쇄 — 단일 권위 전략 (SINGLE SOURCE OF TRUTH)
@@ -19,38 +26,70 @@ import React from 'react';
  * 이 컴포넌트는 PreviewClient가 렌더하며, PreviewClient는 브라우저 인쇄와 서버
  * PDF(헤드리스 크로미움이 /preview로 이동) **양쪽 모두의 유일한 인쇄 진입점**이다.
  * 따라서 모든 인쇄 경로에서 항상 존재한다. 다른 컴포넌트는 print 규칙을 두지
- * 않는다(SatgatDocument는 @media screen 여백만, BusinessCard는 절취 grid 토글만).
+ * 않는다(SatgatDocument는 @media screen 여백만 둔다).
  */
 export function SatgatPrintStyles() {
   return (
     <style jsx global>{`
       @media print {
-        /* @page — 문서 자체 크기를 따른다(a4/landscape/slide 혼재).
-           preferCSSPageSize와 맞물려 각 포맷이 제 크기로 인쇄된다. */
-        @page {
-          size: auto;
+        /* Named pages bind each PageSpec canvas to its exact PDF sheet. */
+        @page satgat-a4-portrait {
+          size: ${A4_PORTRAIT.cssSize};
+          margin: 0;
+        }
+        @page satgat-a4-landscape {
+          size: ${A4_LANDSCAPE.cssSize};
+          margin: 0;
+        }
+        @page satgat-slide-16x9 {
+          size: ${SLIDE_16X9.cssSize};
+          margin: 0;
+        }
+        @page satgat-business-card-8-up {
+          size: ${BUSINESS_CARD_8_UP.cssSize};
+          margin: 0;
+        }
+        @page satgat-postcard-portrait {
+          size: ${POSTCARD_PORTRAIT.cssSize};
           margin: 0;
         }
 
         /* 백자지 캔버스 보존 — 순백으로 뒤집히지 않게 색 보존 강제. */
         html,
         body {
+          margin: 0 !important;
+          padding: 0 !important;
+          min-width: 0 !important;
+          min-height: 0 !important;
           background: #F7F7F2 !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
 
-        /* 프리뷰 chrome 숨김 — 툴바/밀도배지 등은 인쇄 제외. */
+        /* 프리뷰 chrome 숨김 — 앱 헤더/툴바/밀도배지 등은 인쇄 제외. */
         .no-print,
         .preview-toolbar,
+        .satgat-shell > header,
+        .satgat-topbar,
         .density-warn {
           display: none !important;
         }
 
         /* 프리뷰 셸: 인쇄 시 문서를 자연스럽게 흐르게 한다. */
+        .satgat-shell,
+        .satgat-shell > main {
+          margin: 0 !important;
+          padding: 0 !important;
+          min-width: 0 !important;
+          min-height: 0 !important;
+        }
+
         .preview-wrap {
           padding: 0 !important;
           max-width: none !important;
+        }
+        .preview-canvas {
+          zoom: 1 !important;
         }
         .doc-stage {
           display: block !important;
@@ -65,42 +104,58 @@ export function SatgatPrintStyles() {
           color: inherit !important;
         }
 
-        /* 본문/표/도판 페이지 중간 분할 방지 */
-        .satgat-document section,
-        table,
-        figure,
-        img {
-          break-inside: avoid !important;
-          page-break-inside: avoid !important;
+
+        .doc-stage .satgat-document[data-page-spec='a4Portrait'] {
+          page: satgat-a4-portrait;
+          width: ${A4_PORTRAIT.canvas.widthMm}mm !important;
+          height: ${A4_PORTRAIT.canvas.heightMm}mm !important;
+        }
+        .doc-stage .satgat-document[data-page-spec='a4Landscape'] {
+          page: satgat-a4-landscape;
+          width: ${A4_LANDSCAPE.canvas.widthMm}mm !important;
+          height: ${A4_LANDSCAPE.canvas.heightMm}mm !important;
+        }
+        .doc-stage .satgat-document[data-page-spec='slide16x9'] {
+          page: satgat-slide-16x9;
+          width: ${SLIDE_16X9.canvas.widthMm}mm !important;
+          height: ${SLIDE_16X9.canvas.heightMm}mm !important;
+        }
+        .doc-stage .satgat-document[data-page-spec='businessCard8Up'] {
+          page: satgat-business-card-8-up;
+          width: ${BUSINESS_CARD_8_UP.canvas.widthMm}mm !important;
+          height: ${BUSINESS_CARD_8_UP.canvas.heightMm}mm !important;
+        }
+        .doc-stage .satgat-document[data-page-spec='postcardPortrait'] {
+          page: satgat-postcard-portrait;
+          width: ${POSTCARD_PORTRAIT.canvas.widthMm}mm !important;
+          height: ${POSTCARD_PORTRAIT.canvas.heightMm}mm !important;
         }
 
-        /* 제목 뒤 페이지 분할 방지 */
-        h1,
-        h2,
-        h3,
-        h4 {
-          break-after: avoid !important;
-          page-break-after: avoid !important;
-          orphans: 3;
-          widows: 3;
-        }
-
-        /* 본문 단락 orphans/widows */
-        p {
-          orphans: 2;
-          widows: 2;
-        }
-
-        /* 문서 페이지: 화면용 그림자/여백 해제 + 페이지마다 분할 */
-        .satgat-document {
-          width: 100% !important;
-          min-height: 100vh !important;
+        /* PageSpec 문서 페이지: 인라인 캔버스 치수를 보존하고 화면 장식만 해제한다. */
+        .satgat-document[data-page-spec] {
           margin: 0 !important;
           box-shadow: none !important;
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
           break-after: page !important;
           page-break-after: always !important;
         }
-        .satgat-document:last-child {
+        .satgat-document[data-page-spec] * {
+          page: inherit !important;
+          break-inside: auto !important;
+          page-break-inside: auto !important;
+        }
+        /* Chromium은 figure의 기본 block fragmentation에서 named page를 잃을 수 있다. */
+        .satgat-document[data-page-spec] .satgat-visual {
+          display: flow-root !important;
+        }
+        .satgat-document[data-page-spec='businessCard8Up'] .card-preview-screen {
+          display: none !important;
+        }
+        .satgat-document[data-page-spec='businessCard8Up'] .card-print-grid {
+          display: grid !important;
+        }
+        .satgat-document[data-page-spec]:last-of-type {
           break-after: auto !important;
           page-break-after: auto !important;
         }

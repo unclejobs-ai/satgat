@@ -53,7 +53,7 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
   const education = parseRecordList(s['education']);
 
   return (
-    <SatgatDocument format="a4">
+    <SatgatDocument pageSpec="a4Portrait">
       {/* ─── 헤더: 이름 + 연락처 ───────────────────────────────────────── */}
       <header style={{ marginBottom: 32 }}>
         <div
@@ -272,14 +272,6 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
 
-      <style jsx>{`
-        @media screen and (max-width: 760px) {
-          .resume-exp-row {
-            grid-template-columns: 1fr;
-            gap: 6px;
-          }
-        }
-      `}</style>
     </SatgatDocument>
   );
 }
