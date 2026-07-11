@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .codex-orchestration/
+/.worktrees/
 
 # gjc runtime state (plans, ledgers, session state) — never published
 .gjc/
