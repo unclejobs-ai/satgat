@@ -71,7 +71,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-프로덕션은 `npm run build` 뒤 `npm run start`로 실행합니다. 서버 PDF는 Chromium을 사용합니다. 로컬에서는 `CHROMIUM_PATH`로 실행 파일을 지정할 수 있고, 미지정 환경에서는 패키지의 서버리스 Chromium 구성을 사용합니다.
+`.env.local`의 `SATGAT_APP_ORIGIN`을 사용자가 접속하는 정확한 `http` 또는 `https` origin으로 설정한 뒤 `npm run build`, `npm run start` 순서로 실행합니다. 이 값이 없으면 self-hosted production의 서버 PDF를 안전하게 렌더할 수 없습니다. 서버 PDF는 Chromium을 사용하며, 로컬에서는 `CHROMIUM_PATH`로 실행 파일을 지정할 수 있습니다. 미지정 환경에서는 패키지의 서버리스 Chromium 구성을 사용합니다.
 
 ## AI agent skill
 
@@ -95,24 +95,24 @@ skill은 시각 규칙과 콘텐츠 계약을 제공하는 지침입니다. 웹�
 
 | 문서 | ID | PageSpec | 실제 출력 |
 |---|---|---|---|
-| 이력서 | `resume` | A4 세로 | 1쪽 PDF/PNG |
-| 자기소개서 | `self-intro` | A4 세로 | 1쪽 PDF/PNG |
+| 이력서 | `resume` | A4 세로 | 1쪽 PDF · 1쪽 PNG |
+| 자기소개서 | `self-intro` | A4 세로 | 1쪽 PDF · 1쪽 PNG |
 | 명함 | `business-card` | 명함 8-up | A4 한 장에 90×55mm 명함 8면 |
-| 브랜드 원페이지 | `brand-onepager` | A4 가로 | 1쪽 PDF/PNG |
-| 제품 소개서 | `product-brochure` | A4 세로 | 1쪽 PDF/PNG |
-| 회사 소개서 | `company-profile` | A4 세로 | 1쪽 PDF/PNG |
-| 투자 IR 덱 | `investor-deck` | 16:9 슬라이드 | 9장 PDF/PNG 미리보기 |
-| 브랜드 스토리북 | `brand-storybook` | A4 세로 | 1쪽 PDF/PNG |
+| 브랜드 원페이지 | `brand-onepager` | A4 가로 | 1쪽 PDF · 1쪽 PNG |
+| 제품 소개서 | `product-brochure` | A4 세로 | 4쪽 PDF · 첫 페이지 PNG |
+| 회사 소개서 | `company-profile` | A4 세로 | 2쪽 PDF · 첫 페이지 PNG |
+| 투자 IR 덱 | `investor-deck` | 16:9 슬라이드 | 9장 PDF · 첫 슬라이드 PNG |
+| 브랜드 스토리북 | `brand-storybook` | A4 세로 | 3쪽 PDF · 첫 페이지 PNG |
 | 청첩장 | `invitation` | 엽서 세로 | 105×148mm 1면 |
 | 연하장 | `new-year-card` | 엽서 세로 | 105×148mm 1면 |
-| 제안서 | `proposal` | A4 세로 | 1쪽 PDF/PNG |
-| 뉴스레터 | `newsletter` | A4 세로 | 1쪽 PDF/PNG |
-| 포트폴리오 | `portfolio` | A4 가로 | 1쪽 PDF/PNG |
-| 보고서 | `report` | A4 세로 | 1쪽 PDF/PNG |
+| 제안서 | `proposal` | A4 세로 | 2쪽 PDF · 첫 페이지 PNG |
+| 뉴스레터 | `newsletter` | A4 세로 | 1쪽 PDF · 1쪽 PNG |
+| 포트폴리오 | `portfolio` | A4 가로 | 1쪽 PDF · 1쪽 PNG |
+| 보고서 | `report` | A4 세로 | 2쪽 PDF · 첫 페이지 PNG |
 
 지원 시각화: 막대, 선, 도넛, 폭포, 타임라인, 흐름도, 구성도, 사분면, 벤 도표, 레이어 스택.
 
-완성 예시는 [`/ko/examples`](https://satgat.vercel.app/ko/examples)에서 보고, 생성 계약은 [`manifest.json`](public/satgat/assets/examples/ko/manifest.json)에서 확인할 수 있습니다. `npm run specimens:render`는 프로덕션 React 경로를 열어 같은 14개 PNG/PDF를 다시 만듭니다.
+완성 예시는 [`/ko/examples`](https://satgat.vercel.app/ko/examples)에서 보고, canonical 배포 계약은 [`manifest.json`](public/satgat/assets/examples/ko/manifest.json)과 같은 디렉터리의 14개 PNG/PDF에서 확인할 수 있습니다. PNG는 각 문서의 첫 페이지 미리보기이고 PDF는 전체 페이지를 담습니다. `npm run specimens:render`는 production React 경로를 열어 세 아티팩트 집합을 다시 만듭니다.
 
 ## 데이터 처리와 공유
 
@@ -147,17 +147,17 @@ node scripts/design-guard.mjs --check-density
 
 ```bash
 npm run build
-npm run start -- --hostname 127.0.0.1 --port 3000
+SATGAT_APP_ORIGIN=http://127.0.0.1:3000 npm run start -- --hostname 127.0.0.1 --port 3000
 npm run verify:web
 ```
 
 CI의 blocking 계약:
 
-- `tokens:check`: `constraint.ts`에서 생성한 CSS·TypeScript 토큰과 저장된 파일의 drift 없음
-- `verify:templates`: 정의, registry, React renderer, 14개 PNG/PDF/manifest 일치
+- `tokens:check`: `constraint.ts`에서 생성한 `app/satgat-tokens.css`와 저장된 파일의 drift 없음
+- `verify:templates`: 정의, registry, React renderer, manifest, 14개 PNG/PDF의 메타데이터·바이너리·모든 PDF 페이지 치수 일치
 - `design-guard --check`: raw Unicode escape, 순백, `rgba()`, 장식 한자, 관리되지 않은 토큰 등 오류 0개
-- `lint`, `test`, `build`
-- 실행 중인 프로덕션 앱에서 `verify:web`: 데스크톱·모바일 랜딩, 생성 흐름, 14개 미리보기와 PDF MediaBox
+- `lint`, `typecheck`, `test`, `build`
+- 실행 중인 production 앱에서 `verify:web`: 데스크톱·모바일 랜딩/생성/미리보기, 14개 renderer, 모든 PDF 페이지, 실제 `/api/export` 응답
 
 디자인 밀도 검사는 현재 advisory warning으로 보고하며 CI 실패 조건은 아닙니다.
 
@@ -165,12 +165,11 @@ CI의 blocking 계약:
 
 ```text
 src/lib/design-system/constraint.ts       색·폰트·간격·그림자 원본
-scripts/generate-design-tokens.mjs        CSS/TypeScript 토큰 생성기
+scripts/generate-design-tokens.mjs        CSS 토큰 생성기
 app/satgat-tokens.css                     생성된 웹 토큰
-src/lib/design-system/generated-tokens.ts 생성된 코드 토큰
 src/lib/templates/definitions/            14개 슬롯·section·specimen 정의
-src/lib/templates/registry.ts             PageSpec·카테고리·renderer 연결
-src/components/templates/                 React 문서 렌더러
+src/lib/templates/registry.ts             PageSpec·카테고리 연결
+src/components/templates/runtime-catalog.tsx React renderer 연결
 src/lib/engine/                            슬롯 정규화·검증·렌더 계약
 src/lib/generation/                        AI 요청·응답 계약
 scripts/verify-template-catalog.mjs        카탈로그·아티팩트 검증
@@ -184,7 +183,7 @@ skills/satgat/SKILL.md                     에이전트용 한국 문서 brief
 2. 단청 `#9B1B1B`은 페이지의 5% 이내입니다.
 3. 보조 강조는 취색 또는 금박 중 하나만 고릅니다.
 4. 회색은 회녹 계열만 사용합니다.
-5. 제목은 명조 600–700, 본문은 바탕 400; 위계는 크기로 만듭니다.
+5. 표지·display는 명조 800, 제목은 명조 700, 본문은 바탕 400; 위계는 크기로 만듭니다.
 6. 문서 UI 색은 solid hex를 사용합니다.
 7. 큰 여백을 디자인 요소로 취급합니다.
 8. 합성 볼드와 장식 한자를 사용하지 않습니다. 한자는 필요한 고유명 옆 괄호 표기만 허용합니다.

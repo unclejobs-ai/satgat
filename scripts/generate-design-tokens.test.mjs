@@ -84,6 +84,29 @@ test('reads only literal constraint exports', async () => {
   await expect(readConstraintValues(file)).rejects.toThrow('JADE must be a string literal');
 });
 
+test('rejects mutable token exports and recovered TypeScript syntax', async () => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'satgat-token-shape-'));
+  temporaryDirectories.push(directory);
+  const file = path.join(directory, 'constraint.ts');
+  const valid = [
+    "export const CANVAS = '#F7F7F2';",
+    "export const IVORY = '#FFFFFB';",
+    "export const INK = '#1C1916';",
+    "export const INK_LIGHT = '#3A3833';",
+    "export const INK_MUTED = '#4D4B46';",
+    "export const HAIRLINE = '#D2D6CB';",
+    "export const DANCHEONG = '#9B1B1B';",
+    "export const FONT_MYEONGJO = 'serif';",
+    "export const FONT_BATANG = 'serif';",
+    "export const FONT_DODUM = 'sans-serif';",
+  ];
+  await fs.writeFile(file, valid.join('\n').replace('export const CANVAS', 'export let CANVAS'));
+  await expect(readConstraintValues(file)).rejects.toThrow('export const');
+
+  await fs.writeFile(file, `${valid.join('\n')}\nexport const BROKEN = ;\n`);
+  await expect(readConstraintValues(file)).rejects.toThrow('valid TypeScript');
+});
+
 test('accepts only explicit write and check commands', () => {
   expect(parseArgs(['--write'])).toBe('--write');
   expect(parseArgs(['--check'])).toBe('--check');

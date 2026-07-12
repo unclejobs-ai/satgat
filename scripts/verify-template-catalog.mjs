@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 import { previewFixtures } from './template-preview-fixtures.mjs';
 import { readTemplateDefinitionSources } from './template-catalog-source.mjs';
+import { inspectPdfBytes, validatePng } from './render-template-specimens.mjs';
 
 const root = process.cwd();
 const registryPath = path.join(root, 'src/lib/templates/registry.ts');
@@ -15,6 +16,13 @@ const PAGE_SPEC_IDS = new Set([
   'businessCard8Up',
   'postcardPortrait',
 ]);
+const PAGE_SPEC_MM = {
+  a4Portrait: { width: 210, height: 297 },
+  a4Landscape: { width: 297, height: 210 },
+  slide16x9: { width: 297, height: 167 },
+  businessCard8Up: { width: 210, height: 297 },
+  postcardPortrait: { width: 105, height: 148 },
+};
 const TEMPLATE_CATEGORIES = new Set(['personal', 'business', 'occasion']);
 const validSlotTypes = new Set(['text', 'textarea', 'image', 'list', 'table', 'visual']);
 const validSectionTypes = new Set([
@@ -353,6 +361,70 @@ export function validateRuntimeArtifacts(catalog, manifest, artifactFiles) {
   return errors;
 }
 
+export function validateRuntimeArtifactContents(catalog, manifest, readArtifact) {
+  const errors = [];
+  const catalogById = new Map(catalog.map((entry) => [entry.id, entry]));
+  for (const entry of manifest) {
+    const expected = catalogById.get(entry?.id);
+    if (!expected) continue;
+    for (const field of ['title', 'alt', 'prompt']) {
+      if (entry[field] !== expected.specimen?.[field]) {
+        errors.push(`runtime specimen "${entry.id}" ${field} does not match its template definition`);
+      }
+    }
+    for (const field of ['width', 'height', 'pageCount']) {
+      if (!Number.isInteger(entry[field]) || entry[field] < 1) {
+        errors.push(`runtime specimen "${entry.id}" ${field} must be a positive integer`);
+      }
+    }
+    try {
+      const dimensions = validatePng(readArtifact(entry.png));
+      if (dimensions.width !== entry.width || dimensions.height !== entry.height) {
+        errors.push(
+          `runtime specimen "${entry.id}" PNG dimensions ${dimensions.width}x${dimensions.height} ` +
+          `do not match manifest ${entry.width}x${entry.height}`,
+        );
+      }
+    } catch (error) {
+      errors.push(
+        `runtime specimen "${entry.id}" PNG is invalid: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+    try {
+      const pdf = inspectPdfBytes(readArtifact(entry.pdf));
+      if (pdf.pageCount !== entry.pageCount) {
+        errors.push(
+          `runtime specimen "${entry.id}" PDF page count ${pdf.pageCount} ` +
+          `does not match manifest ${entry.pageCount}`,
+        );
+      }
+      const geometry = PAGE_SPEC_MM[entry.pageSpec];
+      if (!geometry) {
+        errors.push(`runtime specimen "${entry.id}" has unknown PageSpec geometry "${entry.pageSpec}"`);
+        continue;
+      }
+      const expectedWidth = geometry.width * 72 / 25.4;
+      const expectedHeight = geometry.height * 72 / 25.4;
+      for (const [index, box] of pdf.mediaBoxes.entries()) {
+        if (
+          Math.abs(box.width - expectedWidth) > 1 ||
+          Math.abs(box.height - expectedHeight) > 1
+        ) {
+          errors.push(
+            `runtime specimen "${entry.id}" PDF page ${index + 1} MediaBox ` +
+            `${box.width}x${box.height} does not match ${entry.pageSpec}`,
+          );
+        }
+      }
+    } catch (error) {
+      errors.push(
+        `runtime specimen "${entry.id}" PDF is invalid: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+  return errors;
+}
+
 export function verifyTemplateCatalog() {
 const definitions = readTemplateDefinitionSources();
 const definitionsByExport = new Map(definitions.map((definition) => [definition.exportName, definition]));
@@ -370,6 +442,11 @@ try {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   const artifactFiles = fs.readdirSync(artifactDirectory);
   errors.push(...validateRuntimeArtifacts(definitions, manifest, artifactFiles));
+  errors.push(...validateRuntimeArtifactContents(
+    definitions,
+    manifest,
+    (filename) => fs.readFileSync(path.join(artifactDirectory, filename)),
+  ));
 } catch (error) {
   errors.push(
     `runtime specimen artifacts are unavailable: ${error instanceof Error ? error.message : String(error)}`,

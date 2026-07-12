@@ -6,7 +6,11 @@ import {
   assertReadmeContract,
   assertTemplateCardWidth,
 } from './verify-web-product.mjs';
-import { validateRuntimeArtifacts } from './verify-template-catalog.mjs';
+import {
+  validateRuntimeArtifactContents,
+  validateRuntimeArtifacts,
+} from './verify-template-catalog.mjs';
+import { inspectPdfBytes } from './render-template-specimens.mjs';
 
 test('rejects a mobile card under the minimum readable width', () => {
   expect(() => assertTemplateCardWidth(155)).toThrow('156px');
@@ -54,4 +58,50 @@ test('rejects stale README transport and static-demo claims', () => {
   expect(() => assertReadmeContract('## 1분 안에 만들기\n?data=payload\nsatgat-ko.html')).toThrow(
     'README',
   );
+});
+
+test('reads every PDF page box and rejects count or geometry drift', () => {
+  const pdf = Buffer.from(
+    '%PDF-1.7\n' +
+    '/Type /Page /MediaBox [0 0 841.92 473.04]\n' +
+    '/Type /Page /MediaBox [0 0 841.92 473.04]\n' +
+    '%%EOF\n',
+    'latin1',
+  );
+  expect(inspectPdfBytes(pdf)).toEqual({
+    pageCount: 2,
+    mediaBoxes: [
+      { width: 841.92, height: 473.04 },
+      { width: 841.92, height: 473.04 },
+    ],
+  });
+  expect(() => inspectPdfBytes(Buffer.from('%PDF-1.7\n/Type /Page\n%%EOF\n'))).toThrow('MediaBox');
+});
+
+test('rejects corrupt committed specimen bytes and false manifest measurements', () => {
+  const catalog = [{
+    id: 'resume',
+    pageSpec: 'a4Portrait',
+    specimen: { title: '이력서', alt: '이력서 예시', prompt: '이력서를 작성해 주세요.' },
+  }];
+  const manifest = [{
+    id: 'resume',
+    pageSpec: 'a4Portrait',
+    title: '다른 제목',
+    alt: '이력서 예시',
+    prompt: '이력서를 작성해 주세요.',
+    png: 'resume.png',
+    pdf: 'resume.pdf',
+    width: 999,
+    height: 999,
+    pageCount: 999,
+  }];
+  const errors = validateRuntimeArtifactContents(
+    catalog,
+    manifest,
+    () => Buffer.from('not an artifact'),
+  );
+  expect(errors.some((error) => error.includes('title'))).toBe(true);
+  expect(errors.some((error) => error.includes('PNG'))).toBe(true);
+  expect(errors.some((error) => error.includes('PDF'))).toBe(true);
 });

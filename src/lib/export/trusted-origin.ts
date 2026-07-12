@@ -36,7 +36,7 @@ function validatedConfiguredOrigin(value: string, allowLocalHttp: boolean): stri
 export function resolveTrustedPdfOrigin({ env, requestUrl }: TrustedOriginOptions): string {
   const development = env.NODE_ENV === "development";
   if (env.SATGAT_APP_ORIGIN) {
-    return validatedConfiguredOrigin(env.SATGAT_APP_ORIGIN, development);
+    return validatedConfiguredOrigin(env.SATGAT_APP_ORIGIN, true);
   }
 
   if (env.NODE_ENV === "production" && env.VERCEL_URL) {

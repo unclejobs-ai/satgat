@@ -51,11 +51,17 @@ function isExported(node) {
 export async function readConstraintValues(filePath = CONSTRAINT_PATH) {
   const source = await fs.readFile(filePath, 'utf8');
   const sourceFile = ts.createSourceFile(filePath, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  if (sourceFile.parseDiagnostics.length > 0) {
+    throw new Error('constraint.ts must be valid TypeScript');
+  }
   const wanted = new Set(TOKEN_SPECS.map(([name]) => name));
   const values = {};
 
   for (const statement of sourceFile.statements) {
     if (!ts.isVariableStatement(statement) || !isExported(statement)) continue;
+    if ((statement.declarationList.flags & ts.NodeFlags.Const) === 0) {
+      throw new Error('Constraint tokens must use export const declarations');
+    }
     for (const declaration of statement.declarationList.declarations) {
       if (!ts.isIdentifier(declaration.name) || !wanted.has(declaration.name.text)) continue;
       if (!declaration.initializer || !ts.isStringLiteral(declaration.initializer)) {

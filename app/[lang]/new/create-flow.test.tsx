@@ -70,14 +70,14 @@ test("uses two catalog seeds, the catalog checklist, and exact prompt limits", (
   expect(short.seeds).toEqual(report!.promptSeeds.slice(0, 2));
   expect(short.facts).toEqual(report!.factChecklist);
   expect(short.minLength).toBe(10);
-  expect(short.maxLength).toBe(8_000);
+  expect(short.maxLength).toBe(1_200);
   expect(short.ready).toBe(false);
 
   const ready = getPromptComposerView(report!, "충분한 길이의 보고서 원고입니다.");
   expect(ready.ready).toBe(true);
   expect(ready.remaining).toBe(0);
   expect(GENERATE_REQUEST_LIMITS.promptMin).toBe(10);
-  expect(GENERATE_REQUEST_LIMITS.promptMax).toBe(8_000);
+  expect(GENERATE_REQUEST_LIMITS.promptMax).toBe(1_200);
 });
 
 test("renders all template choices with category and selection semantics", () => {
@@ -139,7 +139,7 @@ test("renders prompt bounds, disabled and loading states", () => {
     />,
   );
   expect(idleMarkup).toContain('minLength="10"');
-  expect(idleMarkup).toContain('maxLength="8000"');
+  expect(idleMarkup).toContain('maxLength="1200"');
   expect(idleMarkup).toContain(">생성 가능 · ");
   expect(idleMarkup).not.toContain("disabled");
 

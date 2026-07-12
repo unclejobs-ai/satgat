@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 
 import {
   acquireRenderLock,
+  closeBrowserSafely,
   allocateLoopbackPort,
   assertDirectChildPath,
   buildSpecimenManifest,
@@ -345,6 +346,27 @@ describe('generator input boundaries', () => {
     });
     await stopProductionServer(child);
     expect(child.exitCode ?? child.signalCode).not.toBeNull();
+  });
+
+  test('force-kills Chromium when graceful close exceeds its deadline', async () => {
+    let killed = false;
+    const browser = {
+      close: () => new Promise(() => {}),
+      process: () => ({
+        kill(signal) {
+          killed = signal === 'SIGKILL';
+          return true;
+        },
+      }),
+    };
+
+    await closeBrowserSafely(browser, 5);
+    expect(killed).toBe(true);
+
+    await expect(closeBrowserSafely({
+      close: () => Promise.reject(new Error('close failed')),
+      process: () => ({ kill: () => false }),
+    }, 5)).rejects.toThrow('could not be force-killed');
   });
 });
 

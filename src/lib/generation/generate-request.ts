@@ -8,7 +8,7 @@ import {
 export const GENERATE_REQUEST_LIMITS = {
   templateIdMax: 64,
   promptMin: 10,
-  promptMax: 8000,
+  promptMax: 1200,
 } as const;
 
 export const GenerateRequestSchema = z.object({

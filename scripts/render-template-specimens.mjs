@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { access, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
@@ -21,7 +21,6 @@ const LOCAL_CHROMIUM_PATHS = [
 ];
 const SERVER_READY_TIMEOUT_MS = 60_000;
 const RENDER_TIMEOUT_MS = 60_000;
-const PDFINFO_TIMEOUT_MS = 10_000;
 const REQUIRED_FONT_FACES = [
   ['Nanum Myeongjo', '400'],
   ['Nanum Myeongjo', '700'],
@@ -444,6 +443,33 @@ export function validatePng(bytes) {
   return { width, height };
 }
 
+export function inspectPdfBytes(bytes) {
+  if (
+    !Buffer.isBuffer(bytes) ||
+    bytes.length < 20 ||
+    !bytes.subarray(0, 5).equals(Buffer.from('%PDF-')) ||
+    !/%%EOF\s*$/.test(bytes.toString('latin1'))
+  ) {
+    throw new Error('Chromium did not produce a complete PDF');
+  }
+  const source = bytes.toString('latin1');
+  const pageCount = source.match(/\/Type\s*\/Page\b/g)?.length ?? 0;
+  if (pageCount < 1) throw new Error('PDF has no readable pages');
+  const mediaBoxes = [...source.matchAll(
+    /\/MediaBox\s*\[\s*0(?:\.0+)?\s+0(?:\.0+)?\s+([\d.]+)\s+([\d.]+)\s*\]/g,
+  )].map((match) => ({
+    width: Number(match[1]),
+    height: Number(match[2]),
+  }));
+  if (
+    mediaBoxes.length !== pageCount ||
+    mediaBoxes.some(({ width, height }) => !Number.isFinite(width) || !Number.isFinite(height))
+  ) {
+    throw new Error(`PDF MediaBox count ${mediaBoxes.length} does not match page count ${pageCount}`);
+  }
+  return { pageCount, mediaBoxes };
+}
+
 export function assertDirectChildPath(directory, filename) {
   if (!filename || path.basename(filename) !== filename) {
     throw new Error(`Artifact name must be a direct child: ${filename}`);
@@ -457,23 +483,7 @@ export function assertDirectChildPath(directory, filename) {
 }
 
 function inspectPdf(pdfPath) {
-  const bytes = fs.readFileSync(pdfPath);
-  if (bytes.length < 100 || !bytes.subarray(0, 5).equals(Buffer.from('%PDF-')) || !bytes.includes(Buffer.from('%%EOF'))) {
-    throw new Error(`Chromium did not produce a complete PDF: ${pdfPath}`);
-  }
-  const result = spawnSync('pdfinfo', [pdfPath], {
-    encoding: 'utf8',
-    timeout: PDFINFO_TIMEOUT_MS,
-  });
-  if (result.error?.code === 'ETIMEDOUT') throw new Error(`pdfinfo timed out for ${pdfPath}`);
-  if (result.error) throw new Error(`pdfinfo could not inspect ${pdfPath}`, { cause: result.error });
-  if (result.status !== 0) {
-    throw new Error(`pdfinfo failed for ${pdfPath}: ${result.stderr.trim()}`);
-  }
-  const match = result.stdout.match(/^Pages:\s+(\d+)$/m);
-  const pageCount = Number(match?.[1]);
-  if (!Number.isInteger(pageCount) || pageCount < 1) throw new Error(`Invalid PDF page count: ${pdfPath}`);
-  return pageCount;
+  return inspectPdfBytes(fs.readFileSync(pdfPath)).pageCount;
 }
 
 async function renderTemplate({ browser, origin, outputDirectory, template }) {
@@ -726,13 +736,41 @@ async function replaceArtifactDirectory(outputDirectory, stagedDirectory) {
   }
 }
 
+export async function closeBrowserSafely(browser, timeoutMs = 5_000) {
+  if (!browser) return;
+  try {
+    await runBeforeDeadline(Date.now() + timeoutMs, () => browser.close(), 'Closing browser');
+    return;
+  } catch (closeError) {
+    const child = browser.process?.();
+    if (!child || typeof child.kill !== 'function') throw closeError;
+    const exited = typeof child.once === 'function'
+      ? new Promise((resolve) => child.once('exit', resolve))
+      : null;
+    if (child.kill('SIGKILL') === false) {
+      throw new Error('Chromium could not be force-killed', { cause: closeError });
+    }
+    if (exited) {
+      const didExit = await Promise.race([
+        exited.then(() => true),
+        new Promise((resolve) => setTimeout(() => resolve(false), timeoutMs)),
+      ]);
+      if (!didExit && child.exitCode === null) {
+        throw new Error('Chromium did not exit after SIGKILL', { cause: closeError });
+      }
+    }
+  }
+}
+
 export async function settleCleanup(primaryError, cleanupOperations) {
-  const results = await Promise.allSettled(
-    cleanupOperations.map((operation) => Promise.resolve().then(operation)),
-  );
-  const cleanupErrors = results
-    .filter((result) => result.status === 'rejected')
-    .map((result) => result.reason);
+  const cleanupErrors = [];
+  for (const operation of cleanupOperations) {
+    try {
+      await operation();
+    } catch (error) {
+      cleanupErrors.push(error);
+    }
+  }
   if (primaryError) throw primaryError;
   if (cleanupErrors.length) throw new AggregateError(cleanupErrors, 'Specimen cleanup failed');
 }
@@ -784,9 +822,7 @@ export async function renderTemplateSpecimens({ baseUrl } = {}) {
   let cleanupError;
   try {
     await settleCleanup(primaryError, [
-      () => browser
-        ? runBeforeDeadline(Date.now() + 5_000, () => browser.close(), 'Closing browser')
-        : Promise.resolve(),
+      () => closeBrowserSafely(browser),
       () => runBeforeDeadline(
         Date.now() + 5_000,
         () => stopProductionServer(server?.child),

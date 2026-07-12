@@ -5,7 +5,11 @@ import { pathToFileURL } from 'node:url';
 
 import { previewFixtures } from './template-preview-fixtures.mjs';
 import { readTemplateCatalogSource } from './template-catalog-source.mjs';
-import { normalizeBaseUrl, resolveLauncher } from './render-template-specimens.mjs';
+import {
+  inspectPdfBytes,
+  normalizeBaseUrl,
+  resolveLauncher,
+} from './render-template-specimens.mjs';
 
 const READY_TIMEOUT_MS = 30_000;
 const DOCUMENT_SELECTOR = '.satgat-document[data-page-spec]';
@@ -67,13 +71,30 @@ const REQUIRED_README_HEADINGS = [
   '## 데이터 처리와 공유',
   '## 개발·검증',
 ];
+const REQUIRED_README_SNIPPETS = [
+  'SATGAT_APP_ORIGIN',
+  'app/satgat-tokens.css',
+  '4쪽 PDF',
+  '실제 `/api/export`',
+];
 
 export function assertReadmeContract(readme) {
   const errors = [];
   for (const heading of REQUIRED_README_HEADINGS) {
     if (!readme.split('\n').includes(heading)) errors.push(`missing heading "${heading}"`);
   }
-  for (const stale of ['?data=', '13종 specimen', 'TEMPLATE_SEAL', 'satgat-ko.html', '자동 반영']) {
+  for (const snippet of REQUIRED_README_SNIPPETS) {
+    if (!readme.includes(snippet)) errors.push(`missing runtime claim "${snippet}"`);
+  }
+  for (const stale of [
+    '?data=',
+    '13종 specimen',
+    'TEMPLATE_SEAL',
+    'satgat-ko.html',
+    '자동 반영',
+    'generated-tokens.ts',
+    'CSS·TypeScript 토큰',
+  ]) {
     if (readme.includes(stale)) errors.push(`contains stale claim "${stale}"`);
   }
   if (errors.length) fail(`README contract is stale: ${errors.join('; ')}`);
@@ -217,29 +238,62 @@ async function inspectCreateFlow(page, origin) {
     return submit instanceof HTMLButtonElement && !submit.disabled;
   });
   if (!enabled) fail('generation CTA must enable after a valid prompt');
+
+  await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
+  await page.goto(`${origin}/ko/new?template=resume`, {
+    waitUntil: 'networkidle2',
+    timeout: READY_TIMEOUT_MS,
+  });
+  const mobile = await page.evaluate(() => {
+    const controls = [...document.querySelectorAll('textarea, button, input')];
+    return {
+      scrollWidth: document.documentElement.scrollWidth,
+      viewportWidth: document.documentElement.clientWidth,
+      clippedControls: controls
+        .map((control) => control.getBoundingClientRect())
+        .filter((rect) => rect.width > 0 && (rect.left < -1 || rect.right > window.innerWidth + 1))
+        .length,
+    };
+  });
+  if (mobile.scrollWidth !== mobile.viewportWidth || mobile.clippedControls > 0) {
+    fail('/ko/new mobile layout must not overflow or clip controls');
+  }
 }
 
 function pointsFromMm(value) {
   return value * 72 / 25.4;
 }
 
-function assertPdfGeometry(pdfBytes, pageSpec) {
+function assertPdfGeometry(pdfBytes, pageSpec, expectedPageCount) {
   if (pdfBytes.byteLength < 1000) fail(`${pageSpec} PDF is empty`);
   const geometry = PAGE_SPEC_MM[pageSpec];
   if (!geometry) fail(`unknown page spec ${pageSpec}`);
-  const source = Buffer.from(pdfBytes).toString('latin1');
-  const match = source.match(/\/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)\s*\]/);
-  if (!match) fail(`${pageSpec} PDF has no readable MediaBox`);
-  const width = Number(match[1]);
-  const height = Number(match[2]);
+  let pdf;
+  try {
+    pdf = inspectPdfBytes(Buffer.from(pdfBytes));
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
+  }
+  if (pdf.pageCount !== expectedPageCount) {
+    fail(`${pageSpec} PDF page count ${pdf.pageCount} does not match ${expectedPageCount}`);
+  }
   const expectedWidth = pointsFromMm(geometry.width);
   const expectedHeight = pointsFromMm(geometry.height);
-  if (Math.abs(width - expectedWidth) > 1 || Math.abs(height - expectedHeight) > 1) {
-    fail(`${pageSpec} PDF MediaBox ${width}x${height}pt does not match ${expectedWidth.toFixed(2)}x${expectedHeight.toFixed(2)}pt`);
+  for (const [index, box] of pdf.mediaBoxes.entries()) {
+    if (
+      Math.abs(box.width - expectedWidth) > 1 ||
+      Math.abs(box.height - expectedHeight) > 1
+    ) {
+      fail(
+        `${pageSpec} PDF page ${index + 1} MediaBox ${box.width}x${box.height}pt ` +
+        `does not match ${expectedWidth.toFixed(2)}x${expectedHeight.toFixed(2)}pt`,
+      );
+    }
   }
 }
 
 async function inspectTemplatePreview(page, origin, template) {
+  await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
   const fixture = previewFixtures[template.id];
   if (!fixture) fail(`missing preview fixture for ${template.id}`);
   const draftId = crypto.randomUUID();
@@ -305,10 +359,79 @@ async function inspectTemplatePreview(page, origin, template) {
     preferCSSPageSize: true,
     timeout: READY_TIMEOUT_MS,
   });
-  assertPdfGeometry(pdfBytes, template.pageSpec);
+  assertPdfGeometry(pdfBytes, template.pageSpec, state.pageSpecs.length);
   await page.emulateMediaType('screen');
 
   return { id: template.id, pages: state.pageSpecs.length, pdfBytes: pdfBytes.byteLength };
+}
+
+async function inspectMobilePreview(page, origin, template, inspectShareDialog) {
+  const fixture = previewFixtures[template.id];
+  const draftId = crypto.randomUUID();
+  await page.goto(`${origin}/ko/new`, { waitUntil: 'domcontentloaded', timeout: READY_TIMEOUT_MS });
+  await page.evaluate(
+    ({ key, data }) => sessionStorage.setItem(key, JSON.stringify(data)),
+    {
+      key: `${DRAFT_STORAGE_PREFIX}${draftId}`,
+      data: { templateId: template.id, slots: fixture },
+    },
+  );
+  await page.goto(`${origin}/ko/preview?draft=${draftId}`, {
+    waitUntil: 'networkidle2',
+    timeout: READY_TIMEOUT_MS,
+  });
+  await page.waitForSelector(DOCUMENT_SELECTOR, { timeout: READY_TIMEOUT_MS });
+  await page.waitForFunction(
+    () => !document.body.innerText.includes('문서를 준비하는 중'),
+    { timeout: READY_TIMEOUT_MS },
+  );
+  const mobile = await page.evaluate(() => {
+    const roots = [...document.querySelectorAll('.satgat-document[data-page-spec]')];
+    const toolbar = document.querySelector('.preview-toolbar');
+    const bounds = [toolbar, ...roots]
+      .filter((node) => node instanceof HTMLElement)
+      .map((node) => node.getBoundingClientRect());
+    return {
+      scrollWidth: document.documentElement.scrollWidth,
+      viewportWidth: document.documentElement.clientWidth,
+      clipped: bounds.filter((rect) => rect.left < -1 || rect.right > window.innerWidth + 1).length,
+    };
+  });
+  if (mobile.scrollWidth !== mobile.viewportWidth || mobile.clipped > 0) {
+    fail(`${template.id} mobile preview must fit the viewport`);
+  }
+  if (inspectShareDialog) {
+    await page.click('.tb-copy');
+    const dialogFits = await page.evaluate(() => {
+      const dialog = document.querySelector('[role="dialog"]');
+      if (!(dialog instanceof HTMLElement)) return false;
+      const rect = dialog.getBoundingClientRect();
+      return rect.left >= 0 && rect.right <= window.innerWidth;
+    });
+    if (!dialogFits) fail('mobile share dialog must fit the viewport');
+    await page.keyboard.press('Escape');
+    const focusReturned = await page.evaluate(
+      () => document.activeElement?.classList.contains('tb-copy') ?? false,
+    );
+    if (!focusReturned) fail('mobile share dialog must restore trigger focus after Escape');
+  }
+}
+
+async function inspectServerExport(origin, template, expectedPageCount) {
+  const response = await fetch(`${origin}/api/export`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      templateId: template.id,
+      slots: previewFixtures[template.id],
+    }),
+    signal: AbortSignal.timeout(READY_TIMEOUT_MS),
+  });
+  if (!response.ok) fail(`/api/export returned HTTP ${response.status}`);
+  if (!response.headers.get('content-type')?.includes('application/pdf')) {
+    fail('/api/export must return application/pdf');
+  }
+  assertPdfGeometry(await response.arrayBuffer(), template.pageSpec, expectedPageCount);
 }
 
 export async function verifyWebProduct(baseUrl) {
@@ -327,6 +450,21 @@ export async function verifyWebProduct(baseUrl) {
     const templates = [];
     for (const template of catalog) {
       templates.push(await inspectTemplatePreview(page, origin, template));
+    }
+    const exportTemplate = catalog.find(({ id }) => id === 'resume');
+    const exportResult = templates.find(({ id }) => id === 'resume');
+    if (!exportTemplate || !exportResult) fail('resume export fixture is unavailable');
+    await inspectServerExport(origin, exportTemplate, exportResult.pages);
+
+    await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
+    const representatives = new Map();
+    for (const template of catalog) {
+      if (!representatives.has(template.pageSpec)) representatives.set(template.pageSpec, template);
+    }
+    let firstMobile = true;
+    for (const template of representatives.values()) {
+      await inspectMobilePreview(page, origin, template, firstMobile);
+      firstMobile = false;
     }
     await page.close();
     return { landing, templates };

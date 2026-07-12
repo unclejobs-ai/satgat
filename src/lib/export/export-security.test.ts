@@ -16,6 +16,9 @@ test("production origin uses explicit configuration and ignores forged request h
     env: { NODE_ENV: "production", SATGAT_APP_ORIGIN: "https://satgat.example" },
     requestUrl: "https://evil.example/api/export",
   })).toBe("https://satgat.example");
+  expect(resolveTrustedPdfOrigin({
+    env: { NODE_ENV: "production", SATGAT_APP_ORIGIN: "http://127.0.0.1:3000" },
+  })).toBe("http://127.0.0.1:3000");
 
   expect(() => resolveTrustedPdfOrigin({
     env: { NODE_ENV: "production" },

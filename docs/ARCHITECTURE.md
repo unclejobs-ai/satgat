@@ -59,9 +59,9 @@ app/satgat-tokens.css               생성된 CSS 토큰
 src/components/document/            공통 페이지·인쇄 primitive
 src/components/templates/           14개 React renderer
 src/lib/design-system/constraint.ts canonical token source
-src/lib/design-system/generated-tokens.ts generated code tokens
 src/lib/templates/definitions/      슬롯·section·specimen 정의
-src/lib/templates/registry.ts       PageSpec·category·renderer registry
+src/lib/templates/registry.ts       PageSpec·category registry
+src/components/templates/runtime-catalog.tsx renderer registry
 src/lib/engine/                      정규화·검증·render dispatch
 src/lib/generation/                  AI 요청·응답 application logic
 src/lib/preview/                     draft·share·PDF attempt state
@@ -179,10 +179,9 @@ PDF는 `printBackground: true`, `preferCSSPageSize: true`를 사용한다. 검�
 constraint.ts
   -> scripts/generate-design-tokens.mjs
     -> app/satgat-tokens.css
-    -> src/lib/design-system/generated-tokens.ts
 ```
 
-`npm run tokens:check`는 생성 결과를 임시로 계산해 저장된 두 파일과 byte-level로 비교한다. generated 파일을 직접 수정하지 않는다.
+`npm run tokens:check`는 생성 CSS를 임시로 계산해 저장된 `app/satgat-tokens.css`와 byte-level로 비교한다. 생성 파일을 직접 수정하지 않는다.
 
 핵심 불변식:
 
@@ -190,43 +189,48 @@ constraint.ts
 - dancheong `#9B1B1B`; 페이지 5% 이하
 - secondary accent는 jade 또는 gold 중 하나
 - gray는 warm/green cast
-- display 600–700, body 400; 실제 제공 font face만 사용
+- display 800, heading 700, body/label 400; 실제 제공 font face만 사용
 - active UI/document color는 solid hex
 - 장식 한자 금지; 필요한 고유명 옆 괄호만 허용
 - page surface에 두꺼운 drop shadow 금지
 
 폰트는 `public/fonts/satgat-fonts.css`에서 self-host한다. 화면과 PDF가 같은 family/weight를 사용하며 외부 font CDN을 런타임 전제조건으로 두지 않는다.
 
+Self-hosted production의 `/api/export`는 `SATGAT_APP_ORIGIN`을 신뢰할 정확한 `http`/`https` origin으로 요구한다. Vercel에서는 검증된 `VERCEL_URL`이 대체 경계가 된다. runtime 검증은 실제 export endpoint를 호출하므로 이 설정이 빠지면 CI도 실패한다.
+
 ## 9. 검증 계층
 
 | 계층 | 명령 | blocking 계약 |
 |---|---|---|
-| token generation | `npm run tokens:check` | generated CSS/TS drift 0 |
-| catalog | `npm run verify:templates` | 14 definitions, registry, renderers, fixtures, PNG/PDF/manifest 일치 |
+| token generation | `npm run tokens:check` | generated CSS drift 0; valid immutable `export const` source |
+| catalog | `npm run verify:templates` | 14 definitions, registry, renderers, fixtures, manifest, PNG/PDF 내용·치수 일치 |
 | static design | `node scripts/design-guard.mjs --check` | 오류 0; advisory warning은 보고 |
 | density | `node scripts/design-guard.mjs --check-density` | 14 fixture 페이지의 물리 밀도 보고; 현재 advisory |
 | unit/integration | `npm test` | domain·UI 계약 |
 | lint/type | `npm run lint`, `npx tsc --noEmit` | 오류 0 |
 | production | `npm run build` | Next.js production compile |
-| runtime | `npm run verify:web` | 랜딩·생성·14 preview·PDF geometry |
+| runtime | `npm run verify:web` | 데스크톱·모바일 랜딩/생성/preview, 모든 PDF page, 실제 `/api/export` |
 
-`verify:web`은 실행 중인 production server를 대상으로 한다. 랜딩의 최대 높이, 모바일 카드 최소 폭, opaque draft URL, 14개 renderer, 화면 canvas 치수, PDF PageSpec을 검사한다.
+`verify:web`은 실행 중인 production server를 대상으로 한다. 랜딩의 최대 높이, 모바일 카드 최소 폭, opaque draft URL, 모바일 생성/다섯 PageSpec 미리보기, 14개 renderer, 화면 canvas 치수, 모든 PDF 페이지 수·MediaBox, 서버 export endpoint를 검사한다.
 
 ## 10. CI 순서
 
 `.github/workflows/ci.yml`의 `verify` job은 다음 순서를 사용한다.
 
-1. checkout, Node 20, `npm ci`
-2. `tokens:check`
-3. `lint`
-4. `test`
-5. `build`
-6. production server 시작
-7. `verify:web`
-8. server 종료
-9. `verify:templates`
-10. strict design guard
-11. advisory density guard
+1. checkout
+2. Node 20과 Bun 준비
+3. `npm ci`
+4. `npm run lint`
+5. `npx tsc --noEmit`
+6. `npm test`
+7. `npm run tokens:check`
+8. `npm run verify:templates`
+9. strict design guard
+10. advisory density guard
+11. `npm run build`
+12. `SATGAT_APP_ORIGIN=http://127.0.0.1:3000`으로 production server 시작
+13. `npm run verify:web`
+14. trap으로 server 종료
 
 CI와 로컬 명령은 같은 package scripts를 사용한다. 별도 CI 전용 renderer나 artifact source는 없다.
 
@@ -238,7 +242,7 @@ CI와 로컬 명령은 같은 package scripts를 사용한다. 별도 CI 전용 
 - **Explicit sharing:** 내용 포함 링크는 경고와 확인 뒤에만 만든다.
 - **Explicit brand application:** browser-local 브랜드 값은 사용자가 적용을 켠 요청에만 포함한다.
 - **Generated tokens:** token output은 수작업 복제 대신 generator로 파생한다.
-- **Runtime artifacts:** 공개 예시는 production runtime에서 생성한 14개 PNG/PDF만 canonical로 취급한다.
+- **Runtime artifacts:** 공개 예시는 production runtime에서 함께 생성한 manifest와 14개 PNG/PDF를 canonical 배포 집합으로 취급한다.
 - **No speculative roadmap:** 구현되지 않은 요금제, 계정, 편집기, 결제를 현재 기능처럼 문서화하지 않는다.
 
 ## 12. 변경 체크리스트
