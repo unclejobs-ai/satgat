@@ -1,7 +1,9 @@
+import fs from 'node:fs';
 import { expect, test } from 'bun:test';
 import {
   assertLandingMetrics,
   assertPreviewUrl,
+  assertReadmeContract,
   assertTemplateCardWidth,
 } from './verify-web-product.mjs';
 import { validateRuntimeArtifacts } from './verify-template-catalog.mjs';
@@ -41,4 +43,15 @@ test('rejects missing Report artifacts and legacy manifest fields', () => {
   expect(errors.some((error) => error.includes('14 manifest entries'))).toBe(true);
   expect(errors.some((error) => error.includes('report'))).toBe(true);
   expect(errors.some((error) => error.includes('legacy field \"html\"'))).toBe(true);
+});
+
+test('README exposes the current web product contract', () => {
+  const readme = fs.readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+  expect(() => assertReadmeContract(readme)).not.toThrow();
+});
+
+test('rejects stale README transport and static-demo claims', () => {
+  expect(() => assertReadmeContract('## 1분 안에 만들기\n?data=payload\nsatgat-ko.html')).toThrow(
+    'README',
+  );
 });

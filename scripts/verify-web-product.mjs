@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -55,6 +56,27 @@ export function assertLandingMetrics({ desktopHeight, mobileHeight }) {
   if (!Number.isFinite(mobileHeight) || mobileHeight > 12000) {
     fail(`mobile landing height must not exceed 12000px; received ${mobileHeight}px`);
   }
+}
+
+const REQUIRED_README_HEADINGS = [
+  '## 1분 안에 만들기',
+  '## 웹앱 사용',
+  '## 셀프호스팅',
+  '## AI agent skill',
+  '## 14개 문서와 실제 출력 형식',
+  '## 데이터 처리와 공유',
+  '## 개발·검증',
+];
+
+export function assertReadmeContract(readme) {
+  const errors = [];
+  for (const heading of REQUIRED_README_HEADINGS) {
+    if (!readme.split('\n').includes(heading)) errors.push(`missing heading "${heading}"`);
+  }
+  for (const stale of ['?data=', '13종 specimen', 'TEMPLATE_SEAL', 'satgat-ko.html', '자동 반영']) {
+    if (readme.includes(stale)) errors.push(`contains stale claim "${stale}"`);
+  }
+  if (errors.length) fail(`README contract is stale: ${errors.join('; ')}`);
 }
 
 function parseArguments(argv) {
@@ -291,6 +313,7 @@ async function inspectTemplatePreview(page, origin, template) {
 
 export async function verifyWebProduct(baseUrl) {
   const origin = normalizeBaseUrl(baseUrl);
+  assertReadmeContract(fs.readFileSync(path.join(process.cwd(), 'README.md'), 'utf8'));
   await waitForApplication(origin);
   const catalog = readTemplateCatalogSource();
   if (catalog.length !== 14) fail(`catalog must contain 14 templates; found ${catalog.length}`);

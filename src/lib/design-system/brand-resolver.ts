@@ -91,42 +91,7 @@ export const WebBrandProfileSchema = z.object({
   return normalized;
 }).refine((profile) => Object.keys(profile).length > 0, "Brand profile must not be empty");
 
-function parseYamlFrontmatter(content: string): { frontmatter: Record<string, string>; body: string } {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!match) {
-    return { frontmatter: {}, body: content };
-  }
 
-  const yamlText = match[1];
-  const body = match[2].trim();
-  const frontmatter: Record<string, string> = {};
-
-  for (const line of yamlText.split("\n")) {
-    const colonIdx = line.indexOf(":");
-    if (colonIdx > 0) {
-      const key = line.slice(0, colonIdx).trim();
-      const value = line.slice(colonIdx + 1).trim().replace(/^["']|["']$/g, "");
-      frontmatter[key] = value;
-    }
-  }
-
-  return { frontmatter, body };
-}
-
-export function parseBrandProfile(content: string): BrandProfile {
-  const { frontmatter, body } = parseYamlFrontmatter(content);
-  return {
-    name: frontmatter.name,
-    role: frontmatter.role,
-    email: frontmatter.email,
-    website: frontmatter.website,
-    github: frontmatter.github,
-    brandColor: frontmatter.brandColor ?? frontmatter["brand-color"],
-    language: frontmatter.language,
-    tone: frontmatter.tone,
-    body,
-  };
-}
 
 export function normalizeWebBrandProfile(value: unknown): WebBrandProfile | null {
   const result = WebBrandProfileSchema.safeParse(value);
