@@ -13,7 +13,6 @@ import {
   INK_MUTED,
   HAIRLINE,
   DANCHEONG,
-  GOLD,
   CANVAS,
   IVORY,
 } from '@/lib/design-system/constraint';
@@ -145,7 +144,7 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
               style={{
                 width: 86,
                 height: 86,
-                border: `1px solid ${GOLD}`,
+                border: `1px solid ${HAIRLINE}`,
                 display: 'grid',
                 placeItems: 'center',
                 alignSelf: 'flex-end',

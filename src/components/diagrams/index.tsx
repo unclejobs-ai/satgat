@@ -14,8 +14,6 @@ import {
   BORDER,
   HAIRLINE,
   DANCHEONG,
-  JADE,
-  GOLD,
   FONT_MYEONGJO,
   FONT_BATANG,
   FONT_DODUM,
@@ -27,7 +25,7 @@ const DANCHEONG_WASH = CANVAS;
 const JADE_WASH = CANVAS;
 const GOLD_WASH = CANVAS;
 const INK_WASH = CANVAS_DARK;
-const SERIES = [INK_LIGHT, INK_MUTED, MUTED, BORDER, DANCHEONG, JADE, GOLD];
+const SERIES = [INK_LIGHT, INK_MUTED, MUTED, BORDER];
 
 type Point = { x: number; y: number };
 type NumericDatum = { label: string; value: number };
@@ -266,7 +264,7 @@ export function WaterfallChart({ data }: { data: NumericDatum[] }) {
         const x = pad.l + i * band + (band - barW) / 2;
         const bh = (d.value / max) * (chartH / 2 - 12);
         const y = d.value >= 0 ? yBase - bh : yBase;
-        const fill = d.value >= 0 ? JADE : DANCHEONG;
+        const fill = d.value >= 0 ? INK_LIGHT : DANCHEONG;
         return (
           <g key={`${d.label}-${i}`}>
             <rect x={x} y={y} width={barW} height={Math.max(Math.abs(bh), 2)} fill={fill} rx={2} />
@@ -428,7 +426,7 @@ export function VennDiagram({ a, b, ab }: { a: string; b: string; ab: string }) 
     <svg {...svgProps(w, h)}>
       <rect width={w} height={h} fill={CANVAS} />
       <circle cx={145} cy={110} r={76} fill={DANCHEONG_WASH} stroke={DANCHEONG} strokeWidth={1.4} />
-      <circle cx={235} cy={110} r={76} fill={JADE_WASH} stroke={JADE} strokeWidth={1.4} />
+      <circle cx={235} cy={110} r={76} fill={NEUTRAL_1} stroke={BORDER} strokeWidth={1.4} />
       <text x={105} y={114} textAnchor="middle" fontSize={12} fontWeight={700} fill={INK} fontFamily={FONT_MYEONGJO}>
         {a}
       </text>

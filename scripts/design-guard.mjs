@@ -657,10 +657,8 @@ if (mode === 'density') {
 }
 
 // ─── Scan targets ───────────────────────────────────────────────────────────
-// The set of files design-guard inspects. src/lib/design-system/* provides the
-// token dictionary; definitions/ + templates/ are the document surface; the two
-// CSS files cover landing/runtime styling. app/api/export/route.ts is included
-// so the PRINT_FONT_OVERRIDE_CSS permit (VAL-GUARD-015) is demonstrably honored.
+// Scan only active React/runtime source. Legacy static demo CSS is deliberately
+// outside this gate and is removed by the obsolete-file cutover.
 
 function listFiles(dir, exts) {
   if (!fs.existsSync(dir)) return [];
@@ -669,23 +667,26 @@ function listFiles(dir, exts) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       out.push(...listFiles(full, exts));
-    } else if (exts.some((ext) => entry.name.endsWith(ext))) {
+    } else if (
+      exts.some((ext) => entry.name.endsWith(ext)) &&
+      !entry.name.includes('.test.')
+    ) {
       out.push(full);
     }
   }
   return out;
 }
 
-const scanFiles = [
+const generatedTokenCss = path.join(root, 'app/satgat-tokens.css');
+const scanFiles = [...new Set([
+  ...listFiles(path.join(root, 'app'), ['.ts', '.tsx', '.css']),
+  ...listFiles(path.join(root, 'src/components'), ['.ts', '.tsx', '.css']),
   ...listFiles(path.join(root, 'src/lib/design-system'), ['.ts']),
   ...listFiles(path.join(root, 'src/lib/templates/definitions'), ['.ts']),
-  ...listFiles(path.join(root, 'src/components/templates'), ['.tsx', '.ts']),
-  path.join(root, 'public/satgat/overrides.css'),
-  path.join(root, 'public/satgat/satgat.css'),
-  // The export route holds PRINT_FONT_OVERRIDE_CSS — scanned so the permit
-  // hatch is exercised end-to-end (VAL-GUARD-015).
-  path.join(root, 'app/api/export/route.ts'),
-].filter((file) => fs.existsSync(file));
+  path.join(root, 'public/fonts/satgat-fonts.css'),
+])]
+  .filter((file) => file !== generatedTokenCss)
+  .filter((file) => fs.existsSync(file));
 
 // Test hook: DESIGN_GUARD_SCAN=<dir> adds every .ts/.tsx/.css file under <dir>
 // to the scan set. Used by design-guard.test.mjs to spike synthetic violations
@@ -697,15 +698,12 @@ if (process.env.DESIGN_GUARD_SCAN) {
 const rel = (file) => path.relative(root, file);
 
 // ─── Font weight truth (from public/fonts/satgat-fonts.css @font-face) ───────
-// Gowun Batang: 400, 700. Gowun Dodum: 400. Nanum Myeongjo: 400, 700, 800.
-// Noto Serif KR: 400, 700. Any weight not listed for a family is synthetic.
 
 const FONT_WEIGHTS = {
   'nanum myeongjo': new Set([400, 700, 800]),
   'gowun batang': new Set([400, 700]),
   'gowun dodum': new Set([400]),
   'noto serif kr': new Set([400, 700]),
-  'cormorant garamond': new Set([400, 500, 600, 700]), // Latin display face (CDN) — treat broadly
 };
 
 // ─── Accent allowlist for COOL_GRAY (jade/gold legitimately have R<G) ────────
@@ -729,20 +727,46 @@ const RULE_HINTS = {
   PURE_WHITE: '8조 rule 1: pure white (#FFF/#FFFFFF/white) is forbidden on 백자지 canvas',
   DANCHEONG_BUDGET: '8조 rule 2: 단청 #9B1B1B should stay ≤ 5% of a page (overuse heuristic)',
   SYNTHETIC_BOLD: '8조 rule 8: weight 600+ without a matching @font-face is synthetic bold',
-  COOL_GRAY: '8조 rule 4: grays must be warm (R<G reads cool-blue) — use a 회녹 warm gray',
+  COOL_GRAY: '8조 rule 4: grays must be 회녹 rather than cool blue-gray',
   DUAL_ACCENT: '8조 rule 3: 단청 and a secondary accent (jade/gold) must not coexist in one file',
+  RAW_UNICODE_ESCAPE: 'rendered UI source must not contain literal Unicode escape text',
+  DECORATIVE_HANJA: 'active UI source must not contain decorative literal Hanja',
+  UNMANAGED_TOKEN: 'active UI colors must reference constraint.ts or generated CSS tokens',
+  PERMIT_FORMAT: 'permits require: // satgat-allow: RULE_ID ticket=SATGAT-123 reason=lowercase-slug',
 };
 
+const ADVISORY_RULES = new Set(['DANCHEONG_BUDGET']);
 const findings = []; // { severity, rule, file, line, hint }
+
+function parsePermit(lineText) {
+  if (!lineText.includes('satgat-allow:')) return null;
+  const match = lineText.match(
+    /\/\/\s*satgat-allow:\s*([A-Z][A-Z0-9_]*)\s+ticket=(SATGAT-\d+)\s+reason=([a-z0-9]+(?:-[a-z0-9]+)*)\s*$/,
+  );
+  if (!match) return { valid: false };
+  return { valid: true, rule: match[1], ticket: match[2], reason: match[3] };
+}
 
 function addFinding(rule, file, line, hint) {
   const text = line != null ? readLine(file, line) : '';
-  if (line != null && hasPermit(text)) {
-    // permit hatch: suppress to info, keep an audit trail
-    findings.push({ severity: 'info', rule, file: rel(file), line, hint: `permitted — ${hint}` });
+  const permit = line != null ? parsePermit(text) : null;
+  if (permit?.valid && permit.rule === rule) {
+    findings.push({
+      severity: 'info',
+      rule,
+      file: rel(file),
+      line,
+      hint: `permitted by ${permit.ticket} (${permit.reason}) — ${hint}`,
+    });
     return;
   }
-  findings.push({ severity: 'warn', rule, file: rel(file), line, hint });
+  findings.push({
+    severity: ADVISORY_RULES.has(rule) ? 'warn' : 'error',
+    rule,
+    file: rel(file),
+    line,
+    hint,
+  });
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -764,10 +788,9 @@ function readLine(file, line) {
   return lines[line - 1] ?? '';
 }
 
-function hasPermit(lineText) {
-  // Match the existing CI convention `grep -v "// .*permit"`. Both `//` and
-  // (for CSS) `/* permit */` style are tolerated via a trailing permit marker.
-  return /\/\/\s*permit\b/.test(lineText);
+function hasMalformedPermit(lineText) {
+  const permit = parsePermit(lineText);
+  return permit !== null && !permit.valid;
 }
 
 function parseHexes(lineText) {
@@ -824,7 +847,7 @@ function ruleRgbaUsage(file) {
   const lines = readLines(file);
   const re = /\brgba\s*\(/gi;
   lines.forEach((text, i) => {
-    if (re.test(text)) {
+    if (re.test(stripComment(text))) {
       addFinding('RGBA_USAGE', file, i + 1, RULE_HINTS.RGBA_USAGE);
     }
     re.lastIndex = 0;
@@ -876,6 +899,65 @@ function stripComment(text) {
   const blockLeader = /^\s*\*\s/;
   if (blockLeader.test(out)) out = '';
   return out;
+}
+
+function isInjectedSource(file) {
+  if (!process.env.DESIGN_GUARD_SCAN) return false;
+  const injectedRoot = path.resolve(process.env.DESIGN_GUARD_SCAN);
+  const resolved = path.resolve(file);
+  return resolved === injectedRoot || resolved.startsWith(`${injectedRoot}${path.sep}`);
+}
+
+function isActiveUiSource(file) {
+  const relative = rel(file).split(path.sep).join('/');
+  return relative.startsWith('app/') || relative.startsWith('src/components/') || isInjectedSource(file);
+}
+
+function rulePermitFormat(file) {
+  readLines(file).forEach((text, index) => {
+    if (hasMalformedPermit(text)) {
+      findings.push({
+        severity: 'error',
+        rule: 'PERMIT_FORMAT',
+        file: rel(file),
+        line: index + 1,
+        hint: RULE_HINTS.PERMIT_FORMAT,
+      });
+    }
+  });
+}
+
+function ruleRawUnicodeEscape(file) {
+  if (!isActiveUiSource(file)) return;
+  readLines(file).forEach((text, index) => {
+    if (/\\u(?:\{[0-9a-f]+\}|[0-9a-f]{4})/i.test(stripComment(text))) {
+      addFinding('RAW_UNICODE_ESCAPE', file, index + 1, RULE_HINTS.RAW_UNICODE_ESCAPE);
+    }
+  });
+}
+
+function ruleDecorativeHanja(file) {
+  if (!isActiveUiSource(file)) return;
+  readLines(file).forEach((text, index) => {
+    if (/[\u3400-\u4dbf\u4e00-\u9fff]/u.test(stripComment(text))) {
+      addFinding('DECORATIVE_HANJA', file, index + 1, RULE_HINTS.DECORATIVE_HANJA);
+    }
+  });
+}
+
+function ruleUnmanagedToken(file) {
+  if (!isActiveUiSource(file)) return;
+  readLines(file).forEach((text, index) => {
+    const colors = parseHexes(stripComment(text));
+    if (colors.length) {
+      addFinding(
+        'UNMANAGED_TOKEN',
+        file,
+        index + 1,
+        `${RULE_HINTS.UNMANAGED_TOKEN} (found: ${colors.map(({ raw }) => raw).join(', ')})`,
+      );
+    }
+  });
 }
 
 // ─── Rule: COOL_GRAY ────────────────────────────────────────────────────────
@@ -1040,13 +1122,12 @@ function familySummary(stack) {
 }
 
 // ─── Rule: DUAL_ACCENT ──────────────────────────────────────────────────────
-// Enforces 8조 rule 3: dancheong and a secondary accent (jade/gold) must not
-// appear together in the same renderer file. constraint.ts/tokens.ts define all
-// tokens and are excluded (they are the dictionary, not a page).
+// Enforces 8조 rule 3 for concrete document renderers. Shared primitives may
+// expose mutually exclusive variants; only a renderer composes an actual page.
 
 function ruleDualAccent(file) {
-  // Exclude the token dictionaries — they define every token by definition.
-  if (file.includes(path.join('src', 'lib', 'design-system'))) return;
+  const relative = rel(file).split(path.sep).join('/');
+  if (!relative.startsWith('src/components/templates/') && !isInjectedSource(file)) return;
   const lines = readLines(file);
   let hasDancheong = false;
   let hasJadeGold = false;
@@ -1085,9 +1166,13 @@ function ruleDualAccent(file) {
 // ─── Run all rules over all files ───────────────────────────────────────────
 
 const RULES = [
+  rulePermitFormat,
   ruleRgbaUsage,
   rulePureWhite,
   ruleCoolGray,
+  ruleRawUnicodeEscape,
+  ruleDecorativeHanja,
+  ruleUnmanagedToken,
   ruleDancheongBudget,
   ruleSyntheticBold,
   ruleDualAccent,
@@ -1098,13 +1183,13 @@ for (const file of scanFiles) {
     try {
       rule(file);
     } catch (err) {
-      // A single-rule failure on a single file must not abort the whole scan.
+      // A skipped blocking rule would create a blind spot, so it fails the gate.
       findings.push({
-        severity: 'info',
+        severity: 'error',
         rule: 'INTERNAL',
         file: rel(file),
         line: 0,
-        hint: `rule ${rule.name} skipped: ${err.message}`,
+        hint: `rule ${rule.name} failed: ${err.message}`,
       });
     }
   }
@@ -1123,7 +1208,7 @@ findings.sort((a, b) => {
 const counts = { error: 0, warn: 0, info: 0 };
 for (const f of findings) counts[f.severity] += 1;
 
-const BANNER = 'design-guard — 삿갓 8조 static analysis (warn mode)';
+const BANNER = 'design-guard — 삿갓 8조 static analysis (strict mode)';
 
 const lines = [];
 lines.push(BANNER);
@@ -1141,13 +1226,13 @@ if (findings.length === 0) {
 }
 
 lines.push('');
+const exitCode = counts.error > 0 ? 1 : 0;
 lines.push(
-  `Summary: ${counts.error} error(s), ${counts.warn} warn(s), ${counts.info} info/permitted — ` +
+  `Summary: ${counts.error} error(s), ${counts.warn} advisory warning(s), ${counts.info} permitted — ` +
     `${findings.length} finding(s) across ${scanFiles.length} scanned file(s). ` +
-    `Exit 0 (warn mode; M1 does not fail CI on warnings).`
+    `Exit ${exitCode}.`
 );
 
 console.log(lines.join('\n'));
 
-// WARN mode: always exit 0 so existing CI/workflows are not broken.
-process.exit(0);
+process.exitCode = exitCode;

@@ -46,10 +46,6 @@ function stringLiteralValue(node) {
   return node && ts.isStringLiteralLike(node) ? node.text : undefined;
 }
 
-function stringArrayValues(node) {
-  if (!node || !ts.isArrayLiteralExpression(node)) return [];
-  return node.elements.map(stringLiteralValue).filter(Boolean);
-}
 
 function findObjectLiteral(sourceFile, variableName) {
   let found;
@@ -74,14 +70,6 @@ function findObjectLiteral(sourceFile, variableName) {
   return found;
 }
 
-function objectKeys(sourceFile, variableName) {
-  const objectLiteral = findObjectLiteral(sourceFile, variableName);
-  if (!objectLiteral) return [];
-
-  return objectLiteral.properties
-    .map((property) => (ts.isPropertyAssignment(property) ? propNameText(property.name) : undefined))
-    .filter(Boolean);
-}
 
 
 function parseRegistryTemplates(definitionsByExport) {
@@ -310,6 +298,61 @@ function assertSameSet(label, expected, actual, errors) {
   if (extra.length) errors.push(`${label} extra: ${extra.join(', ')}`);
 }
 
+export function validateRuntimeArtifacts(catalog, manifest, artifactFiles) {
+  const errors = [];
+  if (!Array.isArray(manifest)) {
+    return ['runtime specimen manifest must be an array with 14 manifest entries'];
+  }
+  if (manifest.length !== 14) {
+    errors.push(`runtime specimen manifest requires exactly 14 manifest entries; found ${manifest.length}`);
+  }
+
+  const catalogById = new Map(catalog.map((entry) => [entry.id, entry]));
+  const manifestIds = [];
+  for (const entry of manifest) {
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+      errors.push('runtime specimen manifest contains a non-object entry');
+      continue;
+    }
+    const id = typeof entry.id === 'string' ? entry.id : '';
+    manifestIds.push(id);
+    const expected = catalogById.get(id);
+    if (!expected) {
+      errors.push(`runtime specimen manifest contains unknown id "${id}"`);
+      continue;
+    }
+    if (entry.pageSpec !== expected.pageSpec) {
+      errors.push(`runtime specimen "${id}" pageSpec "${entry.pageSpec}" does not match "${expected.pageSpec}"`);
+    }
+    for (const field of ['html', 'layout']) {
+      if (Object.hasOwn(entry, field)) {
+        errors.push(`runtime specimen "${id}" retains legacy field "${field}"`);
+      }
+    }
+    for (const [field, extension] of [['png', 'png'], ['pdf', 'pdf']]) {
+      const expectedFilename = `${id}.${extension}`;
+      if (entry[field] !== expectedFilename) {
+        errors.push(`runtime specimen "${id}" ${field} path must be "${expectedFilename}"`);
+      }
+    }
+  }
+
+  const expectedIds = [...catalogById.keys()].sort();
+  const actualIds = manifestIds.filter(Boolean).sort();
+  assertSameSet('runtime specimen manifest', expectedIds, actualIds, errors);
+  if (!actualIds.includes('report')) {
+    errors.push('runtime specimen manifest is missing report');
+  }
+
+  const pngFiles = artifactFiles.filter((file) => file.endsWith('.png')).sort();
+  const pdfFiles = artifactFiles.filter((file) => file.endsWith('.pdf')).sort();
+  if (pngFiles.length !== 14) errors.push(`runtime artifacts require exactly 14 PNG paths; found ${pngFiles.length}`);
+  if (pdfFiles.length !== 14) errors.push(`runtime artifacts require exactly 14 PDF paths; found ${pdfFiles.length}`);
+  assertSameSet('runtime PNG artifacts', expectedIds.map((id) => `${id}.png`).sort(), pngFiles, errors);
+  assertSameSet('runtime PDF artifacts', expectedIds.map((id) => `${id}.pdf`).sort(), pdfFiles, errors);
+  return errors;
+}
+
 export function verifyTemplateCatalog() {
 const definitions = readTemplateDefinitionSources();
 const definitionsByExport = new Map(definitions.map((definition) => [definition.exportName, definition]));
@@ -321,6 +364,17 @@ const renderer = parseRendererMap();
 const rendererIds = [...renderer.keys].sort();
 
 const errors = [];
+const artifactDirectory = path.join(root, 'public/satgat/assets/examples/ko');
+const manifestPath = path.join(artifactDirectory, 'manifest.json');
+try {
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  const artifactFiles = fs.readdirSync(artifactDirectory);
+  errors.push(...validateRuntimeArtifacts(definitions, manifest, artifactFiles));
+} catch (error) {
+  errors.push(
+    `runtime specimen artifacts are unavailable: ${error instanceof Error ? error.message : String(error)}`,
+  );
+}
 
 for (const entry of registryEntries) {
   if (!entry.key) {

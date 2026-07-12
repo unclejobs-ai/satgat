@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 import specimenManifest from '../../../public/satgat/assets/examples/ko/manifest.json';
 import { getPageSpec, PAGE_SPECS } from '@/lib/templates/registry';
@@ -64,13 +65,12 @@ export default async function ExamplesPage({
                   prefetch={false}
                 >
                   <span className={styles.imageFrame}>
-                    <img
+                    <Image
                       src={`/satgat/assets/examples/ko/${encodeURIComponent(specimen.png)}`}
                       alt={specimen.alt}
                       width={specimen.width}
                       height={specimen.height}
-                      loading="lazy"
-                      decoding="async"
+                      sizes="(max-width: 760px) calc(100vw - 32px), 520px"
                     />
                     <span className={styles.index} aria-hidden>
                       {String(index + 1).padStart(2, '0')}

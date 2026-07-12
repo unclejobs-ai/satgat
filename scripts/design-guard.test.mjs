@@ -12,7 +12,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'design-guard-spike-'));
@@ -36,17 +36,17 @@ function clearSpikes() {
  * the report to findings whose file path ends with the given basename.
  */
 function runGuard(grepFile) {
-  let stdout;
-  try {
-    stdout = execFileSync(
-      'node',
-      ['scripts/design-guard.mjs', '--check'],
-      { cwd: root, encoding: 'utf8', env: { ...process.env, DESIGN_GUARD_SCAN: tmp }, stdio: ['ignore', 'pipe', 'pipe'] }
-    );
-  } catch (err) {
-    stdout = err.stdout?.toString() ?? '';
-  }
-  return parseReport(stdout, grepFile);
+  const result = spawnSync(
+    'node',
+    ['scripts/design-guard.mjs', '--check'],
+    {
+      cwd: root,
+      encoding: 'utf8',
+      env: { ...process.env, DESIGN_GUARD_SCAN: tmp },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  );
+  return { ...parseReport(result.stdout ?? '', grepFile), status: result.status };
 }
 
 function parseReport(stdout, grepFile) {
@@ -72,10 +72,11 @@ function assertOk(name, cond, detail) {
   }
 }
 
-// ─── Test: exit 0 (warn mode) + readable report — VAL-GUARD-001/009 ─────────
-function testWarnModeExit0() {
-  console.log('\n[VAL-GUARD-001/009] warn mode exits 0, report is readable');
+// ─── Test: strict baseline + readable report — VAL-GUARD-001/009 ────────────
+function testStrictBaseline() {
+  console.log('\n[VAL-GUARD-001/009] strict baseline exits 0, report is readable');
   const report = runGuard();
+  assertOk('clean repository exits 0', report.status === 0, `status=${report.status}`);
   assertOk('report has banner', report.raw.includes('design-guard'));
   assertOk('report has summary line', report.raw.includes('Summary:'));
   assertOk('report has legend line', report.raw.includes('Legend:'));
@@ -269,7 +270,7 @@ function testCoolGray() {
 // ─── Test: DUAL_ACCENT — VAL-GUARD-007 ──────────────────────────────────────
 function testDualAccent() {
   console.log('\n[VAL-GUARD-007] DUAL_ACCENT detects dancheong + jade/gold');
-  // Both dancheong and jade → warn.
+  // Both dancheong and jade → blocking error.
   clearSpikes();
   writeSpike('SpikeDual.tsx', [
     'export const SpikeDual = () => (',
@@ -279,7 +280,11 @@ function testDualAccent() {
   ].join('\n'));
   const reportDual = runGuard('SpikeDual.tsx');
   const dualHits = reportDual.findings.filter((f) => f.rule === 'DUAL_ACCENT');
-  assertOk('dancheong + jade together → DUAL_ACCENT warn', dualHits.length >= 1, `got ${dualHits.length}`);
+  assertOk(
+    'dancheong + jade together → blocking DUAL_ACCENT',
+    reportDual.status === 1 && dualHits.some((finding) => finding.severity === 'error'),
+    `status=${reportDual.status} hits=${JSON.stringify(dualHits)}`,
+  );
   // Dancheong only → NO finding.
   clearSpikes();
   writeSpike('SpikeDanOnly.tsx', [
@@ -304,40 +309,104 @@ function testDualAccent() {
   assertOk('jade only → NO finding', jadeHits.length === 0, `got ${jadeHits.length}`);
 }
 
-// ─── Test: permit hatch — VAL-GUARD-008 ─────────────────────────────────────
+// ─── Test: active UI source contracts ───────────────────────────────────────
+function testActiveUiSourceRules() {
+  console.log('\n[VAL-GUARD-014] active UI source blocks escapes, Hanja, and raw tokens');
+
+  clearSpikes();
+  writeSpike('SpikeUnicode.tsx', 'export const SpikeUnicode = () => <p>{\"\\\\uD55C\"}</p>;\n');
+  const unicode = runGuard('SpikeUnicode.tsx');
+  assertOk(
+    'literal Unicode escape is blocking',
+    unicode.status === 1 &&
+      unicode.findings.some((finding) => finding.rule === 'RAW_UNICODE_ESCAPE' && finding.severity === 'error'),
+    JSON.stringify(unicode.findings),
+  );
+
+  clearSpikes();
+  writeSpike('SpikeHanja.tsx', 'export const SpikeHanja = () => <p>提案</p>;\n');
+  const hanja = runGuard('SpikeHanja.tsx');
+  assertOk(
+    'decorative literal Hanja is blocking',
+    hanja.status === 1 &&
+      hanja.findings.some((finding) => finding.rule === 'DECORATIVE_HANJA' && finding.severity === 'error'),
+    JSON.stringify(hanja.findings),
+  );
+
+  clearSpikes();
+  writeSpike('SpikeToken.tsx', 'export const SpikeToken = () => <p style={{ color: \"#123456\" }}>token</p>;\n');
+  const token = runGuard('SpikeToken.tsx');
+  assertOk(
+    'raw UI color token is blocking',
+    token.status === 1 &&
+      token.findings.some((finding) => finding.rule === 'UNMANAGED_TOKEN' && finding.severity === 'error'),
+    JSON.stringify(token.findings),
+  );
+}
+
+// ─── Test: structured permit hatch — VAL-GUARD-008 ─────────────────────────
 function testPermitHatch() {
-  console.log('\n[VAL-GUARD-008] // permit suppresses to info, line-scoped');
-  // Line with permit → info, not warn.
+  console.log('\n[VAL-GUARD-008] structured permits are exact, scoped, and auditable');
   clearSpikes();
   writeSpike('SpikePermit.tsx', [
     'export const SpikePermit = () => (',
-    '  <div style={{ background: "rgba(0,0,0,0.5)" // permit: layered shadow',
-    '  }}>permitted</div>',
+    '  <div style={{ background: \"rgba(0,0,0,0.5)\" }} // satgat-allow: RGBA_USAGE ticket=SATGAT-123 reason=print-font-override',
+    '  >permitted</div>',
     ');',
     '',
   ].join('\n'));
-  const report = runGuard('SpikePermit.tsx');
-  const rgbaHits = report.findings.filter((f) => f.rule === 'RGBA_USAGE');
-  const infoHits = rgbaHits.filter((f) => f.severity === 'info');
-  const warnHits = rgbaHits.filter((f) => f.severity === 'warn');
-  assertOk('permitted line is info, not warn', infoHits.length >= 1 && warnHits.length === 0, `info=${infoHits.length} warn=${warnHits.length}`);
-  // Line without permit → warn (line-scoped).
+  const permitted = runGuard('SpikePermit.tsx');
+  const permittedRgba = permitted.findings.filter((finding) => finding.rule === 'RGBA_USAGE');
+  assertOk(
+    'valid permit suppresses one matching rule to info',
+    permitted.status === 0 &&
+      permittedRgba.some((finding) => finding.severity === 'info') &&
+      permittedRgba.every((finding) => finding.severity !== 'error'),
+    `status=${permitted.status} findings=${JSON.stringify(permittedRgba)}`,
+  );
+
   clearSpikes();
-  writeSpike('SpikeNoPermit.tsx', [
-    'export const SpikeNoPermit = () => (',
-    '  <div',
-    '    // permit: this line is fine',
-    '    style={{',
-    '      background: "rgba(0,0,0,0.5)",',
-    '    }}',
-    '  >not permitted</div>',
+  writeSpike('SpikeMalformedPermit.tsx', [
+    'export const SpikeMalformedPermit = () => (',
+    '  <div style={{ background: \"rgba(0,0,0,0.5)\" }} // satgat-allow: RGBA_USAGE ticket=SATGAT-123',
+    '  >rejected</div>',
     ');',
     '',
   ].join('\n'));
-  const report2 = runGuard('SpikeNoPermit.tsx');
-  const noPermitHits = report2.findings.filter((f) => f.rule === 'RGBA_USAGE');
-  const noPermitWarn = noPermitHits.filter((f) => f.severity === 'warn');
-  assertOk('rgba without permit → warn (line-scoped)', noPermitWarn.length >= 1, `got ${noPermitWarn.length}`);
+  const malformed = runGuard('SpikeMalformedPermit.tsx');
+  assertOk(
+    'permit missing a required field is blocking',
+    malformed.status === 1 &&
+      malformed.findings.some((finding) => finding.rule === 'PERMIT_FORMAT' && finding.severity === 'error') &&
+      malformed.findings.some((finding) => finding.rule === 'RGBA_USAGE' && finding.severity === 'error'),
+    `status=${malformed.status} findings=${JSON.stringify(malformed.findings)}`,
+  );
+
+  clearSpikes();
+  writeSpike('SpikeWrongRulePermit.tsx', [
+    'export const SpikeWrongRulePermit = () => (',
+    '  <div style={{ background: \"rgba(0,0,0,0.5)\" }} // satgat-allow: PURE_WHITE ticket=SATGAT-124 reason=print-font-override',
+    '  >rejected</div>',
+    ');',
+    '',
+  ].join('\n'));
+  const wrongRule = runGuard('SpikeWrongRulePermit.tsx');
+  assertOk(
+    'permit cannot suppress a different rule',
+    wrongRule.status === 1 &&
+      wrongRule.findings.some((finding) => finding.rule === 'RGBA_USAGE' && finding.severity === 'error'),
+    `status=${wrongRule.status} findings=${JSON.stringify(wrongRule.findings)}`,
+  );
+
+  clearSpikes();
+  writeSpike('SpikeNoPermit.tsx', 'export const color = \"rgba(0,0,0,0.5)\";\n');
+  const noPermit = runGuard('SpikeNoPermit.tsx');
+  assertOk(
+    'blocking violation without a permit exits 1',
+    noPermit.status === 1 &&
+      noPermit.findings.some((finding) => finding.rule === 'RGBA_USAGE' && finding.severity === 'error'),
+    `status=${noPermit.status} findings=${JSON.stringify(noPermit.findings)}`,
+  );
 }
 
 // ─── Test: density scanner — VAL-DENSITY-001/002/003/004/007/008/010/011/012 ─
@@ -517,7 +586,7 @@ function testDensityOffline() {
 
 // ─── Run all tests ──────────────────────────────────────────────────────────
 
-testWarnModeExit0();
+testStrictBaseline();
 testRgbaUsage();
 testPureWhite();
 testPureWhiteAlphaHex();
@@ -525,6 +594,7 @@ testDancheongBudget();
 testSyntheticBold();
 testCoolGray();
 testDualAccent();
+testActiveUiSourceRules();
 testPermitHatch();
 // Density (M2)
 testDensityRuns();

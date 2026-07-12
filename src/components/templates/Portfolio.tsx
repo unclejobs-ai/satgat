@@ -13,7 +13,6 @@ import {
   INK_MUTED,
   HAIRLINE,
   DANCHEONG,
-  GOLD,
   IVORY,
   CANVAS_DARK,
 } from '@/lib/design-system/constraint';
@@ -171,7 +170,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                   fontFamily: FONT_DODUM,
                   fontSize: 10,
                   letterSpacing: '0.14em',
-                  color: GOLD,
+                  color: INK_MUTED,
                   margin: 0,
                 }}
               >
@@ -254,7 +253,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
               style={{
                 width: 68,
                 height: 68,
-                border: `1px solid ${GOLD}`,
+                border: `1px solid ${HAIRLINE}`,
                 display: 'grid',
                 placeItems: 'center',
                 fontFamily: FONT_MYEONGJO,
@@ -360,7 +359,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
               style={{
                 marginTop: 'auto',
                 paddingTop: 18,
-                borderTop: `1px solid ${GOLD}`,
+                borderTop: `1px solid ${HAIRLINE}`,
               }}
             >
               <p

@@ -12,7 +12,6 @@ import {
   INK_LIGHT,
   INK_MUTED,
   DANCHEONG,
-  JADE,
   HAIRLINE,
   CANVAS,
 } from '@/lib/design-system/constraint';
@@ -137,7 +136,7 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
                 key={i}
                 style={{
                   paddingLeft: 14,
-                  borderLeft: `2.5px solid ${JADE}`,
+                  borderLeft: `2.5px solid ${HAIRLINE}`,
                 }}
               >
                 <p
@@ -212,7 +211,7 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
                     key={i}
                     style={{
                       padding: '8px 12px',
-                      background: JADE,
+                      background: INK,
                       color: CANVAS,
                       fontFamily: FONT_MYEONGJO,
                       fontSize: 11,

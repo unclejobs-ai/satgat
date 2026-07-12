@@ -40,12 +40,14 @@ test("landing renders its complete accessible document contract", () => {
 test("landing renders specimen loading and catalog-owned alternative text", () => {
   const markup = renderLanding();
   const images = matches(markup, /<img\b[^>]*>/g).map(([image]) => image);
+  const imagePreloads = matches(markup, /<link\b[^>]*>/g)
+    .map(([link]) => link)
+    .filter((link) => link.includes('rel="preload"') && link.includes('as="image"'));
 
   expect(images).toHaveLength(4);
-  expect(images.filter((image) => image.includes('loading="eager"'))).toHaveLength(1);
+  expect(imagePreloads).toHaveLength(1);
   expect(images.filter((image) => image.includes('loading="lazy"'))).toHaveLength(3);
   expect(images.every((image) => image.includes('data-page-spec="'))).toBe(true);
-  expect(images.every((image) => !image.includes("style="))).toBe(true);
   expect(images.every((image) => /\bwidth="\d+"/.test(image))).toBe(true);
   expect(images.every((image) => /\bheight="\d+"/.test(image))).toBe(true);
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import specimenManifest from "../../public/satgat/assets/examples/ko/manifest.json";
 import { listTemplates } from "@/lib/templates/registry";
 import type { TemplateCategory } from "@/lib/templates/types";
@@ -49,15 +50,15 @@ function SpecimenImage({
   if (!specimen) return null;
 
   return (
-    <img
+    <Image
       className={styles.specimenImage}
       src={`/satgat/assets/examples/ko/${encodeURIComponent(specimen.png)}`}
       alt={specimen.alt}
       width={specimen.width}
       height={specimen.height}
       data-page-spec={specimen.pageSpec}
-      loading={priority ? "eager" : "lazy"}
-      fetchPriority={priority ? "high" : "auto"}
+      sizes="(max-width: 720px) 100vw, 400px"
+      preload={priority}
     />
   );
 }

@@ -14,7 +14,6 @@ import {
   INK_MUTED,
   HAIRLINE,
   DANCHEONG,
-  GOLD,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -224,7 +223,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
               <div
                 style={{
                   minHeight: 72,
-                  border: `1px solid ${GOLD}`,
+                  border: `1px solid ${HAIRLINE}`,
                   display: 'grid',
                   placeItems: 'center',
                   padding: '10px 8px',
@@ -355,8 +354,8 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
             <section
               style={{
                 marginTop: 'auto',
-                borderTop: `1px solid ${GOLD}`,
-                borderBottom: `1px solid ${GOLD}`,
+                borderTop: `1px solid ${HAIRLINE}`,
+                borderBottom: `1px solid ${HAIRLINE}`,
                 padding: '20px 0',
               }}
             >

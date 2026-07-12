@@ -16,7 +16,6 @@ import {
   INK_MUTED,
   HAIRLINE,
   DANCHEONG,
-  JADE,
   CANVAS_DARK,
 } from '@/lib/design-system/constraint';
 
@@ -225,7 +224,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                           fontFamily: FONT_DODUM,
                           fontSize: 10,
                           letterSpacing: '0.12em',
-                          color: JADE,
+                          color: INK_MUTED,
                           margin: '0 0 10px',
                         }}
                       >
@@ -471,7 +470,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                       width: 6,
                       height: 6,
                       borderRadius: '50%',
-                      backgroundColor: JADE,
+                      backgroundColor: INK_MUTED,
                       flexShrink: 0,
                     }}
                   />

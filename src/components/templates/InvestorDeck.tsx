@@ -13,7 +13,6 @@ import {
   INK,
   INK_MUTED,
   DANCHEONG,
-  JADE,
   HAIRLINE,
 } from '@/lib/design-system/constraint';
 
@@ -155,7 +154,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontFamily: FONT_DODUM,
                       fontSize: 10,
                       letterSpacing: '0.12em',
-                      color: JADE,
+                      color: INK_MUTED,
                       margin: '0 0 7px',
                     }}
                   >
@@ -296,7 +295,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                         fontFamily: FONT_DODUM,
                         fontSize: 10,
                         letterSpacing: '0.12em',
-                        color: JADE,
+                        color: INK_MUTED,
                         margin: '0 0 7px',
                       }}
                     >
@@ -601,7 +600,7 @@ function SlideSection({
   accent: 'dancheong' | 'jade';
   children: React.ReactNode;
 }) {
-  const accentColor = accent === 'dancheong' ? DANCHEONG : JADE;
+  const accentColor = accent === 'dancheong' ? DANCHEONG : INK_MUTED;
 
   return (
     <div
