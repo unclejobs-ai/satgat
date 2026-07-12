@@ -1,6 +1,8 @@
 import { afterAll, beforeEach, expect, mock, spyOn, test } from "bun:test";
 import { NextRequest } from "next/server";
+import * as routeModule from "./route";
 import { POST } from "./route";
+import { GenerateRequestSchema } from "@/lib/generation/generate-request";
 
 const generateDocumentDataMock = mock(async () => ({
   templateId: "resume",
@@ -39,6 +41,74 @@ afterAll(() => {
     process.env.GOOGLE_GENERATIVE_AI_API_KEY = originalApiKey;
   }
   consoleErrorSpy.mockRestore();
+});
+
+test("route module exports only the supported POST handler", () => {
+  expect(Object.keys(routeModule)).toEqual(["POST"]);
+});
+
+test("accepts a bounded, explicit optional brand profile", () => {
+  const body = GenerateRequestSchema.parse({
+    templateId: "resume",
+    prompt: "이력서를 만들어 주세요.",
+    brand: {
+      name: "결 스튜디오",
+      role: "브랜드 디렉터",
+      email: "hello@gyeol.example",
+      website: "https://gyeol.example",
+      tone: "단정하고 따뜻한 한국어",
+    },
+  });
+
+  expect(body.brand).toEqual({
+    name: "결 스튜디오",
+    role: "브랜드 디렉터",
+    email: "hello@gyeol.example",
+    website: "https://gyeol.example",
+    tone: "단정하고 따뜻한 한국어",
+  });
+});
+
+test("keeps an absent optional brand profile absent", () => {
+  const body = GenerateRequestSchema.parse({
+    templateId: "resume",
+    prompt: "이력서를 만들어 주세요.",
+  });
+
+  expect(body.brand).toBeUndefined();
+});
+
+for (const brand of [
+  { name: "가".repeat(121) },
+  { role: "가".repeat(121) },
+  { email: "a".repeat(255) },
+  { website: "a".repeat(2049) },
+  { tone: "가".repeat(501) },
+  { name: "결 스튜디오", unknown: "not allowed" },
+  { email: "not-an-email" },
+  { website: "javascript:alert(1)" },
+  { website: "/relative/path" },
+  { name: 42 },
+]) {
+  test(`rejects an invalid strict brand profile: ${Object.keys(brand).join(",")}`, () => {
+    const result = GenerateRequestSchema.safeParse({
+      templateId: "resume",
+      prompt: "이력서를 만들어 주세요.",
+      brand,
+    });
+
+    expect(result.success).toBe(false);
+  });
+}
+
+test("rejects unknown root request keys", () => {
+  const result = GenerateRequestSchema.safeParse({
+    templateId: "resume",
+    prompt: "이력서를 만들어 주세요.",
+    unknown: "not allowed",
+  });
+
+  expect(result.success).toBe(false);
 });
 
 test("missing generation config returns only stable generic Korean copy", async () => {
@@ -94,6 +164,41 @@ test("invalid generation request returns only generic Korean copy", async () => 
   expect(JSON.stringify(body)).not.toContain("Invalid generation request");
 });
 
+for (const { label, brand, canary } of [
+  {
+    label: "unknown field",
+    brand: { name: "결 스튜디오", "private-brand-field": "secret" },
+    canary: "private-brand-field",
+  },
+  {
+    label: "overlong field",
+    brand: { name: `private-overlong-${"가".repeat(121)}` },
+    canary: "private-overlong",
+  },
+  {
+    label: "invalid field type",
+    brand: { name: 42 },
+    canary: "42",
+  },
+]) {
+  test(`invalid brand profile returns only generic Korean copy: ${label}`, async () => {
+    const response = await POST(request({
+      templateId: "resume",
+      prompt: "경력 중심 이력서를 작성해 주세요",
+      brand,
+    }));
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      error: "요청을 처리할 수 없습니다.",
+      message: "종이와 원고를 조금 더 분명히 적어 주세요.",
+    });
+    expect(JSON.stringify(body)).not.toContain(canary);
+    expect(generateDocumentDataMock).not.toHaveBeenCalled();
+  });
+}
+
 test("unknown template does not reflect the supplied identifier", async () => {
   const technicalCanary = "private-schema/path?token=secret";
   const response = await POST(request({
@@ -137,6 +242,25 @@ for (const technicalFailure of [
   });
 }
 
+test("successful generation passes the explicit brand as the third generator argument", async () => {
+  const brand = {
+    name: "결 스튜디오",
+    email: "hello@gyeol.example",
+    tone: "단정하고 따뜻한 한국어",
+  };
+
+  const response = await POST(request({
+    templateId: "resume",
+    prompt: "경력 중심 이력서를 작성해 주세요",
+    brand,
+  }));
+
+  expect(response.status).toBe(200);
+  expect(generateDocumentDataMock).toHaveBeenCalledTimes(1);
+  expect(generateDocumentDataMock.mock.calls[0]?.[1]).toBe("경력 중심 이력서를 작성해 주세요");
+  expect(generateDocumentDataMock.mock.calls[0]?.[2]).toEqual(brand);
+});
+
 test("successful generation response remains unchanged", async () => {
   const generated = {
     templateId: "resume",
@@ -148,4 +272,6 @@ test("successful generation response remains unchanged", async () => {
 
   expect(response.status).toBe(200);
   expect(await response.json()).toEqual(generated);
+  expect(generateDocumentDataMock).toHaveBeenCalledTimes(1);
+  expect(generateDocumentDataMock.mock.calls[0]?.[2]).toBeNull();
 });

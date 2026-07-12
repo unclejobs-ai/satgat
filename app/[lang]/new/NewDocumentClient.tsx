@@ -4,14 +4,23 @@ import React from "react";
 import { flushSync } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SatgatVisual } from "@/components/diagrams";
 import type { SatgatVisualSlot } from "@/lib/engine/slot-visual";
 import { getPageSpec, listTemplates, getTemplate } from "@/lib/templates/registry";
 import { DraftStorageError, isDocumentData, replaceCurrentDraft } from "@/lib/preview/draft-storage";
 import { validateDocumentData } from "@/lib/engine/validator";
+import type { BrowserBrandProfile } from "@/lib/design-system/brand-resolver";
+import {
+  buildGenerateRequest,
+  GENERATE_REQUEST_LIMITS,
+} from "@/lib/generation/generate-request";
+import {
+  disposeGenerationOnRouteExit,
+  GenerationRequestCoordinator,
+} from "@/lib/generation/generation-request-coordinator";
+import BrandProfilePanel from "./BrandProfilePanel";
 
-const PROMPT_MIN_LENGTH = 10;
-const PROMPT_MAX_LENGTH = 8000;
 const HERO_SPECIMENS = ['resume', 'brand-onepager', 'investor-deck'];
 const VISUAL_SCENE_SAMPLES: Array<{
   label: string;
@@ -384,6 +393,8 @@ type NewDocumentClientProps = {
 };
 
 export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocumentClientProps) {
+  const pathname = usePathname();
+  const createPathnameRef = React.useRef(pathname);
   const templates = listTemplates();
   const normalizedPreselected = preselectedTemplate && getTemplate(preselectedTemplate) ? preselectedTemplate : null;
   const [selectedTemplate, setSelectedTemplate] = React.useState<string | null>(normalizedPreselected);
@@ -391,10 +402,34 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
   const [generating, setGenerating] = React.useState(false);
   const [result, setResult] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [brandProfile, setBrandProfile] = React.useState<BrowserBrandProfile | null>(null);
+  const [brandProfileValid, setBrandProfileValid] = React.useState(true);
   const promptSectionRef = React.useRef<HTMLElement | null>(null);
   const resultRef = React.useRef<HTMLElement | null>(null);
   const resultLinkRef = React.useRef<HTMLAnchorElement | null>(null);
+  const requestCoordinatorRef = React.useRef<GenerationRequestCoordinator | null>(null);
+  if (!requestCoordinatorRef.current) {
+    requestCoordinatorRef.current = new GenerationRequestCoordinator();
+  }
 
+  React.useEffect(() => {
+    const coordinator = requestCoordinatorRef.current;
+    const dispose = () => coordinator?.dispose();
+    window.addEventListener("pagehide", dispose);
+    window.addEventListener("beforeunload", dispose);
+    return () => {
+      window.removeEventListener("pagehide", dispose);
+      window.removeEventListener("beforeunload", dispose);
+      dispose();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const coordinator = requestCoordinatorRef.current;
+    if (coordinator) {
+      disposeGenerationOnRouteExit(coordinator, createPathnameRef.current, pathname);
+    }
+  }, [pathname]);
   const selected = selectedTemplate ? getTemplate(selectedTemplate) : undefined;
   const suggestions = selected?.promptSeeds ?? [];
   const checklist = selected?.factChecklist ?? [];
@@ -403,17 +438,24 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
   const selectedIndex = selectedTemplate ? templates.findIndex((tmpl) => tmpl.id === selectedTemplate) : -1;
   const localeLabel = lang === "ko" ? "한국어" : lang.toUpperCase();
   const promptLength = prompt.trim().length;
-  const promptReady = promptLength >= PROMPT_MIN_LENGTH;
+  const promptReady = promptLength >= GENERATE_REQUEST_LIMITS.promptMin;
   const heroSpecimenIds = selectedTemplate
     ? [selectedTemplate, ...HERO_SPECIMENS.filter((id) => id !== selectedTemplate)].slice(0, 3)
     : HERO_SPECIMENS;
 
+  const invalidateGeneration = () => {
+    requestCoordinatorRef.current?.invalidate();
+    setGenerating(false);
+  };
+
   const appendPrompt = (text: string) => {
+    invalidateGeneration();
     setPrompt((current) => (current.trim() ? `${current.trim()}\n\n${text}` : text));
     setError(null);
   };
 
   const chooseTemplate = (id: string) => {
+    invalidateGeneration();
     flushSync(() => {
       setSelectedTemplate(id);
       setResult(null);
@@ -426,25 +468,50 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
     });
   };
 
+  const handleBrandProfileChange = (profile: BrowserBrandProfile | null, valid: boolean) => {
+    invalidateGeneration();
+    setBrandProfile(profile);
+    setBrandProfileValid(valid);
+    setResult(null);
+    setError(null);
+  };
+
   const handleGenerate = async () => {
-    if (!selectedTemplate || !promptReady) return;
+    if (
+      !selectedTemplate ||
+      !selected ||
+      !promptReady ||
+      !brandProfileValid ||
+      !requestCoordinatorRef.current
+    ) return;
+    const requestBody = buildGenerateRequest({
+      templateId: selectedTemplate,
+      prompt,
+      brand: brandProfile ?? {},
+      applyBrand: brandProfile !== null,
+    });
+    const request = requestCoordinatorRef.current.begin();
+    const selectedAtStart = selected;
     setGenerating(true);
     setError(null);
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ templateId: selectedTemplate, prompt }),
+        body: JSON.stringify(requestBody),
+        signal: request.signal,
       });
+      if (!requestCoordinatorRef.current.isCurrent(request.id)) return;
       if (!res.ok) throw new Error("generation request failed");
       const candidate = (await res.json()) as unknown;
+      if (!requestCoordinatorRef.current.isCurrent(request.id)) return;
       if (
-        !selected ||
         !isDocumentData(candidate) ||
-        !validateDocumentData(selected, candidate).valid
+        !validateDocumentData(selectedAtStart, candidate).valid
       ) {
         throw new Error("invalid generated document");
       }
+      if (!requestCoordinatorRef.current.isCurrent(request.id)) return;
       const draftId = replaceCurrentDraft(candidate);
       const previewHref = `/${encodeURIComponent(lang)}/preview?draft=${encodeURIComponent(draftId)}`;
       flushSync(() => setResult(previewHref));
@@ -455,13 +522,22 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
       });
       resultLinkRef.current?.focus({ preventScroll: true });
     } catch (caught) {
+      if (
+        request.signal.aborted ||
+        !requestCoordinatorRef.current.isCurrent(request.id) ||
+        caught instanceof DOMException && caught.name === "AbortError"
+      ) {
+        return;
+      }
       setError(
         caught instanceof DraftStorageError
           ? caught.userMessage
           : "한지 위에 옮기지 못했습니다. 다시 시도해 주세요.",
       );
     } finally {
-      setGenerating(false);
+      if (requestCoordinatorRef.current.finish(request.id)) {
+        setGenerating(false);
+      }
     }
   };
 
@@ -563,20 +639,21 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
                   value={prompt}
                   onChange={(e) => {
                     setPrompt(e.target.value);
+                    invalidateGeneration();
                     setResult(null);
                     setError(null);
                   }}
                   placeholder={`예: ${selected.name}에 담을 이야기를 자유롭게 적어 주세요.\n인물·시기·기관·강점·맥락 무엇이든.`}
                   rows={10}
                   className="prompt-textarea"
-                  maxLength={PROMPT_MAX_LENGTH}
+                  maxLength={GENERATE_REQUEST_LIMITS.promptMax}
                   aria-describedby="prompt-readiness"
                 />
                 <span id="prompt-readiness" className={`prompt-hint ${promptReady ? "is-ready" : ""}`}>
-                  {promptReady ? "생성 가능" : `${PROMPT_MIN_LENGTH - promptLength}자 더 필요`}
+                  {promptReady ? "생성 가능" : `${GENERATE_REQUEST_LIMITS.promptMin - promptLength}자 더 필요`}
                 </span>
                 <span className="prompt-counter">
-                  {prompt.length.toLocaleString()} / {PROMPT_MAX_LENGTH.toLocaleString()} 자
+                  {prompt.length.toLocaleString()} / {GENERATE_REQUEST_LIMITS.promptMax.toLocaleString()} 자
                 </span>
               </label>
 
@@ -598,7 +675,7 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
               <button
                 type="button"
                 onClick={handleGenerate}
-                disabled={generating || !promptReady}
+                disabled={generating || !promptReady || !brandProfileValid}
                 className={`generate-btn ${generating ? 'is-loading' : ''}`}
               >
                 <span className="btn-glyph">墨</span>
@@ -637,6 +714,7 @@ export default function NewDocumentClient({ lang, preselectedTemplate }: NewDocu
                   ))}
                 </ul>
               </div>
+              <BrandProfilePanel onProfileChange={handleBrandProfileChange} />
             </aside>
           </div>
         </section>

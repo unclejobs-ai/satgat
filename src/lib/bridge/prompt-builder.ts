@@ -89,6 +89,7 @@ export function buildGenerationPrompt(
 [브랜드 프로필]
 - 이름: ${brandProfile.name || '미지정'}
 - 역할: ${brandProfile.role || '미지정'}
+- 이메일: ${brandProfile.email || '미지정'}
 - 톤: ${brandProfile.tone || '미지정'}
 - 브랜드 컬러: ${brandProfile.brandColor || '미지정'}
 - 웹사이트: ${brandProfile.website || '미지정'}

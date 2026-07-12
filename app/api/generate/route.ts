@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+import { GenerateRequestSchema } from "@/lib/generation/generate-request";
 import { getTemplate } from "@/lib/templates/registry";
 import { generateDocumentData } from "@/lib/generation/document-generator";
 
-const GenerateRequestSchema = z.object({
-  templateId: z.string().min(1),
-  prompt: z.string().trim().min(10).max(8000),
-});
 
 async function readJsonBody(req: NextRequest): Promise<unknown> {
   try {
@@ -64,7 +60,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const data = await generateDocumentData(template, prompt);
+    const data = await generateDocumentData(template, prompt, parsed.data.brand ?? null);
     return NextResponse.json(data);
   } catch (error) {
     console.error("Generate error:", {
