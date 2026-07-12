@@ -1,15 +1,10 @@
-/**
- * /[lang] (예: /ko) — next.config.ts rewrites가 정적 specimen으로 매핑.
- * 라우터 fallback 도달 시 specimen으로 리다이렉트.
- */
+import LandingPage from "./LandingPage";
 
-import { redirect } from 'next/navigation';
-
-export default async function LangFallback({
+export default async function LangPage({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  await params;
-  redirect('/satgat/satgat-ko.html');
+  const { lang } = await params;
+  return <LandingPage lang={lang} />;
 }

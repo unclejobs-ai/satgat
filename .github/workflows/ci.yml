@@ -64,7 +64,7 @@ jobs:
       - name: design-guard --check-density (밀도 스캔, warn 모드)
         run: node scripts/design-guard.mjs --check-density
 
-      # 14종 템플릿 카탈로그 계약 (정의·렌더러·registry·landing·fixture 동기).
+      # 14종 템플릿 카탈로그 계약 (정의·렌더러·registry·fixture 동기).
       # 로컬 전용이던 verify:templates를 CI 게이트로 승격 — 카탈로그 회귀 차단.
       - name: verify:templates (14종 카탈로그 계약)
         run: npm run verify:templates
@@ -75,5 +75,5 @@ jobs:
         run: |
           ! grep -rE "TsangerJinKai|Charter[^a-z]" \
             --include="*.tsx" --include="*.ts" --include="*.css" --include="*.html" \
-            app/ src/ public/satgat/satgat-ko.html public/satgat/overrides.css \
+            app/ src/ public/satgat/overrides.css \
             && echo "✓ 유료 폰트 의존 없음" || (echo "✗ 유료 폰트 의존 감지" && exit 1)

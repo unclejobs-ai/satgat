@@ -203,7 +203,7 @@ test("renders a private result as a polite status with an opaque draft URL", () 
   expect(markup).not.toContain("draft/id?unsafe");
 });
 
-test("keeps the create flow root neutral inside the language main landmark", async () => {
+test("owns the create route main landmark after the shared language header", async () => {
   mock.module("next/navigation", () => ({
     usePathname: () => "/ko/new",
   }));
@@ -212,8 +212,8 @@ test("keeps the create flow root neutral inside the language main landmark", asy
     <NewDocumentClient lang="ko" preselectedTemplate={null} />,
   );
 
-  expect(markup).not.toContain("<main");
-  expect(markup).toContain("<div");
+  expect(markup.match(/<main/g)).toHaveLength(1);
+  expect(markup).toContain('<main id="main-content">');
 });
 
 test("builds a private draft-only preview URL", () => {

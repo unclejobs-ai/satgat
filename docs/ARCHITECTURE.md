@@ -40,8 +40,8 @@
 - **Validation**: `zod` runtime schema
 - **No DB / No Auth (Phase 1)** — Stateless. base64 URL로 결과 공유.
 - **Phase 2**: Supabase auth + 저장된 문서 + 결제 (Polar.sh)
-- **CSS**: React 앱은 `app/globals.css` (Tailwind 4) → `@import "public/satgat/overrides.css"` (한국화 토큰). specimen 페이지(`satgat-ko.html`)는 `public/satgat/satgat.css` (디자인 시스템 베이스, Kami 영감)를 직접 로드.
-- **Fonts**: Google Fonts OFL — Nanum Myeongjo / Gowun Batang / Gowun Dodum / Cormorant Garamond / Pretendard Variable
+- **CSS**: React routes (`/ko`, `/ko/examples`, `/ko/new`, `/ko/preview`) load `app/globals.css`, with shared product and document styles.
+- **Fonts**: Google Fonts OFL on screen; deterministic PDF/specimen capture injects same-origin self-hosted faces from `/fonts/satgat-fonts.css`.
 
 ---
 
@@ -79,18 +79,18 @@ Phase 2: 사주명리(四柱) · 가계부 · 연차계획서 · 백서(白書)
 │  ├ globals.css                  # React 앱 CSS 진입점 (Tailwind + overrides.css import)
 │  ├ page.tsx                     # / → redirect /ko
 │  ├ [lang]/
-│  │  ├ page.tsx                  # → rewrite /satgat/satgat-ko.html (specimen)
+│  │  ├ page.tsx                  # React 제품 랜딩 `/ko`
+│  │  ├ examples/page.tsx         # canonical runtime specimen catalog `/ko/examples`
 │  │  ├ new/page.tsx              # AI 문서 생성 (slot prompt)
-│  │  └ preview/page.tsx          # 생성 결과 미리보기 + 인쇄
+│  │  └ preview/page.tsx          # 비공개 draft 미리보기 + 인쇄
 │  └ api/
 │     ├ generate/route.ts         # Gemini API endpoint
 │     └ export/route.ts           # 서버 PDF export (puppeteer-core + @sparticuz/chromium)
 │
 ├ public/satgat/                  # 정적 자산 (own 자원, sync 안 함)
-│  ├ satgat.css                   # 디자인 시스템 CSS (Kami 영감, 우리가 유지보수)
-│  ├ overrides.css                # 한국화 토큰 + 한국 폰트 import
-│  ├ satgat-ko.html               # specimen 페이지 (한국 narrative)
-│  └ assets/                      # 이미지 / 폰트 / 데모
+│  ├ satgat.css                   # 문서 디자인 시스템 CSS (Kami 영감, 우리가 유지보수)
+│  ├ overrides.css                # 한국화 토큰
+│  └ assets/examples/ko/          # canonical manifest + 14 PNG/PDF specimen pairs
 │
 ├ src/
 │  ├ lib/
@@ -107,7 +107,7 @@ Phase 2: 사주명리(四柱) · 가계부 · 연차계획서 · 백서(白書)
 │
 ├ references/                     # 디자인·글쓰기·이력서·안티패턴 가이드
 ├ skills/satgat/SKILL.md          # AI agent용 single-file brief
-└ scripts/                        # verify-template-catalog · design-guard · demo 생성
+└ scripts/                        # catalog reader/verifier · runtime specimen generator · design guard
 ```
 
 ---

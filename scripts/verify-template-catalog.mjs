@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 import { previewFixtures } from './template-preview-fixtures.mjs';
+import { readTemplateDefinitionSources } from './template-catalog-source.mjs';
 
 const root = process.cwd();
-const definitionDir = path.join(root, 'src/lib/templates/definitions');
 const registryPath = path.join(root, 'src/lib/templates/registry.ts');
 const rendererPath = path.join(root, 'src/components/templates/runtime-catalog.tsx');
-const landingPath = path.join(root, 'public/satgat/satgat-ko.html');
 const PAGE_SPEC_IDS = new Set([
   'a4Portrait',
   'a4Landscape',
@@ -28,6 +28,9 @@ const validSectionTypes = new Set([
   'divider',
   'footer',
 ]);
+const MAX_DATA_IMAGE_LENGTH = 1_500_000;
+const LOCAL_IMAGE_PATH = /^\/(?!\/)[^\u0000-\u001f\\]*$/;
+const RASTER_DATA_IMAGE = /^data:image\/(?:avif|gif|jpeg|png|webp);base64,([A-Za-z0-9+/]+={0,2})$/i;
 
 function readSource(filePath) {
   return ts.createSourceFile(filePath, fs.readFileSync(filePath, 'utf8'), ts.ScriptTarget.Latest, true);
@@ -80,99 +83,6 @@ function objectKeys(sourceFile, variableName) {
     .filter(Boolean);
 }
 
-function parseTemplateDefinition(filePath) {
-  const sourceFile = readSource(filePath);
-  let templateObject;
-  let exportName;
-
-  function visit(node) {
-    if (
-      ts.isVariableDeclaration(node) &&
-      ts.isIdentifier(node.name) &&
-      node.initializer &&
-      ts.isObjectLiteralExpression(node.initializer)
-    ) {
-      exportName = node.name.text;
-      templateObject = node.initializer;
-    }
-    ts.forEachChild(node, visit);
-  }
-
-  visit(sourceFile);
-  if (!templateObject) throw new Error(`No template object found in ${path.relative(root, filePath)}`);
-
-  const fields = new Map();
-  for (const property of templateObject.properties) {
-    if (ts.isPropertyAssignment(property)) {
-      fields.set(propNameText(property.name), property.initializer);
-    }
-  }
-
-  const slots = [];
-  const slotArray = fields.get('slots');
-  if (slotArray && ts.isArrayLiteralExpression(slotArray)) {
-    for (const slotNode of slotArray.elements) {
-      if (!ts.isObjectLiteralExpression(slotNode)) continue;
-      const slotFields = new Map();
-      for (const property of slotNode.properties) {
-        if (ts.isPropertyAssignment(property)) {
-          slotFields.set(propNameText(property.name), property.initializer);
-        }
-      }
-      slots.push({
-        id: stringLiteralValue(slotFields.get('id')),
-        type: stringLiteralValue(slotFields.get('type')),
-        required: slotFields.get('required')?.kind === ts.SyntaxKind.TrueKeyword,
-      });
-    }
-  }
-
-  const contentOutline = [];
-  const sectionArray = fields.get('contentOutline');
-  if (sectionArray && ts.isArrayLiteralExpression(sectionArray)) {
-    for (const sectionNode of sectionArray.elements) {
-      if (!ts.isObjectLiteralExpression(sectionNode)) continue;
-      const sectionFields = new Map();
-      for (const property of sectionNode.properties) {
-        if (ts.isPropertyAssignment(property)) {
-          sectionFields.set(propNameText(property.name), property.initializer);
-        }
-      }
-      contentOutline.push({
-        type: stringLiteralValue(sectionFields.get('type')),
-        slots: stringArrayValues(sectionFields.get('slots')),
-      });
-    }
-  }
-
-  const specimenFields = new Map();
-  const specimenObject = fields.get('specimen');
-  if (specimenObject && ts.isObjectLiteralExpression(specimenObject)) {
-    for (const property of specimenObject.properties) {
-      if (ts.isPropertyAssignment(property)) {
-        specimenFields.set(propNameText(property.name), property.initializer);
-      }
-    }
-  }
-
-  return {
-    exportName,
-    file: path.relative(root, filePath),
-    id: stringLiteralValue(fields.get('id')),
-    name: stringLiteralValue(fields.get('name')),
-    category: stringLiteralValue(fields.get('category')),
-    pageSpec: stringLiteralValue(fields.get('pageSpec')),
-    slots,
-    contentOutline,
-    promptSeeds: stringArrayValues(fields.get('promptSeeds')),
-    factChecklist: stringArrayValues(fields.get('factChecklist')),
-    specimen: {
-      title: stringLiteralValue(specimenFields.get('title')),
-      alt: stringLiteralValue(specimenFields.get('alt')),
-      prompt: stringLiteralValue(specimenFields.get('prompt')),
-    },
-  };
-}
 
 function parseRegistryTemplates(definitionsByExport) {
   const sourceFile = readSource(registryPath);
@@ -275,17 +185,30 @@ function isEmptyFixtureValue(value) {
   return false;
 }
 
-function isLikelyImageSource(value) {
+function decodedLocalImagePath(source) {
+  let localPath = source.split(/[?#]/, 1)[0];
+  try {
+    for (let pass = 0; pass < 2; pass += 1) {
+      const decoded = decodeURIComponent(localPath);
+      if (decoded === localPath) break;
+      localPath = decoded;
+    }
+  } catch {
+    return null;
+  }
+  return LOCAL_IMAGE_PATH.test(localPath) ? localPath : null;
+}
+
+export function isSafeFixtureImageSource(value) {
   if (typeof value !== 'string') return false;
-  return (
-    value.startsWith('data:image/') ||
-    value.startsWith('http://') ||
-    value.startsWith('https://') ||
-    value.startsWith('/') ||
-    value.startsWith('./') ||
-    value.startsWith('../') ||
-    /\.(avif|gif|jpe?g|png|svg|webp)(\?.*)?$/i.test(value)
-  );
+  const source = value.trim();
+  const dataImage = source.match(RASTER_DATA_IMAGE);
+  if (dataImage) {
+    return source.length <= MAX_DATA_IMAGE_LENGTH && dataImage[1].length % 4 === 0;
+  }
+  if (!LOCAL_IMAGE_PATH.test(source)) return false;
+  const localPath = decodedLocalImagePath(source);
+  return localPath !== null && !/\.svg(?:\/|$)/i.test(localPath);
 }
 
 function imageSourceFrom(value) {
@@ -333,8 +256,8 @@ function validateFixtureSlotValue(templateId, slot, value, errors) {
       break;
 
     case 'image':
-      if (!isLikelyImageSource(imageSourceFrom(value))) {
-        errors.push(`${label} should be an image URL/data URL or image object`);
+      if (!isSafeFixtureImageSource(imageSourceFrom(value))) {
+        errors.push(`${label} should use a safe root-relative path or bounded raster data URL`);
       }
       break;
 
@@ -387,23 +310,15 @@ function assertSameSet(label, expected, actual, errors) {
   if (extra.length) errors.push(`${label} extra: ${extra.join(', ')}`);
 }
 
-const definitionFiles = fs
-  .readdirSync(definitionDir)
-  .filter((file) => file.endsWith('.ts'))
-  .sort()
-  .map((file) => path.join(definitionDir, file));
-const definitions = definitionFiles.map(parseTemplateDefinition);
+export function verifyTemplateCatalog() {
+const definitions = readTemplateDefinitionSources();
 const definitionsByExport = new Map(definitions.map((definition) => [definition.exportName, definition]));
-const definitionIds = definitions.map((definition) => definition.id).filter(Boolean).sort();
+const definitionIds = definitions.map((definition) => definition.id).sort();
 const registryEntries = parseRegistryTemplates(definitionsByExport);
 const registryIds = registryEntries.map((entry) => entry.definition?.id).filter(Boolean);
 const registryIdsSorted = [...registryIds].sort();
 const renderer = parseRendererMap();
 const rendererIds = [...renderer.keys].sort();
-const landingHtml = fs.readFileSync(landingPath, 'utf8');
-const landingIds = [
-  ...landingHtml.matchAll(/href="\/ko\/new\?template=([^"]+)"/g),
-].map((match) => match[1]).sort();
 
 const errors = [];
 
@@ -459,7 +374,6 @@ for (const definition of definitions) {
 
 assertSameSet('registry templates', definitionIds, registryIdsSorted, errors);
 assertSameSet('renderer map', registryIdsSorted, rendererIds, errors);
-assertSameSet('Korean landing links', registryIdsSorted, [...new Set(landingIds)].sort(), errors);
 assertSameSet('preview fixtures', registryIdsSorted, Object.keys(previewFixtures).sort(), errors);
 
 for (const definition of definitions) {
@@ -542,9 +456,17 @@ if (registryIds.length !== definitionIds.length) {
 }
 
 if (errors.length) {
-  console.error('Template catalog verification failed:');
-  for (const error of errors) console.error(`- ${error}`);
-  process.exit(1);
+  throw new Error(`Template catalog verification failed:\n${errors.map((error) => `- ${error}`).join('\n')}`);
+}
+return registryIds.length;
 }
 
-console.log(`Template catalog verified: ${registryIds.length} templates`);
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  try {
+    const count = verifyTemplateCatalog();
+    console.log(`Template catalog verified: ${count} templates`);
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  }
+}

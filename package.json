@@ -42,7 +42,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "demo:ko": "node scripts/generate-korean-demo-pack.mjs",
+    "specimens:render": "node scripts/render-template-specimens.mjs",
     "verify:templates": "node scripts/verify-template-catalog.mjs",
     "test": "bun test",
     "build": "next build",

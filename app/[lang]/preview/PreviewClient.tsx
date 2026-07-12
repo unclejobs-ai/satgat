@@ -268,31 +268,31 @@ export default function PreviewClient({ lang, draftId }: PreviewClientProps) {
 
   if (!currentPreview) {
     return (
-      <div className="empty-state" data-render-state="loading" aria-live="polite" aria-busy="true">
+      <main id="main-content" className="empty-state" data-render-state="loading" aria-live="polite" aria-busy="true">
         <p className="empty-mark loading">…</p>
         <h1>한지를 펴는 중…</h1>
         <PreviewStyles />
-      </div>
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div className="empty-state" data-render-state="error" role="alert">
+      <main id="main-content" className="empty-state" data-render-state="error" role="alert">
         <p className="empty-mark">!</p>
         <h1>{error}</h1>
         <p className="empty-sub">새 문서를 만들거나, 처음으로 돌아가세요.</p>
         <div className="empty-actions">
-          <Link href={`${langPath}/new`} className="empty-cta primary">새 문서 생성</Link>
-          <Link href={langPath} className="empty-cta">처음으로</Link>
+          <Link href={`${langPath}/new`} className="empty-cta primary" prefetch={false}>새 문서 생성</Link>
+          <Link href={langPath} className="empty-cta" prefetch={false}>처음으로</Link>
         </div>
         <PreviewStyles />
-      </div>
+      </main>
     );
   }
 
   if (!data || !template || !pageSpec) {
-    return null;
+    return <main id="main-content" />;
   }
 
   const pageSpecLabel = pageSpec.label;
@@ -302,7 +302,7 @@ export default function PreviewClient({ lang, draftId }: PreviewClientProps) {
   const completion = Math.round((filledSlots / Math.max(readinessSlots.length, 1)) * 100);
 
   return (
-    <div className={`preview-wrap preview-format-${template.pageSpec}`}>
+    <main id="main-content" className={`preview-wrap preview-format-${template.pageSpec}`}>
       <SatgatPrintStyles />
 
       {/* Toolbar */}
@@ -331,7 +331,7 @@ export default function PreviewClient({ lang, draftId }: PreviewClientProps) {
           </span>
         </div>
         <div className="actions">
-          <Link href={`${langPath}/new?template=${template.id}`} className="tb-link">
+          <Link href={`${langPath}/new?template=${template.id}`} className="tb-link" prefetch={false}>
             <RotateCcw size={14} strokeWidth={1.8} aria-hidden />
             <span>다시 만들기</span>
           </Link>
@@ -410,7 +410,7 @@ export default function PreviewClient({ lang, draftId }: PreviewClientProps) {
       </div>
 
       <PreviewStyles />
-    </div>
+    </main>
   );
 }
 

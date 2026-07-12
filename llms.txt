@@ -24,16 +24,17 @@ Core workflow:
 1. User writes a Korean natural-language brief.
 2. Selected template guides generator to fill type-aware JSON slots (list/table/image preserved as structured shapes).
 3. satgat renderer renders the output as HTML on baekjaji canvas with Korean serif hierarchy.
-4. Browser print → PDF, or PNG preview, or HTML save.
+4. Browser print → PDF, or PNG preview.
 
 Important paths:
 - bin/satgat.mjs: npx CLI entry (init / skill / dev / build / start).
 - skills/satgat/SKILL.md: single-file design brief for AI agents.
 - README.md: project overview, install paths, demo gallery, design rules.
-- public/satgat/satgat-ko.html: static Korean landing/specimen page (hanji editorial).
-- public/satgat/assets/examples/ko/: Korean demo pack with HTML, PDF, PNG, manifest.
-- scripts/generate-korean-demo-pack.mjs: regenerates Korean demo HTML and manifest.
-- scripts/verify-template-catalog.mjs: contract verification (definitions × renderers × landing × fixtures).
+- app/[lang]/page.tsx: React product landing at `/ko`.
+- app/[lang]/examples/page.tsx: canonical runtime specimen catalog at `/ko/examples`.
+- public/satgat/assets/examples/ko/: 14 canonical PNG/PDF pairs plus `manifest.json`.
+- scripts/render-template-specimens.mjs: captures the runtime preview route into deterministic artifacts.
+- scripts/verify-template-catalog.mjs: contract verification (definitions × registry × renderers × fixtures).
 - scripts/template-preview-fixtures.mjs: realistic slot payloads for all 14 runtime templates.
 - src/lib/templates/: runtime template definitions and registry.
 - src/lib/design-system/constraint.ts: tokens (palette, fonts, ink bleed shadows).
@@ -45,13 +46,10 @@ Important paths:
 Runtime template catalog (14):
 - resume, self-intro, business-card, brand-onepager, product-brochure, company-profile, investor-deck, brand-storybook, invitation, new-year-card, proposal, newsletter, portfolio, report.
 
-Korean demo pack:
-- resume-kim-sumin: Korean resume.
-- self-intro-yoon-hajin: Korean self-introduction.
-- proposal-hanji-retail: Korean business proposal.
-- company-profile-dalbit: Korean company profile.
-- investor-deck-maruai: Korean investor deck.
-- invitation-jisoo-minho: Korean wedding invitation.
+Korean runtime specimen pack:
+- One PNG and one PDF for every canonical template ID, in `TEMPLATE_IDS` order.
+- `manifest.json` records the canonical ID, runtime metadata, dimensions, and PDF page count.
+- Artifacts are generated from the private draft preview route, not a parallel static HTML renderer.
 
 Design rules (8조):
 1. Canvas: baekjaji #F7F7F2. No pure white. No warm parchment.

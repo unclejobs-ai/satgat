@@ -194,7 +194,7 @@ export default function NewDocumentClient({
   };
 
   return (
-    <div className={styles.page}>
+    <main id="main-content" className={styles.page}>
       <div className={styles.shell}>
         <TemplatePicker
           templates={TEMPLATES}
@@ -203,7 +203,7 @@ export default function NewDocumentClient({
           onSelect={chooseTemplate}
         />
 
-        <Link className={styles.examplesLink} href={`/${encodeURIComponent(lang)}/examples`}>
+        <Link className={styles.examplesLink} href={`/${encodeURIComponent(lang)}/examples`} prefetch={false}>
           완성 문서 예시 보기
         </Link>
 
@@ -239,6 +239,6 @@ export default function NewDocumentClient({
           />
         ) : null}
       </div>
-    </div>
+    </main>
   );
 }

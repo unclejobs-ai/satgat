@@ -1,5 +1,4 @@
-const SAMPLE_IMAGE =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"%3E%3Crect width="800" height="600" fill="%23f7f7f2"/%3E%3Ccircle cx="400" cy="300" r="170" fill="%232e6b5e"/%3E%3C/svg%3E';
+const SAMPLE_IMAGE = '/apple-icon.png';
 
 export const previewFixtures = {
   resume: {

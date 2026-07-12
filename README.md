@@ -110,31 +110,11 @@ Latin 페어링: Cormorant Garamond italic, JetBrains Mono.
 
 ---
 
-## 데모팩 — 13종 specimen
+## 완성 예시 — 14종 specimen
 
-자연어 한 문장이 한국형 문서가 되는 13개 장면. 모두 같은 디자인 8조에서 나왔습니다. 각 예시는 인쇄용 HTML 원본과 미리보기 PNG로 제공됩니다.
+열네 가지 예시는 제품의 React 미리보기 렌더러에서 PNG와 PDF로 생성됩니다.
 
-<a href="public/satgat/assets/examples/ko/index.html"><img src="public/satgat/assets/readme/demo-gallery.png" alt="satgat 한국어 데모팩 13종 갤러리" width="92%"></a>
-
-| 문서 | 폼팩터 | 미리보기 |
-|---|---|---|
-| **이력서** · 김수민 | A4 세로 | [열기](public/satgat/assets/examples/ko/resume-kim-sumin.html) · [PNG](public/satgat/assets/examples/ko/resume-kim-sumin.png) |
-| **자기소개서** · 윤하진 | A4 세로 · 4문항 | [열기](public/satgat/assets/examples/ko/self-intro-yoon-hajin.html) · [PNG](public/satgat/assets/examples/ko/self-intro-yoon-hajin.png) |
-| **명함** · 박상세 | 90×55mm 앞뒷면 | [열기](public/satgat/assets/examples/ko/business-card-parksangse.html) · [PNG](public/satgat/assets/examples/ko/business-card-parksangse.png) |
-| **브랜드 원페이지** · 백자상회 | A4 가로 | [열기](public/satgat/assets/examples/ko/one-pager-baekja.html) · [PNG](public/satgat/assets/examples/ko/one-pager-baekja.png) |
-| **제품 소개서** · 온정 | A4 세로 | [열기](public/satgat/assets/examples/ko/product-sheet-onjeong.html) · [PNG](public/satgat/assets/examples/ko/product-sheet-onjeong.png) |
-| **회사 소개서** · 달빛식품 | A4 세로 | [열기](public/satgat/assets/examples/ko/company-profile-dalbit.html) · [PNG](public/satgat/assets/examples/ko/company-profile-dalbit.png) |
-| **투자 IR 덱** · 마루AI | 16:9 · 6장 | [열기](public/satgat/assets/examples/ko/investor-deck-maruai.html) · [PNG](public/satgat/assets/examples/ko/investor-deck-maruai.png) |
-| **브랜드 스토리북** · 술도가 한울 | A4 세로 | [열기](public/satgat/assets/examples/ko/brand-storybook-sool.html) · [PNG](public/satgat/assets/examples/ko/brand-storybook-sool.png) |
-| **청첩장** · 지수와 민호 | 엽서 105×148mm | [열기](public/satgat/assets/examples/ko/invitation-jisoo-minho.html) · [PNG](public/satgat/assets/examples/ko/invitation-jisoo-minho.png) |
-| **연하장** · 박상세 가족 | 엽서 105×148mm | [열기](public/satgat/assets/examples/ko/newyear-card-park.html) · [PNG](public/satgat/assets/examples/ko/newyear-card-park.png) |
-| **제안서** · 한지 리테일 | A4 세로 | [열기](public/satgat/assets/examples/ko/proposal-hanji-retail.html) · [PNG](public/satgat/assets/examples/ko/proposal-hanji-retail.png) |
-| **뉴스레터** · 장소리 | A4 세로 | [열기](public/satgat/assets/examples/ko/newsletter-jangsori.html) · [PNG](public/satgat/assets/examples/ko/newsletter-jangsori.png) |
-| **포트폴리오** · 스튜디오결 | A4 가로 | [열기](public/satgat/assets/examples/ko/portfolio-studio-gyeol.html) · [PNG](public/satgat/assets/examples/ko/portfolio-studio-gyeol.png) |
-
-전체 갤러리: [한국어 데모팩](public/satgat/assets/examples/ko/index.html) · 재생성 `npm run demo:ko`.
-
----
+[완성 예시 보기](https://satgat.vercel.app/ko/examples) · [생성 manifest](public/satgat/assets/examples/ko/manifest.json) · 재생성 `npm run specimens:render`
 
 ## 스크립트
 
@@ -144,7 +124,7 @@ npm run build             # 프로덕션 빌드
 npm run start             # 프로덕션 서버
 npm run lint              # ESLint
 npm run verify:templates  # 14종 템플릿·렌더러·UI 일치 계약 검증 (CI 게이트)
-npm run demo:ko           # 한국어 데모팩 HTML/manifest 재생성
+npm run specimens:render  # 빌드된 런타임에서 14종 PNG/PDF/manifest 재생성
 npm test                  # bun 단위 테스트 (문서 생성기)
 ```
 
@@ -182,8 +162,8 @@ src/lib/bridge/prompt-builder.ts  type-aware 생성 프롬프트
 scripts/verify-template-catalog.mjs   14종 카탈로그 계약 검증 (CI 게이트)
 scripts/design-guard.mjs              디자인 8조 + 밀도 정적 강제기 (CI 게이트, warn)
 scripts/template-preview-fixtures.mjs 14종 미리보기 fixture
-scripts/generate-korean-demo-pack.mjs 데모팩 생성 (scripts/demo/* css·data·layouts)
-public/satgat/                정적 specimen + 한국어 데모팩
+scripts/render-template-specimens.mjs 14종 런타임 PNG/PDF/manifest 생성
+public/satgat/assets/examples/ko/      생성된 specimen 아티팩트
 skills/satgat/SKILL.md        AI agent용 brief
 references/                   디자인·글쓰기·이력서·안티패턴 가이드
 ```
