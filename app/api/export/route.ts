@@ -3,6 +3,8 @@ import { z } from "zod";
 import { getTemplate } from "@/lib/templates/registry";
 import { validateDocumentData } from "@/lib/engine/validator";
 import { renderDocumentPdf } from "@/lib/export/render-pdf";
+import { resolveTrustedPdfOrigin } from "@/lib/export/trusted-origin";
+import { readBoundedJsonBody } from "@/lib/export/request-body";
 import type { SatgatDocumentData } from "@/lib/templates/types";
 
 // Headless Chromium needs the Node.js runtime (not edge); PDF render can be slow.
@@ -15,23 +17,7 @@ const ExportRequestSchema = z.object({
   lang: z.string().min(1).max(8).optional(),
 });
 
-/** base64url encode, matching the preview page's decode (-/_ , no padding). */
-function encodePreviewPayload(data: unknown): string {
-  return Buffer.from(JSON.stringify(data), "utf8")
-    .toString("base64")
-    .replaceAll("+", "-")
-    .replaceAll("/", "_")
-    .replace(/=+$/, "");
-}
 
-function requestOrigin(req: NextRequest): string {
-  const host = req.headers.get("host");
-  if (host) {
-    const proto = req.headers.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-    return `${proto}://${host}`;
-  }
-  return req.nextUrl.origin;
-}
 
 // Print-only font override: force every satgat font var onto self-hosted faces
 // (Hangul → Nanum/Gowun, Hanja → Noto Serif KR) so a headless-Chromium PDF on
@@ -55,8 +41,20 @@ const PRINT_FONT_OVERRIDE_CSS = `
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json().catch(() => undefined);
-    const parsed = ExportRequestSchema.safeParse(body);
+    const body = await readBoundedJsonBody(req);
+    if (!body.ok) {
+      const tooLarge = body.reason === "too-large";
+      return NextResponse.json(
+        {
+          error: "Invalid export request",
+          message: tooLarge
+            ? "문서가 너무 커서 PDF로 내보낼 수 없습니다."
+            : "내보낼 문서 데이터가 올바르지 않습니다.",
+        },
+        { status: tooLarge ? 413 : 400 },
+      );
+    }
+    const parsed = ExportRequestSchema.safeParse(body.value);
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid export request", message: "내보낼 문서 데이터가 올바르지 않습니다." },
@@ -68,7 +66,7 @@ export async function POST(req: NextRequest) {
     const template = getTemplate(templateId);
     if (!template) {
       return NextResponse.json(
-        { error: `Template not found: ${templateId}`, message: "지원하지 않는 문서 형식입니다." },
+        { error: "Template not found", message: "지원하지 않는 문서 형식입니다." },
         { status: 404 }
       );
     }
@@ -77,16 +75,21 @@ export async function POST(req: NextRequest) {
     const validation = validateDocumentData(template, data);
     if (!validation.valid) {
       return NextResponse.json(
-        { error: `Invalid document: ${validation.errors.join("; ")}`, message: "문서에 필요한 내용이 부족합니다." },
+        { error: "Invalid document", message: "문서 형식이 올바르지 않습니다." },
         { status: 400 }
       );
     }
 
-    const origin = requestOrigin(req);
-    const previewUrl = `${origin}/${encodeURIComponent(lang)}/preview?data=${encodePreviewPayload(data)}`;
+    const origin = resolveTrustedPdfOrigin({ env: process.env, requestUrl: req.url });
     const fontsCssUrl = `${origin}/fonts/satgat-fonts.css`;
 
-    const pdf = await renderDocumentPdf(previewUrl, { fontsCssUrl, overrideCss: PRINT_FONT_OVERRIDE_CSS });
+    const pdf = await renderDocumentPdf({
+      origin,
+      lang,
+      data,
+      fontsCssUrl,
+      overrideCss: PRINT_FONT_OVERRIDE_CSS,
+    });
 
     return new NextResponse(Buffer.from(pdf), {
       status: 200,

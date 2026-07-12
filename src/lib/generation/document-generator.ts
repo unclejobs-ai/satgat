@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { generateObject } from 'ai';
 import { google } from '@ai-sdk/google';
-import type { SatgatTemplate, SatgatDocumentData, TemplateSlot } from '@/lib/templates/types';
+import type { TemplateCatalogEntry, SatgatDocumentData, TemplateSlot } from '@/lib/templates/types';
 import type { BrandProfile } from '@/lib/design-system/brand-resolver';
 import { buildGenerationPrompt } from '@/lib/bridge/prompt-builder';
-import { buildSlotsSchema } from '@/lib/generation/slot-schema';
+import { buildGenerationSlotsSchema, schemaForSlot } from '@/lib/engine/slot-schema';
 import { validateDocumentData } from '@/lib/engine/validator';
 import { normalizeImageSlot } from '@/lib/engine/slot-image';
 import { normalizeVisualSlot } from '@/lib/engine/slot-visual';
@@ -73,13 +73,12 @@ function parseMaybeJson(value: string): unknown {
 }
 
 function normalizeListItem(value: unknown): unknown {
-  if (typeof value === 'string') {
-    const parsed = parseMaybeJson(value);
-    if (typeof parsed === 'number' || typeof parsed === 'boolean') return String(parsed);
-    return parsed;
+  const parsed = typeof value === 'string' ? parseMaybeJson(value) : value;
+  if (typeof parsed === 'string' && parsed.trim()) return { title: parsed.trim() };
+  if (typeof parsed === 'number' || typeof parsed === 'boolean') {
+    return { title: String(parsed) };
   }
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return value;
+  return parsed;
 }
 
 function normalizeListArray(value: unknown[]): unknown[] {
@@ -106,11 +105,12 @@ function normalizeSlotValue(value: unknown, slotType: string): unknown {
       if (typeof value === 'string') {
         const parsed = parseMaybeJson(value);
         if (Array.isArray(parsed)) return normalizeListArray(parsed);
-        if (parsed && typeof parsed === 'object') return [parsed];
-        if (typeof parsed === 'string' && parsed.trim()) return [parsed.trim()];
-        if (typeof parsed === 'number' || typeof parsed === 'boolean') return [String(parsed)];
+        const item = normalizeListItem(parsed);
+        return item && typeof item === 'object' ? [item] : [];
       }
-      if (typeof value === 'number' || typeof value === 'boolean') return [String(value)];
+      if (typeof value === 'number' || typeof value === 'boolean') {
+        return [{ title: String(value) }];
+      }
       if (value && typeof value === 'object') return [value];
       return [];
 
@@ -148,7 +148,7 @@ const GENERATION_SYSTEM =
  * 테스트는 이 함수를 주입해 모델 없이 검증한다.
  */
 export type SlotGenerator = (args: {
-  template: SatgatTemplate;
+  template: TemplateCatalogEntry;
   system: string;
   prompt: string;
   schema: z.ZodTypeAny;
@@ -166,7 +166,7 @@ const defaultSlotGenerator: SlotGenerator = async ({ system, prompt, schema }) =
 };
 
 function normalizeSlots(
-  template: SatgatTemplate,
+  template: TemplateCatalogEntry,
   rawSlots: Record<string, unknown>,
   userPrompt: string,
   withFallback: boolean
@@ -175,14 +175,14 @@ function normalizeSlots(
   for (const slot of template.slots) {
     if (slot.id in rawSlots) {
       const normalized = normalizeSlotValue(rawSlots[slot.id], slot.type);
-      if (!isEmptySlotValue(normalized)) {
+      if (!isEmptySlotValue(normalized) && schemaForSlot(slot).safeParse(normalized).success) {
         slots[slot.id] = normalized;
         continue;
       }
     }
     if (withFallback && slot.required) {
       const fallback = fallbackForRequiredSlot(slot, userPrompt);
-      if (!isEmptySlotValue(fallback)) {
+      if (!isEmptySlotValue(fallback) && schemaForSlot(slot).safeParse(fallback).success) {
         slots[slot.id] = fallback;
       }
     }
@@ -203,14 +203,14 @@ export interface GenerateOptions {
  * 스키마 위반/필수 누락 시 bounded retry(기본 2회) 후 fallback 채움으로 떨어진다.
  */
 export async function generateDocumentData(
-  template: SatgatTemplate,
+  template: TemplateCatalogEntry,
   userPrompt: string,
   brandProfile?: BrandProfile | null,
   options?: GenerateOptions
 ): Promise<SatgatDocumentData> {
   const system = GENERATION_SYSTEM;
   const prompt = buildGenerationPrompt(template, userPrompt, brandProfile);
-  const schema = buildSlotsSchema(template);
+  const schema = buildGenerationSlotsSchema(template);
   const generate = options?.generateSlots ?? defaultSlotGenerator;
   const maxRetries = options?.maxRetries ?? 2;
 

@@ -14,8 +14,6 @@ import {
   INK_MUTED,
   HAIRLINE,
   JADE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -70,11 +68,11 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
     { label: 'CONTACT', value: contact },
   ].filter((item) => item.value);
   const primaryValues = values.slice(0, 4);
-  const monogram = companyName.trim().slice(0, 1) || '社';
+  const monogram = companyName.trim().slice(0, 1);
 
   return (
     <>
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <section
           className="company-profile-hero"
           style={{
@@ -101,7 +99,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                 fontFamily: FONT_MYEONGJO,
                 fontWeight: 800,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 18px 0',
                 wordBreak: 'keep-all',
               }}
@@ -116,7 +113,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                   fontSize: 19,
                   lineHeight: 1.62,
                   color: INK_LIGHT,
-                  textShadow: INK_BLEED,
                   margin: '0 0 34px 0',
                   wordBreak: 'keep-all',
                 }}
@@ -160,7 +156,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                     fontWeight: 700,
                     lineHeight: 1.28,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 14px 0',
                     wordBreak: 'keep-all',
                   }}
@@ -173,7 +168,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                     fontSize: 16,
                     lineHeight: 1.82,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                   }}
@@ -206,7 +200,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                 fontSize: 36,
                 fontWeight: 800,
                 color: INK,
-                textShadow: INK_BLEED,
               }}
             >
               {monogram}
@@ -232,7 +225,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                     fontWeight: 700,
                     lineHeight: 1.3,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 12px 0',
                     wordBreak: 'keep-all',
                   }}
@@ -245,7 +237,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                     fontSize: 15,
                     lineHeight: 1.76,
                     color: INK_LIGHT,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                   }}
@@ -264,7 +255,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                     fontWeight: 700,
                     lineHeight: 1.35,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 16px 0',
                     wordBreak: 'keep-all',
                   }}
@@ -377,24 +367,7 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
         </section>
       </SatgatDocument>
 
-      <SatgatDocument format="a4">
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            right: 78,
-            bottom: 132,
-            fontFamily: FONT_MYEONGJO,
-            fontSize: 172,
-            fontWeight: 800,
-            lineHeight: 0.95,
-            height: 190,
-            color: 'rgba(46,107,94,0.055)',
-            pointerEvents: 'none',
-          }}
-        >
-          {monogram}
-        </div>
+      <SatgatDocument pageSpec="a4Portrait">
         <header
           style={{
             display: 'flex',
@@ -425,7 +398,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                 fontWeight: 800,
                 lineHeight: 1.18,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: 0,
                 wordBreak: 'keep-all',
               }}
@@ -459,7 +431,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
             display: 'grid',
             gridTemplateColumns: history.length > 0 && team.length > 0 ? '1.08fr 0.92fr' : '1fr',
             gap: 40,
-            minHeight: 430,
           }}
         >
           <section>
@@ -470,7 +441,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                 fontWeight: 700,
                 lineHeight: 1.35,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: '0 0 18px 0',
                 wordBreak: 'keep-all',
               }}
@@ -509,7 +479,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                         fontSize: 15,
                         lineHeight: 1.7,
                         color: INK_LIGHT,
-                        textShadow: INK_BLEED,
                         wordBreak: 'keep-all',
                       }}
                     >
@@ -542,7 +511,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                 fontWeight: 700,
                 lineHeight: 1.35,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: '0 0 18px 0',
                 wordBreak: 'keep-all',
               }}
@@ -636,7 +604,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
                 fontSize: 15,
                 lineHeight: 1.72,
                 color: INK_LIGHT,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
               }}
@@ -725,26 +692,6 @@ export default function CompanyProfileRenderer({ data }: { data: SatgatDocumentD
           padding-left: 28px;
         }
 
-        @media (max-width: 760px) {
-          .company-profile-hero {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-            min-height: 0;
-          }
-
-          .company-profile-title {
-            font-size: 38px;
-            line-height: 1.12;
-          }
-
-          .company-profile-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 24px;
-          }
-        }
       `}</style>
     </>
   );

@@ -13,10 +13,7 @@ import {
   INK,
   INK_MUTED,
   DANCHEONG,
-  JADE,
   HAIRLINE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -59,7 +56,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
   return (
     <>
       {/* ─── S1: 타이틀 ───────────────────────────────────────────────── */}
-      <SatgatDocument format="slide-16x9">
+      <SatgatDocument pageSpec="slide16x9">
         <section className="investor-cover" style={{ height: '100%' }}>
           <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
             <p
@@ -81,7 +78,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontWeight: 800,
                 lineHeight: 1.08,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 12px',
                 wordBreak: 'keep-all',
               }}
@@ -137,7 +133,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontSize: 15,
                       lineHeight: 1.62,
                       color: INK,
-                      textShadow: INK_BLEED,
                       margin: 0,
                       wordBreak: 'keep-all',
                     }}
@@ -159,7 +154,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontFamily: FONT_DODUM,
                       fontSize: 10,
                       letterSpacing: '0.12em',
-                      color: JADE,
+                      color: INK_MUTED,
                       margin: '0 0 7px',
                     }}
                   >
@@ -171,7 +166,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontSize: 15,
                       lineHeight: 1.62,
                       color: INK,
-                      textShadow: INK_BLEED,
                       margin: 0,
                       wordBreak: 'keep-all',
                     }}
@@ -217,7 +211,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                     fontWeight: 800,
                     lineHeight: 1.25,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                   }}
@@ -262,7 +255,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                           fontWeight: 800,
                           lineHeight: 1,
                           color: DANCHEONG,
-                          textShadow: INK_BLEED,
                           margin: '0 0 8px',
                           wordBreak: 'keep-all',
                         }}
@@ -303,7 +295,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                         fontFamily: FONT_DODUM,
                         fontSize: 10,
                         letterSpacing: '0.12em',
-                        color: JADE,
+                        color: INK_MUTED,
                         margin: '0 0 7px',
                       }}
                     >
@@ -331,7 +323,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontWeight: 800,
                       lineHeight: 1.24,
                       color: DANCHEONG,
-                      textShadow: INK_BLEED,
                       margin: 0,
                       wordBreak: 'keep-all',
                     }}
@@ -347,7 +338,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
 
       {/* ─── S2: Problem ──────────────────────────────────────────────── */}
       {problem && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <SlideSection kicker="01" title="Problem" accent="dancheong">
             <p
               style={{
@@ -355,7 +346,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontSize: 20,
                 lineHeight: 1.7,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -369,7 +359,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
 
       {/* ─── S3: Solution ─────────────────────────────────────────────── */}
       {solution && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <SlideSection kicker="02" title="Solution" accent="jade">
             <p
               style={{
@@ -377,7 +367,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontSize: 20,
                 lineHeight: 1.7,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -391,7 +380,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
 
       {/* ─── S4: Market ───────────────────────────────────────────────── */}
       {marketSize && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <SlideSection kicker="03" title="Market" accent="dancheong">
             <p
               style={{
@@ -400,7 +389,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontWeight: 800,
                 lineHeight: 1.25,
                 color: DANCHEONG,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -414,7 +402,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
 
       {/* ─── S5: Traction ─────────────────────────────────────────────── */}
       {traction.length > 0 && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <SlideSection kicker="04" title="Traction" accent="dancheong">
             <div
               style={{
@@ -433,7 +421,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontWeight: 800,
                       lineHeight: 1.1,
                       color: DANCHEONG,
-                      textShadow: INK_BLEED,
                       margin: '0 0 8px 0',
                     }}
                   >
@@ -458,9 +445,9 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
       )}
 
       {Boolean(tractionChart) && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <SlideSection kicker="05" title="Traction Chart" accent="dancheong">
-            <div style={{ width: '82%', maxWidth: 620 }}>
+            <div className="investor-chart" style={{ width: '82%', maxWidth: 620 }}>
               <SatgatVisual visual={tractionChart} compact />
             </div>
           </SlideSection>
@@ -469,7 +456,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
 
       {/* ─── S6: Business Model ───────────────────────────────────────── */}
       {businessModel && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <SlideSection kicker="05" title="Business Model" accent="jade">
             <p
               style={{
@@ -477,7 +464,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontSize: 20,
                 lineHeight: 1.7,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -492,7 +478,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
 
       {/* ─── S7: Team ─────────────────────────────────────────────────── */}
       {team.length > 0 && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <SlideSection kicker="06" title="Team" accent="jade">
             <div
               style={{
@@ -510,7 +496,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontSize: 18,
                       fontWeight: 700,
                       color: INK,
-                      textShadow: INK_BLEED,
                       margin: '0 0 4px 0',
                       wordBreak: 'keep-all',
                     }}
@@ -538,7 +523,7 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
 
       {/* ─── S8: Ask ──────────────────────────────────────────────────── */}
       {ask && (
-        <SatgatDocument format="slide-16x9">
+        <SatgatDocument pageSpec="slide16x9">
           <div
             style={{
               height: '100%',
@@ -568,7 +553,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontWeight: 800,
                 lineHeight: 1.15,
                 color: DANCHEONG,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 16px 0',
                 wordBreak: 'keep-all',
               }}
@@ -580,8 +564,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
         </SatgatDocument>
       )}
 
-      {/* 반응형: 데스크톱 값은 base 클래스에, 모바일은 @media 오버라이드.
-          인라인 style을 클래스로 옮겨 source-order로 모바일이 이긴다(!important 불필요). */}
       <style jsx global>{`
         .investor-cover {
           display: grid;
@@ -596,23 +578,12 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
           border-left: 1px solid ${HAIRLINE};
           padding-left: 30px;
         }
-
-        @media (max-width: 760px) {
-          .investor-cover {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-          }
-          .investor-cover-title {
-            font-size: 34px;
-          }
-          .investor-cover-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 22px;
-          }
+        .investor-chart .satgat-visual {
+          display: flow-root;
+          width: 65%;
+          margin-inline: auto !important;
         }
+
       `}</style>
     </>
   );
@@ -629,7 +600,7 @@ function SlideSection({
   accent: 'dancheong' | 'jade';
   children: React.ReactNode;
 }) {
-  const accentColor = accent === 'dancheong' ? DANCHEONG : JADE;
+  const accentColor = accent === 'dancheong' ? DANCHEONG : INK_MUTED;
 
   return (
     <div
@@ -660,7 +631,6 @@ function SlideSection({
           fontWeight: 700,
           lineHeight: 1.2,
           color: INK,
-          textShadow: INK_BLEED,
           margin: '0 0 24px 0',
           wordBreak: 'keep-all',
         }}

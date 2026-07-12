@@ -11,194 +11,154 @@ import {
   INK_MUTED,
   GOLD,
   HAIRLINE,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
- * 연하장(年賀狀) — 한 해의 인사
+ * 연하장 — 한 해의 인사
  * 엽서 비율 · 인사말 + 메시지 + 보내는 사람
  */
 
 export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData }) {
   const s = data.slots;
   const occasion = String(s['occasion'] ?? '신년');
-  const yearHanja = String(s['year_hanja'] ?? '');
-  const greeting = String(s['greeting'] ?? '謹賀新年');
+  const greeting = String(s['greeting'] ?? '새해 복 많이 받으세요');
   const message = String(s['message'] ?? '');
   const senderFamily = String(s['sender_family'] ?? '');
   const recipient = String(s['recipient'] ?? '');
 
   return (
-    <SatgatDocument format="a4">
+    <SatgatDocument pageSpec="postcardPortrait">
       <div
-        className="new-year-card-stage"
-        style={{ display: 'flex', justifyContent: 'center', minHeight: '100%' }}
+        style={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
       >
+        {/* Gold corner accent */}
         <div
-          className="new-year-card-face"
           style={{
-            width: '148mm',
-            maxWidth: '100%',
-            background: '#FFFFFB',
-            border: `0.5pt solid ${HAIRLINE}`,
-            borderRadius: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'relative',
-            boxShadow: '0 8pt 24pt rgba(28,25,22,0.06)',
-            boxSizing: 'border-box',
-            overflow: 'hidden',
+            position: 'absolute',
+            top: 10,
+            right: 10,
+            width: 18,
+            height: 18,
+            borderTop: `1.5pt solid ${GOLD}`,
+            borderRight: `1.5pt solid ${GOLD}`,
           }}
-        >
-          {/* Gold corner accent */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 24,
-              right: 24,
-              width: 24,
-              height: 24,
-              borderTop: `1.5pt solid ${GOLD}`,
-              borderRight: `1.5pt solid ${GOLD}`,
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 24,
-              left: 24,
-              width: 24,
-              height: 24,
-              borderBottom: `1.5pt solid ${GOLD}`,
-              borderLeft: `1.5pt solid ${GOLD}`,
-            }}
-          />
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 10,
+            left: 10,
+            width: 18,
+            height: 18,
+            borderBottom: `1.5pt solid ${GOLD}`,
+            borderLeft: `1.5pt solid ${GOLD}`,
+          }}
+        />
 
-          {/* Recipient (옵션) */}
-          {recipient && (
-            <p
-              style={{
-                fontFamily: FONT_BATANG,
-                fontSize: 12,
-                color: INK_MUTED,
-                margin: '0 0 12px',
-                letterSpacing: '0.04em',
-              }}
-            >
-              {recipient} 귀하
-            </p>
-          )}
-
-          {/* Greeting */}
-          <h1
+        {/* Recipient (옵션) */}
+        {recipient && (
+          <p
             style={{
-              fontFamily: FONT_MYEONGJO,
-              fontSize: 52,
-              fontWeight: 800,
-              lineHeight: 1.1,
-              color: INK,
-              textShadow: INK_BLEED_STRONG,
+              fontFamily: FONT_BATANG,
+              fontSize: 10,
+              color: INK_MUTED,
               margin: '0 0 8px',
-              letterSpacing: '-0.02em',
+              letterSpacing: '0.04em',
             }}
           >
-            {greeting}
-          </h1>
-          {yearHanja && (
+            {recipient} 귀하
+          </p>
+        )}
+
+        {/* Greeting */}
+        <h1
+          style={{
+            fontFamily: FONT_MYEONGJO,
+            fontSize: 36,
+            fontWeight: 800,
+            lineHeight: 1.08,
+            color: INK,
+            margin: '0 0 6px',
+            letterSpacing: '-0.025em',
+          }}
+        >
+          {greeting}
+        </h1>
+        {occasion && (
+          <p
+            style={{
+              fontFamily: FONT_MYEONGJO,
+              fontSize: 12,
+              color: GOLD,
+              letterSpacing: '0.14em',
+              margin: '0 0 14px',
+              fontWeight: 700,
+            }}
+          >
+            {occasion}
+          </p>
+        )}
+
+        {/* Message */}
+        {message && (
+          <p
+            style={{
+              fontFamily: FONT_BATANG,
+              fontSize: 11.5,
+              lineHeight: 1.58,
+              color: INK,
+              margin: '0 0 auto',
+              maxWidth: '88mm',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {message}
+          </p>
+        )}
+
+        {/* Sender */}
+        {senderFamily && (
+          <div
+            style={{
+              marginTop: 'auto',
+              paddingTop: 12,
+              borderTop: `0.5pt solid ${HAIRLINE}`,
+              textAlign: 'right',
+            }}
+          >
             <p
               style={{
-                fontFamily: FONT_MYEONGJO,
-                fontSize: 14,
-                color: GOLD,
-                letterSpacing: '0.16em',
-                margin: '0 0 24px',
-                fontWeight: 700,
+                fontFamily: FONT_DODUM,
+                fontSize: 8.5,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: INK_MUTED,
+                margin: '0 0 2px',
               }}
             >
-              {yearHanja} · {occasion}
+              FROM
             </p>
-          )}
-
-          {/* Message */}
-          {message && (
             <p
               style={{
                 fontFamily: FONT_BATANG,
-                fontSize: 13.5,
-                lineHeight: 1.85,
+                fontSize: 11.5,
+                fontWeight: 700,
                 color: INK,
-                margin: '0 0 auto',
-                maxWidth: 480,
-                whiteSpace: 'pre-line',
+                margin: 0,
+                letterSpacing: '0.02em',
               }}
             >
-              {message}
+              {senderFamily}
             </p>
-          )}
-
-          {/* Sender */}
-          {senderFamily && (
-            <div
-              style={{
-                marginTop: 'auto',
-                paddingTop: 24,
-                borderTop: `0.5pt solid ${HAIRLINE}`,
-                textAlign: 'right',
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: FONT_DODUM,
-                  fontSize: 10,
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  color: INK_MUTED,
-                  margin: '0 0 4px',
-                }}
-              >
-                FROM
-              </p>
-              <p
-                style={{
-                  fontFamily: FONT_BATANG,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: INK,
-                  margin: 0,
-                  letterSpacing: '0.02em',
-                }}
-              >
-                {senderFamily}
-              </p>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-
-      <style jsx>{`
-        .new-year-card-stage {
-          align-items: center;
-          padding-top: 60px;
-        }
-
-        .new-year-card-face {
-          aspect-ratio: 148 / 105;
-          padding: 48px 56px;
-        }
-
-        @media screen and (max-width: 760px) {
-          .new-year-card-stage {
-            padding-top: 12px;
-            align-items: flex-start;
-          }
-
-          .new-year-card-face {
-            aspect-ratio: auto;
-            min-height: 320px;
-            padding: 26px 28px;
-          }
-        }
-      `}</style>
     </SatgatDocument>
   );
 }

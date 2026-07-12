@@ -1,4 +1,4 @@
-name: CI · 한지 위 검증
+name: CI · 웹 제품 계약
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: 빌드 · 타입 · 린트
+  verify:
+    name: 린트 · 테스트 · 빌드 · 브라우저/PDF
     runs-on: ubuntu-latest
 
     steps:
@@ -21,59 +21,43 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Bun 환경 준비
+        uses: oven-sh/setup-bun@v2
+
       - name: 의존성 설치
         run: npm ci
 
       - name: 린트
-        run: npm run lint --if-present
+        run: npm run lint
 
       - name: 타입 체크
         run: npx tsc --noEmit
+
+      - name: 단위 테스트
+        run: npm test
+
+      - name: 생성 토큰 드리프트 검사
+        run: npm run tokens:check
+
+      - name: 14종 카탈로그·런타임 아티팩트 계약
+        run: npm run verify:templates
+
+      - name: 디자인 8조 차단 규칙
+        run: node scripts/design-guard.mjs --check
+
+      - name: 디자인 밀도 휴리스틱
+        run: node scripts/design-guard.mjs --check-density
 
       - name: 프로덕션 빌드
         run: npm run build
         env:
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
 
-  design-guard:
-    name: 디자인 8조 · 카탈로그 계약 검증
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Node 환경 준비
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: 의존성 설치
-        run: npm ci
-
-      # design-guard 정적 분석기 (8조 위반 리포트). M1 warn 모드 — 위반이 있어도
-      # exit 0 (PURE_WHITE 포함 6 룰). 순백/rgba/단청/합성볼드/cool-gray/이중강조.
-      # 이전 korean-design-guard 잡의 취약한 `background #FFFFFF` grep을 대체한다
-      # (PURE_WHITE 룰이 더 넓은 범위를 기계적으로 검사한다).
-      - name: design-guard (8조 정적 분석, warn 모드)
-        run: node scripts/design-guard.mjs --check
-
-      # 밀도 스캐너 (M2). 14종 fixture의 페이지별 콘텐츠 밀도를 정적 추정하고
-      # 희소 페이지(< 50% fill)를 warn 리포트. warn 모드이므로 exit 0 (CI 안 깨짐).
-      # dev 서버/브라우저 없이 offline에서 실행 (정적 fixture 기반 추정).
-      - name: design-guard --check-density (밀도 스캔, warn 모드)
-        run: node scripts/design-guard.mjs --check-density
-
-      # 14종 템플릿 카탈로그 계약 (정의·렌더러·registry·landing·fixture 동기).
-      # 로컬 전용이던 verify:templates를 CI 게이트로 승격 — 카탈로그 회귀 차단.
-      - name: verify:templates (14종 카탈로그 계약)
-        run: npm run verify:templates
-
-      # design-guard가 미처리하는 유료 폰트(TsangerJinKai/Charter) 의존 검사는
-      # 기존 grep을 유지한다. 순백 grep은 PURE_WHITE 룰로 대체되어 제거.
-      - name: TsangerJinKai · Charter 유료 폰트 의존 검사
+      - name: 브라우저·PDF 제품 계약
         run: |
-          ! grep -rE "TsangerJinKai|Charter[^a-z]" \
-            --include="*.tsx" --include="*.ts" --include="*.css" --include="*.html" \
-            app/ src/ public/satgat/satgat-ko.html public/satgat/overrides.css \
-            && echo "✓ 유료 폰트 의존 없음" || (echo "✗ 유료 폰트 의존 감지" && exit 1)
+          npm run start -- --hostname 127.0.0.1 > /tmp/satgat-next.log 2>&1 &
+          app_pid=$!
+          trap 'kill "$app_pid"' EXIT
+          npm run verify:web
+        env:
+          SATGAT_APP_ORIGIN: http://127.0.0.1:3000

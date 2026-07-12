@@ -12,14 +12,12 @@ import {
   INK_LIGHT,
   INK_MUTED,
   DANCHEONG,
-  JADE,
   HAIRLINE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
+  CANVAS,
 } from '@/lib/design-system/constraint';
 
 /**
- * 보고서(報告書) — 일의 기록
+ * 보고서 — 일의 기록
  * 제목 · 개요 · 배경 · 추진내용 · 성과 · 이슈 · 계획 · 맺음말
  */
 
@@ -51,8 +49,9 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
       : null;
 
   return (
-    <SatgatDocument format="a4">
-      {/* 표제(表題) */}
+    <>
+    <SatgatDocument pageSpec="a4Portrait">
+      {/* 표제 */}
       <header style={{ marginBottom: 28 }}>
         <p
           style={{
@@ -64,7 +63,7 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
             margin: '0 0 14px',
           }}
         >
-          報告書 · REPORT
+          보고서 · REPORT
         </p>
         <h1
           style={{
@@ -73,7 +72,6 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
             fontWeight: 800,
             lineHeight: 1.15,
             color: INK,
-            textShadow: INK_BLEED_STRONG,
             margin: '0 0 14px',
             letterSpacing: '-0.02em',
           }}
@@ -102,10 +100,10 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
 
       <div style={{ width: 32, height: 2.5, background: DANCHEONG, margin: '0 0 28px' }} />
 
-      {/* 一. 개요 */}
+      {/* 1. 개요 */}
       {summary && (
         <section style={{ marginBottom: 32 }}>
-          <SectionHeading title="一. 개요(槪要)" />
+          <SectionHeading title="1. 개요" />
           <p
             style={{
               fontFamily: FONT_BATANG,
@@ -123,22 +121,22 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
 
-      {/* 二. 배경 */}
+      {/* 2. 배경 */}
       {background && (
-        <ProseSection title="二. 배경·목적(背景)">{background}</ProseSection>
+        <ProseSection title="2. 배경·목적">{background}</ProseSection>
       )}
 
-      {/* 三. 추진 내용 */}
+      {/* 3. 추진 내용 */}
       {progress.length > 0 && (
         <section style={{ marginTop: 32 }}>
-          <SectionHeading title="三. 추진 내용(推進)" />
+          <SectionHeading title="3. 추진 내용" />
           <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
             {progress.map((item, i) => (
               <div
                 key={i}
                 style={{
                   paddingLeft: 14,
-                  borderLeft: `2.5px solid ${JADE}`,
+                  borderLeft: `2.5px solid ${HAIRLINE}`,
                 }}
               >
                 <p
@@ -149,7 +147,6 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
                     color: INK,
                     margin: '0 0 3px',
                     letterSpacing: '-0.005em',
-                    textShadow: INK_BLEED,
                   }}
                 >
                   {item.title}
@@ -174,10 +171,30 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
 
-      {/* 四. 성과·지표 */}
+    </SatgatDocument>
+
+    <SatgatDocument pageSpec="a4Portrait">
+      <header
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          paddingBottom: 14,
+          borderBottom: `0.5pt solid ${HAIRLINE}`,
+          marginBottom: 24,
+        }}
+      >
+        <span style={{ fontFamily: FONT_MYEONGJO, fontSize: 18, fontWeight: 700, color: INK }}>
+          {title}
+        </span>
+        <span style={{ fontFamily: FONT_DODUM, fontSize: 10.5, color: INK_MUTED, letterSpacing: '0.08em' }}>
+          REPORT · CONTINUED
+        </span>
+      </header>
+      {/* 4. 성과·지표 */}
       {results && (
         <section style={{ marginTop: 32 }}>
-          <SectionHeading title="四. 성과·지표(成果)" />
+          <SectionHeading title="4. 성과·지표" />
           <table
             style={{
               width: '100%',
@@ -194,8 +211,8 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
                     key={i}
                     style={{
                       padding: '8px 12px',
-                      background: JADE,
-                      color: '#F7F7F2',
+                      background: INK,
+                      color: CANVAS,
                       fontFamily: FONT_MYEONGJO,
                       fontSize: 11,
                       fontWeight: 700,
@@ -232,14 +249,14 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
 
-      {/* 五. 이슈·리스크 */}
+      {/* 5. 이슈·리스크 */}
       {issues && (
-        <ProseSection title="五. 이슈·리스크(Issue)">{issues}</ProseSection>
+        <ProseSection title="5. 이슈·리스크(Issue)">{issues}</ProseSection>
       )}
 
-      {/* 六. 향후 계획 */}
+      {/* 6. 향후 계획 */}
       {plan && (
-        <ProseSection title="六. 향후 계획(計劃)">{plan}</ProseSection>
+        <ProseSection title="6. 향후 계획">{plan}</ProseSection>
       )}
 
       {/* 맺음말 */}
@@ -268,5 +285,6 @@ export default function ReportRenderer({ data }: { data: SatgatDocumentData }) {
         </section>
       )}
     </SatgatDocument>
+    </>
   );
 }

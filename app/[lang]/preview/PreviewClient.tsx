@@ -3,18 +3,35 @@
 import React from "react";
 import Link from "next/link";
 import { Check, Download, Link2, Printer, RotateCcw } from "lucide-react";
-import { SatgatTemplateRenderer } from "@/lib/engine/renderer";
-import { getTemplate, TEMPLATE_SEAL, TEMPLATE_VOICE } from "@/lib/templates/registry";
+import { SatgatTemplateRenderer } from "@/components/templates/SatgatTemplateRenderer";
+import { getPageSpec, getTemplate } from "@/lib/templates/registry";
+import { validateDocumentData } from "@/lib/engine/validator";
+import {
+  DraftStorageError,
+  isDocumentData,
+  readDraft,
+} from "@/lib/preview/draft-storage";
+import {
+  encodeSharePayload,
+  SharePayloadTooLargeError,
+  SHARE_PAYLOAD_TOO_LARGE_MESSAGE,
+  resolvePreviewSource,
+} from "@/lib/preview/share-payload";
+import {
+  calculatePreviewScale,
+  millimetersToCssPixels,
+} from "./preview-scale";
+import { finishPdfAttempt, invalidatePdfAttempt, startPdfAttempt, type PdfAttemptState } from "@/lib/preview/pdf-attempt";
 import type { SatgatDocumentData } from "@/lib/templates/types";
 import { SatgatPrintStyles } from "@/components/document";
 
 type PreviewPayload =
-  | { data: SatgatDocumentData; error: null }
-  | { data: null; error: string };
+  | { data: SatgatDocumentData; error: null; sourceKey: string }
+  | { data: null; error: string; sourceKey: string };
 
 type PreviewClientProps = {
   lang: string;
-  preview: PreviewPayload;
+  draftId: string | null;
 };
 
 function hasSlotValue(value: unknown): boolean {
@@ -25,18 +42,111 @@ function hasSlotValue(value: unknown): boolean {
   return true;
 }
 
-const FORMAT_LABEL: Record<string, string> = {
-  a4: "A4 세로",
-  "a4-landscape": "A4 가로",
-  "slide-16x9": "16:9 슬라이드",
-};
+function subscribeToHashChange(onStoreChange: () => void): () => void {
+  window.addEventListener("hashchange", onStoreChange);
+  return () => window.removeEventListener("hashchange", onStoreChange);
+}
 
-export default function PreviewClient({ lang, preview }: PreviewClientProps) {
-  const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "failed">("idle");
-  const [pdfStatus, setPdfStatus] = React.useState<"idle" | "loading" | "error">("idle");
-  const { data, error } = preview;
+function currentHash(): string {
+  return window.location.hash;
+}
+
+
+export default function PreviewClient({ lang, draftId }: PreviewClientProps) {
+  const hash = React.useSyncExternalStore(subscribeToHashChange, currentHash, () => "");
+  const sourceKey = `${draftId ?? ""}:${hash}`;
+  const [preview, setPreview] = React.useState<PreviewPayload | null>(null);
+  const [shareOpen, setShareOpen] = React.useState(false);
+  const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "failed" | "too-large">("idle");
+  const [pdfState, setPdfState] = React.useState<PdfAttemptState>({ attempt: 0, status: "idle" });
+  const pdfStatus = pdfState.status;
+  const pdfAttemptRef = React.useRef(0);
+  const pdfAbortRef = React.useRef<AbortController | null>(null);
+  const copyAttemptRef = React.useRef(0);
+  const shareTriggerRef = React.useRef<HTMLButtonElement>(null);
+  const shareDialogRef = React.useRef<HTMLDivElement>(null);
+  const shareCancelRef = React.useRef<HTMLButtonElement>(null);
+  const currentPreview = preview?.sourceKey === sourceKey ? preview : null;
+  const data = currentPreview?.data ?? null;
+  const error = currentPreview?.error ?? null;
   const template = data ? getTemplate(data.templateId) : undefined;
   const langPath = `/${encodeURIComponent(lang)}`;
+  const pageSpec = template ? getPageSpec(template.pageSpec) : undefined;
+  const pageWidth = pageSpec
+    ? millimetersToCssPixels(pageSpec.canvas.widthMm)
+    : 0;
+  const pageHeight = pageSpec
+    ? millimetersToCssPixels(pageSpec.canvas.heightMm)
+    : 0;
+  const docStageRef = React.useRef<HTMLDivElement>(null);
+  const [previewScale, setPreviewScale] = React.useState(1);
+
+  React.useEffect(() => {
+    pdfAbortRef.current?.abort();
+    pdfAbortRef.current = null;
+    const invalidatedPdf = invalidatePdfAttempt(pdfAttemptRef.current);
+    pdfAttemptRef.current = invalidatedPdf.attempt;
+    setPdfState(invalidatedPdf);
+    copyAttemptRef.current += 1;
+    setShareOpen(false);
+    setCopyStatus("idle");
+    setPreview(null);
+    try {
+      const resolved = resolvePreviewSource(hash, draftId, readDraft);
+      const candidate = resolved.value;
+      if (resolved.source === "invalid-share") {
+        setPreview({ data: null, error: "공유 링크의 문서 형식이 올바르지 않습니다.", sourceKey });
+        return;
+      }
+      if (!isDocumentData(candidate)) {
+        setPreview({
+          data: null,
+          error: "문서를 찾을 수 없습니다. 새 문서를 만들거나 공유 링크를 확인해 주세요.",
+          sourceKey,
+        });
+        return;
+      }
+
+      const candidateTemplate = getTemplate(candidate.templateId);
+      const validation = candidateTemplate
+        ? validateDocumentData(candidateTemplate, candidate)
+        : { valid: false };
+      setPreview(
+        validation.valid
+          ? { data: candidate, error: null, sourceKey }
+          : { data: null, error: "문서 형식이 올바르지 않습니다.", sourceKey },
+      );
+    } catch (caught) {
+      setPreview({
+        data: null,
+        error: caught instanceof DraftStorageError
+          ? caught.userMessage
+          : "문서를 찾을 수 없습니다. 새 문서를 만들거나 공유 링크를 확인해 주세요.",
+        sourceKey,
+      });
+    }
+  }, [draftId, hash, sourceKey]);
+  React.useEffect(() => {
+    const stage = docStageRef.current;
+    if (!stage || pageWidth === 0 || pageHeight === 0) return;
+
+    const updateScale = () => {
+      if (stage.clientWidth === 0) return;
+      const nextScale = calculatePreviewScale(
+        stage.clientWidth,
+        pageWidth,
+        pageHeight,
+      ).scale;
+      setPreviewScale((currentScale) =>
+        currentScale === nextScale ? currentScale : nextScale,
+      );
+    };
+
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [pageHeight, pageWidth]);
 
   // Render-time density hint (VAL-DENSITY-005) now lives inside each
   // `SatgatDocument` page (src/components/document/SatgatDocument.tsx): the page
@@ -47,92 +157,163 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
   // a hydration-mismatch error on templates with a sparse page (M4 visual-qa).
   // The `.density-warn` styling below still applies to that React-rendered badge.
 
-  const copyLink = async () => {
+  const closeShareDialog = () => {
+    copyAttemptRef.current += 1;
+    setShareOpen(false);
+  };
+
+  React.useEffect(() => {
+    if (!shareOpen) return;
+    const previouslyFocused = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : shareTriggerRef.current;
+    shareCancelRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeShareDialog();
+        return;
+      }
+      if (event.key !== "Tab" || !shareDialogRef.current) return;
+      const controls = Array.from(
+        shareDialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      if (controls.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      copyAttemptRef.current += 1;
+      previouslyFocused?.focus();
+    };
+  }, [shareOpen]);
+
+  React.useEffect(() => () => {
+    copyAttemptRef.current += 1;
+    pdfAbortRef.current?.abort();
+  }, []);
+
+  const copyShareLink = async () => {
+    if (!data) return;
+    const attempt = copyAttemptRef.current + 1;
+    copyAttemptRef.current = attempt;
+
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      const shareUrl = `${window.location.origin}${langPath}/preview#share=${encodeSharePayload(data)}`;
+      await navigator.clipboard.writeText(shareUrl);
+      if (copyAttemptRef.current !== attempt) return;
       setCopyStatus("copied");
-    } catch {
-      setCopyStatus("failed");
+      closeShareDialog();
+    } catch (caught) {
+      if (copyAttemptRef.current !== attempt) return;
+      setCopyStatus(
+        caught instanceof SharePayloadTooLargeError ? "too-large" : "failed",
+      );
     }
-    window.setTimeout(() => setCopyStatus("idle"), 1500);
   };
 
   const downloadPdf = async () => {
     if (!data) return;
-    setPdfStatus("loading");
+    pdfAbortRef.current?.abort();
+    const controller = new AbortController();
+    pdfAbortRef.current = controller;
+    const next = startPdfAttempt({ attempt: pdfAttemptRef.current, status: pdfStatus });
+    pdfAttemptRef.current = next.attempt;
+    setPdfState(next);
     try {
       const res = await fetch("/api/export", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateId: data.templateId, slots: data.slots, lang }),
+        signal: controller.signal,
       });
       if (!res.ok) throw new Error(`export failed: ${res.status}`);
       const blob = await res.blob();
+      if (controller.signal.aborted || pdfAttemptRef.current !== next.attempt) return;
       const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `satgat-${data.templateId}.pdf`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      setPdfStatus("idle");
+      try {
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = `satgat-${data.templateId}.pdf`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+      setPdfState((state) => finishPdfAttempt(state, next.attempt, "idle"));
     } catch {
-      setPdfStatus("error");
-      window.setTimeout(() => setPdfStatus("idle"), 2500);
+      if (!controller.signal.aborted) {
+        setPdfState((state) => finishPdfAttempt(state, next.attempt, "error"));
+      }
+    } finally {
+      if (pdfAbortRef.current === controller) pdfAbortRef.current = null;
     }
   };
 
+  if (!currentPreview) {
+    return (
+      <main id="main-content" className="empty-state" data-render-state="loading" aria-live="polite" aria-busy="true">
+        <p className="empty-mark loading">…</p>
+        <h1>한지를 펴는 중…</h1>
+        <PreviewStyles />
+      </main>
+    );
+  }
+
   if (error) {
     return (
-      <div className="empty-state">
+      <main id="main-content" className="empty-state" data-render-state="error" role="alert">
         <p className="empty-mark">!</p>
         <h1>{error}</h1>
         <p className="empty-sub">새 문서를 만들거나, 처음으로 돌아가세요.</p>
         <div className="empty-actions">
-          <Link href={`${langPath}/new`} className="empty-cta primary">새 문서 생성</Link>
-          <Link href={langPath} className="empty-cta">처음으로</Link>
+          <Link href={`${langPath}/new`} className="empty-cta primary" prefetch={false}>새 문서 생성</Link>
+          <Link href={langPath} className="empty-cta" prefetch={false}>처음으로</Link>
         </div>
         <PreviewStyles />
-      </div>
+      </main>
     );
   }
 
-  if (!data || !template) {
-    return (
-      <div className="empty-state">
-        <p className="empty-mark loading">…</p>
-        <h1>한지를 펴는 중…</h1>
-        <PreviewStyles />
-      </div>
-    );
+  if (!data || !template || !pageSpec) {
+    return <main id="main-content" />;
   }
 
-  const seal = TEMPLATE_SEAL[template.id];
-  const voice = TEMPLATE_VOICE[template.id];
+  const pageSpecLabel = pageSpec.label;
   const requiredSlots = template.slots.filter((slot) => slot.required);
   const readinessSlots = requiredSlots.length > 0 ? requiredSlots : template.slots;
   const filledSlots = readinessSlots.filter((slot) => hasSlotValue(data.slots[slot.id])).length;
   const completion = Math.round((filledSlots / Math.max(readinessSlots.length, 1)) * 100);
 
   return (
-    <div className={`preview-wrap preview-format-${template.format}`}>
+    <main id="main-content" className={`preview-wrap preview-format-${template.pageSpec}`}>
       <SatgatPrintStyles />
 
       {/* Toolbar */}
-      <div className="preview-toolbar no-print">
+      <div className="preview-toolbar no-print" inert={shareOpen} aria-hidden={shareOpen}>
         <div className="meta">
-          {seal && (
-            <span className={`tb-seal v-${seal.variant}`} aria-hidden>
-              {seal.glyph}
-            </span>
-          )}
           <div>
             <p className="tb-name">{template.name}</p>
             <p className="tb-voice">
-              {voice && <span>{voice}</span>}
-              {voice && <span aria-hidden> · </span>}
-              <span>{FORMAT_LABEL[template.format] ?? template.format}</span>
+              <span>{template.category}</span>
+              <span aria-hidden> · </span>
+              <span>{pageSpecLabel}</span>
             </p>
           </div>
         </div>
@@ -150,13 +331,22 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
           </span>
         </div>
         <div className="actions">
-          <Link href={`${langPath}/new?template=${template.id}`} className="tb-link">
+          <Link href={`${langPath}/new?template=${template.id}`} className="tb-link" prefetch={false}>
             <RotateCcw size={14} strokeWidth={1.8} aria-hidden />
             <span>다시 만들기</span>
           </Link>
-          <button onClick={copyLink} className="tb-link tb-copy" type="button">
+          <button
+            ref={shareTriggerRef}
+            onClick={() => {
+              copyAttemptRef.current += 1;
+              setCopyStatus("idle");
+              setShareOpen(true);
+            }}
+            className="tb-link tb-copy"
+            type="button"
+          >
             {copyStatus === "copied" ? <Check size={14} strokeWidth={1.9} aria-hidden /> : <Link2 size={14} strokeWidth={1.8} aria-hidden />}
-            <span>{copyStatus === "copied" ? "복사됨" : copyStatus === "failed" ? "복사 실패" : "링크 복사"}</span>
+            <span>{copyStatus === "copied" ? "복사됨" : copyStatus === "failed" ? "복사 실패" : "공유 링크"}</span>
           </button>
           <button
             onClick={downloadPdf}
@@ -175,14 +365,52 @@ export default function PreviewClient({ lang, preview }: PreviewClientProps) {
           </button>
         </div>
       </div>
+      {shareOpen ? (
+        <div className="share-backdrop no-print">
+          <div
+            ref={shareDialogRef}
+            className="share-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="share-dialog-title"
+            aria-describedby="share-dialog-description"
+          >
+            <h2 id="share-dialog-title">문서 내용이 담긴 링크 공유</h2>
+            <p id="share-dialog-description">이 링크에는 문서 내용이 포함됩니다. 개인정보가 있으면 공유하지 마세요.</p>
+            {copyStatus === "failed" || copyStatus === "too-large" ? (
+              <p className="share-error" role="alert">
+                {copyStatus === "too-large"
+                  ? SHARE_PAYLOAD_TOO_LARGE_MESSAGE
+                  : "링크를 복사하지 못했습니다. 다시 시도해 주세요."}
+              </p>
+            ) : null}
+            <div className="share-actions">
+              <button ref={shareCancelRef} type="button" className="empty-cta" onClick={closeShareDialog}>
+                취소
+              </button>
+              <button type="button" className="empty-cta primary" onClick={copyShareLink}>
+                확인하고 복사
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {/* Document */}
-      <div className="doc-stage">
-        <SatgatTemplateRenderer template={template} data={data} />
+      <div className="doc-stage" ref={docStageRef} inert={shareOpen} aria-hidden={shareOpen}>
+        <div
+          className="preview-canvas"
+          style={{
+            width: `${pageSpec.canvas.widthMm}mm`,
+            zoom: previewScale,
+          }}
+        >
+          <SatgatTemplateRenderer template={template} data={data} />
+        </div>
       </div>
 
       <PreviewStyles />
-    </div>
+    </main>
   );
 }
 
@@ -193,12 +421,12 @@ function PreviewStyles() {
         max-width: 1080px;
         margin: 0 auto;
         padding: 32px 24px 96px;
-        font-family: var(--serif);
-        color: var(--near-black, #1C1916);
+        font-family: var(--satgat-font-body);
+        color: var(--satgat-ink);
         word-break: keep-all;
       }
-      .preview-format-a4-landscape,
-      .preview-format-slide-16x9 {
+      .preview-format-a4Landscape,
+      .preview-format-slide16x9 {
         max-width: 1240px;
       }
       .preview-toolbar {
@@ -209,17 +437,13 @@ function PreviewStyles() {
         align-items: center;
         gap: 18px;
         padding: 16px 20px;
-        background:
-          linear-gradient(180deg, rgba(255,255,251,0.88), rgba(248,244,232,0.78)),
-          rgba(248, 244, 232, 0.84);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid var(--border-soft, #E8E2D0);
+        background: var(--satgat-surface);
+        border: 1px solid var(--satgat-line);
         border-radius: 8px;
-        box-shadow: 0 18px 48px rgba(28,25,22,0.07), inset 0 1px 0 rgba(255,255,255,0.55);
+        box-shadow: 0 0 0 1px var(--satgat-line);
       }
-      .preview-format-a4-landscape .preview-toolbar,
-      .preview-format-slide-16x9 .preview-toolbar {
+      .preview-format-a4Landscape .preview-toolbar,
+      .preview-format-slide16x9 .preview-toolbar {
         max-width: 1120px;
       }
       .preview-toolbar .meta {
@@ -228,35 +452,18 @@ function PreviewStyles() {
         gap: 14px;
         min-width: 0;
       }
-      .tb-seal {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 4px;
-        font-family: var(--serif-display);
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--parchment);
-        box-shadow: inset 0 0 0 1.2px rgba(255,255,255,0.18);
-      }
-      .v-ink { background: var(--near-black); }
-      .v-dancheong { background: var(--brand); }
-      .v-jade { background: var(--jade, #2E6B5E); }
-      .v-gold { background: var(--gold, #B8954F); color: var(--near-black); }
       .tb-name {
-        font-family: var(--serif-display);
+        font-family: var(--satgat-font-display);
         font-size: 17px;
         font-weight: 800;
-        color: var(--near-black);
+        color: var(--satgat-ink);
         margin: 0 0 2px;
         letter-spacing: -0.012em;
       }
       .tb-voice {
-        font-family: var(--serif);
+        font-family: var(--satgat-font-body);
         font-size: 12.5px;
-        color: var(--olive, #4D4B46);
+        color: var(--satgat-ink-muted);
         margin: 0;
         white-space: nowrap;
         overflow: hidden;
@@ -275,36 +482,36 @@ function PreviewStyles() {
         align-items: center;
         gap: 9px;
         padding: 8px 14px;
-        border-left: 1px solid var(--border-soft, #E8E2D0);
-        border-right: 1px solid var(--border-soft, #E8E2D0);
+        border-left: 1px solid var(--satgat-line);
+        border-right: 1px solid var(--satgat-line);
       }
       .readiness-label {
-        font-family: var(--sans);
+        font-family: var(--satgat-font-label);
         font-size: 10.5px;
         font-weight: 700;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: var(--stone, #6B6862);
+        color: var(--satgat-text-subtle);
       }
       .doc-readiness strong {
-        font-family: var(--serif-display);
+        font-family: var(--satgat-font-display);
         font-size: 16px;
         line-height: 1;
-        color: var(--near-black);
+        color: var(--satgat-ink);
       }
       .readiness-track {
         display: block;
         height: 5px;
         overflow: hidden;
         border-radius: 999px;
-        background: var(--border-soft, #E8E2D0);
+        background: var(--satgat-line);
       }
       .readiness-track span {
         display: block;
         height: 100%;
         min-width: 8px;
         border-radius: inherit;
-        background: var(--jade, #2E6B5E);
+        background: var(--satgat-jade);
       }
       .tb-link {
         all: unset;
@@ -313,11 +520,11 @@ function PreviewStyles() {
         align-items: center;
         justify-content: center;
         gap: 7px;
-        font-family: var(--sans);
+        font-family: var(--satgat-font-label);
         font-size: 12.5px;
         font-weight: 500;
         letter-spacing: 0.06em;
-        color: var(--olive);
+        color: var(--satgat-ink-muted);
         text-decoration: none;
         padding: 10px 16px;
         border-radius: 4px;
@@ -327,15 +534,54 @@ function PreviewStyles() {
       .tb-link:focus-visible,
       .tb-print:focus-visible,
       .empty-cta:focus-visible {
-        outline: 2px solid var(--brand);
+        outline: 2px solid var(--satgat-accent);
         outline-offset: 3px;
       }
       .tb-copy {
         min-width: 80px;
       }
+      .share-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: var(--satgat-ink);
+      }
+      .share-dialog {
+        width: min(100%, 460px);
+        box-sizing: border-box;
+        padding: 28px;
+        border: 1px solid var(--satgat-line);
+        border-radius: 8px;
+        background: var(--satgat-canvas);
+        box-shadow: 0 0 0 1px var(--satgat-line);
+      }
+      .share-dialog h2 {
+        margin: 0 0 12px;
+        font-family: var(--satgat-font-display);
+        font-size: 20px;
+      }
+      .share-dialog p {
+        margin: 0;
+        color: var(--satgat-ink-muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .share-dialog .share-error {
+        margin-top: 12px;
+        color: var(--satgat-accent);
+      }
+      .share-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 24px;
+      }
       .tb-link:hover {
-        color: var(--brand);
-        background: rgba(155, 27, 27, 0.04);
+        color: var(--satgat-accent);
+        background: var(--satgat-surface-muted);
         transform: translateY(-1px);
       }
       .tb-print {
@@ -345,19 +591,19 @@ function PreviewStyles() {
         align-items: center;
         gap: 10px;
         padding: 10px 18px;
-        background: var(--near-black);
-        color: var(--parchment);
+        background: var(--satgat-ink);
+        color: var(--satgat-canvas);
         border-radius: 6px;
-        font-family: var(--serif-display);
+        font-family: var(--satgat-font-display);
         font-size: 13.5px;
         font-weight: 700;
         letter-spacing: -0.005em;
         white-space: nowrap;
         transition: background 0.18s ease, transform 0.18s ease;
       }
-      .tb-print svg { color: var(--gold); }
+      .tb-print svg { color: var(--satgat-gold); }
       .tb-print:hover {
-        background: #0E0C0A;
+        background: var(--satgat-ink-body);
         transform: translateY(-1px);
       }
       .tb-link:active,
@@ -365,17 +611,20 @@ function PreviewStyles() {
         transform: translateY(1px);
       }
       .doc-stage {
+        width: 100%;
+        padding: 4px 0 12px;
+      }
+      .preview-canvas {
         display: grid;
         justify-items: center;
         gap: 48px;
-        overflow-x: auto;
-        padding: 4px 0 12px;
+        margin: 0 auto;
       }
-      .doc-stage .satgat-document {
+      .preview-canvas .satgat-document {
         flex: 0 0 auto;
         margin-bottom: 0 !important;
       }
-      .doc-stage .satgat-document + .satgat-document {
+      .preview-canvas .satgat-document + .satgat-document {
         margin-top: 0 !important;
       }
       /* Render-time density hint (VAL-DENSITY-005). Preview-only badge injected
@@ -392,16 +641,16 @@ function PreviewStyles() {
         align-items: center;
         gap: 6px;
         padding: 5px 10px;
-        background: var(--brand, #9B1B1B);
-        color: var(--parchment, #FFFFFB);
-        font-family: var(--sans);
+        background: var(--satgat-accent);
+        color: var(--satgat-canvas);
+        font-family: var(--satgat-font-label);
         font-size: 11px;
         font-weight: 700;
         letter-spacing: 0.04em;
         border-radius: 4px;
         pointer-events: none;
         white-space: nowrap;
-        box-shadow: 0 2px 6px rgba(28,25,22,0.16);
+        box-shadow: 0 0 0 1px var(--satgat-line);
       }
       .density-warn::before {
         content: "△";
@@ -413,8 +662,8 @@ function PreviewStyles() {
         margin: 80px auto;
         padding: 56px 32px;
         text-align: center;
-        font-family: var(--serif);
-        color: var(--near-black);
+        font-family: var(--satgat-font-body);
+        color: var(--satgat-ink);
       }
       .empty-mark {
         display: inline-flex;
@@ -422,21 +671,21 @@ function PreviewStyles() {
         justify-content: center;
         width: 56px;
         height: 56px;
-        background: var(--brand);
-        color: var(--parchment);
-        font-family: var(--serif-display);
+        background: var(--satgat-accent);
+        color: var(--satgat-canvas);
+        font-family: var(--satgat-font-display);
         font-size: 32px;
         font-weight: 800;
         border-radius: 8px;
         margin: 0 auto 24px;
       }
       .empty-mark.loading {
-        background: var(--olive);
-        color: var(--parchment);
+        background: var(--satgat-ink-muted);
+        color: var(--satgat-canvas);
         font-size: 28px;
       }
       .empty-state h1 {
-        font-family: var(--serif-display);
+        font-family: var(--satgat-font-display);
         font-size: 26px;
         font-weight: 800;
         margin: 0 0 12px;
@@ -445,7 +694,7 @@ function PreviewStyles() {
       .empty-sub {
         font-size: 14.5px;
         line-height: 1.72;
-        color: var(--olive);
+        color: var(--satgat-ink-muted);
         margin: 0 0 32px;
       }
       .empty-actions {
@@ -454,24 +703,24 @@ function PreviewStyles() {
         justify-content: center;
       }
       .empty-cta {
-        font-family: var(--serif-display);
+        font-family: var(--satgat-font-display);
         font-size: 14px;
         font-weight: 700;
         padding: 12px 24px;
         border-radius: 6px;
         text-decoration: none;
         transition: background 0.18s ease, transform 0.18s ease;
-        background: var(--ivory);
-        color: var(--near-black);
-        border: 1px solid var(--border);
+        background: var(--satgat-surface);
+        color: var(--satgat-ink);
+        border: 1px solid var(--satgat-line-strong);
       }
       .empty-cta.primary {
-        background: var(--brand);
-        color: var(--parchment);
-        border-color: var(--brand);
+        background: var(--satgat-accent);
+        color: var(--satgat-canvas);
+        border-color: var(--satgat-accent);
       }
       .empty-cta:hover { transform: translateY(-1px); }
-      .empty-cta.primary:hover { background: #B92D2D; }
+      .empty-cta.primary:hover { background: var(--satgat-accent-hover); }
 
       @media (max-width: 980px) {
         .preview-toolbar {
@@ -482,8 +731,8 @@ function PreviewStyles() {
           width: auto;
           border-left: none;
           border-right: none;
-          border-top: 1px solid var(--border-soft, #E8E2D0);
-          border-bottom: 1px solid var(--border-soft, #E8E2D0);
+          border-top: 1px solid var(--satgat-line);
+          border-bottom: 1px solid var(--satgat-line);
           grid-template-columns: auto auto minmax(120px, 1fr);
         }
         .preview-toolbar .actions {
@@ -498,20 +747,6 @@ function PreviewStyles() {
       @media (max-width: 760px) {
         .preview-wrap {
           padding: 18px 14px 72px;
-          --mobile-doc-width: calc(100vw - 28px);
-          --mobile-doc-min-height: calc(var(--mobile-doc-width) * 1.414);
-          --mobile-doc-padding: 48px 28px;
-          --mobile-doc-font-size: 14px;
-        }
-        .preview-format-a4-landscape {
-          --mobile-doc-min-height: calc(var(--mobile-doc-width) * 0.707);
-          --mobile-doc-padding: 30px 24px;
-          --mobile-doc-font-size: 12.75px;
-        }
-        .preview-format-slide-16x9 {
-          --mobile-doc-min-height: calc(var(--mobile-doc-width) * 0.5625);
-          --mobile-doc-padding: 28px 24px;
-          --mobile-doc-font-size: 12.5px;
         }
         .preview-toolbar {
           align-items: stretch;
@@ -542,23 +777,15 @@ function PreviewStyles() {
         }
         .doc-stage {
           padding-bottom: 8px;
+        }
+        .preview-canvas {
           gap: 28px;
         }
-        .doc-stage .satgat-document {
-          width: min(100%, var(--mobile-doc-width)) !important;
-          min-width: 0 !important;
-          min-height: var(--mobile-doc-min-height) !important;
-          padding: var(--mobile-doc-padding) !important;
-          font-size: var(--mobile-doc-font-size) !important;
-        }
-        .preview-format-slide-16x9 .doc-stage {
+        .preview-format-slide16x9 .preview-canvas {
           gap: 22px;
         }
       }
 
-      /* 인쇄(@media print) 규칙은 SatgatPrintStyles가 단독 소유한다(M4 단일 권위
-         전략). 프리뷰 chrome 숨김·doc-stage 인쇄 레이아웃·문서 페이지 분할은 모두
-         거기서 처리하므로 여기서 중복 정의하지 않는다. */
     `}} />
   );
 }

@@ -1,65 +1,58 @@
-/* 한글 무료 OFL 폰트 — Google Fonts + Pretendard CDN */
-@import url("https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Noto+Serif+KR:wght@400;500;700;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Hahmlet:wght@400;500;700;900&family=IBM+Plex+Sans+KR:wght@300;400;500;700&family=Black+Han+Sans&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap");
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css");
-@import "../public/satgat/overrides.css";
-@import "tailwindcss";
+@import "../public/fonts/satgat-fonts.css";
+@import "./satgat-tokens.css";
 
-@theme {
-  /* 백자지 캔버스 v4: 누런 parchment 대신 맑은 닥종이 톤 */
-  --color-parchment: #F7F7F2;
-  --color-canvas: #F7F7F2;
-  --color-canvas-dark: #E7E8DD;
-  --color-ivory: #FFFFFB;
-  --color-warm-sand: #E7E8DD;
+:root {
+  color-scheme: light;
+}
 
-  /* 먹(墨) 계열 */
-  --color-ink: #1C1916;
-  --color-ink-light: #3A3833;
-  --color-ink-muted: #4D4B46;
-  --color-stone: #6B6862;
-
-  /* 강조 */
-  --color-dancheong: #9B1B1B;
-  --color-dancheong-light: #B92D2D;
-  --color-jade: #2E6B5E;
-  --color-gold: #B8954F;
-
-  /* 보더 */
-  --color-hairline: #D2D6CB;
-  --color-border: #D8DBD1;
-  --color-border-soft: #E6E8DE;
-  --color-muted: #63675F;
-
-  /* 폰트 — 모두 OFL 무료 한글 폰트 */
-  --font-myeongjo: "Nanum Myeongjo", "Noto Serif KR", "Hahmlet", "Batang", Georgia, serif;
-  --font-batang: "Gowun Batang", "Hahmlet", "Nanum Myeongjo", "Noto Serif KR", "Batang", Georgia, serif;
-  --font-dodum: "Gowun Dodum", "Pretendard", "IBM Plex Sans KR", "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-sans-kr: "Pretendard", "IBM Plex Sans KR", "Noto Sans KR", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-display-bold: "Black Han Sans", "Nanum Myeongjo", Georgia, serif;
-  --font-serif-kr: "Hahmlet", "Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
-  --font-latin: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html {
+  min-height: 100%;
   scroll-behavior: smooth;
+  background: var(--satgat-canvas);
 }
 
 body {
-  background-color: #F7F7F2;
-  color: #1C1916;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--satgat-canvas);
+  color: var(--satgat-ink);
+  font-family: var(--satgat-font-body);
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   word-break: keep-all;
 }
 
-/* 한글 텍스트 선택 — 단청 옅은 강조 */
-::selection {
-  background: rgba(155, 27, 27, 0.18);
-  color: #1C1916;
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
-/* 문서 인쇄(@media print) 규칙은 SatgatPrintStyles가 단독 소유한다(M4 단일 권위
-   전략). 백자지 캔버스 색 보존·페이지 분할·chrome 숨김을 모두 거기서 처리하므로
-   여기서 중복 정의하지 않는다. (랜딩 페이지 전용 인쇄는 overrides.css가 담당.) */
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--satgat-accent);
+  color: var(--satgat-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* 문서 인쇄 규칙은 SatgatPrintStyles가 단독 소유한다. */

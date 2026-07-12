@@ -2,34 +2,56 @@
 
 # 삿갓 · satgat
 
-**한지 위에 먹글씨. AI가 옮겨 적는 한국형 문서 디자인 시스템.**
+**자연어를 한국형 인쇄 문서로 옮기는 웹 제품이자 오픈소스 디자인 시스템.**
 
-양피지의 누런 따뜻함이 아니라, 백자지의 맑은 단정함.
-자연어 한 문장이면, 한국 문서 한 장이 인쇄물로 완성됩니다.
+백자지 위에 먹글씨, 페이지의 5%를 넘지 않는 단청 한 점.
+14개 문서를 같은 React 렌더러로 미리 보고, 공유하고, PDF로 내보냅니다.
 
-[웹앱](https://satgat.vercel.app) · [데모팩](public/satgat/assets/examples/ko/) · [skill 설치](#설치) · [라이브 미리보기](https://satgat.vercel.app)
+[웹앱](https://satgat.vercel.app/ko) · [완성 예시](https://satgat.vercel.app/ko/examples) · [npm](https://www.npmjs.com/package/satgat) · [MIT License](LICENSE)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-9B1B1B.svg)](LICENSE)
 [![npm](https://img.shields.io/badge/npm-satgat-1C1916.svg)](https://www.npmjs.com/package/satgat)
 [![Next.js](https://img.shields.io/badge/Next.js-16-1C1916.svg)](https://nextjs.org)
 
-<img src="public/satgat/assets/readme/satgat-home.png" alt="삿갓 홈" width="92%">
+<img src="public/satgat/assets/readme/satgat-home.png" alt="삿갓 웹앱의 템플릿 카탈로그" width="92%">
 
 </div>
 
 ---
 
-## 설치
+## 1분 안에 만들기
 
-### Claude Code · Codex · Gemini CLI 등 AI 에이전트용 skill
+1. [satgat.vercel.app/ko](https://satgat.vercel.app/ko)에서 문서 종류를 고릅니다.
+2. 생성 화면의 `이력서 완성 예시 보기`처럼 선택한 템플릿의 실제 PNG/PDF를 먼저 확인한 뒤, 목적·독자·반드시 들어갈 사실을 한 문장으로 적습니다.
+3. 필요할 때만 브랜드 정보를 켜고 이름·역할·웹사이트·톤을 입력합니다.
+4. `문서 만들기`를 누른 뒤 결과를 검토합니다.
+5. `PDF 내려받기`, `인쇄 / PDF 저장`, 또는 명시적 확인 뒤 `링크 복사`를 사용합니다.
 
-```bash
-npx satgat skill ~/.claude/skills/satgat
+```text
+7년차 프론트엔드 개발자 이력서. 커머스 플랫폼 성능 개선과 디자인 시스템 구축 경험을 강조해 주세요.
 ```
 
-`SKILL.md`와 한국어 디자인 brief가 그대로 풀립니다. 이후 자연어로 호출하면 끝.
+입력은 최대 1,200자입니다. 사실 확인 목록이 있는 템플릿은 생성 화면에서 필요한 정보를 먼저 알려 줍니다.
 
-### 새 워크스페이스 (Next.js 풀스택)
+## 웹앱 사용
+
+| 화면 | 역할 |
+|---|---|
+| `/ko` | 14개 템플릿 카탈로그, 실제 specimen, 제품 설명 |
+| `/ko/examples` | React 런타임에서 생성한 14개 PNG/PDF 완성 예시 |
+| `/ko/new?template=<id>` | 템플릿 선택, 선택한 문서의 완성 예시 바로가기, 프롬프트·브랜드 정보 입력 |
+| `/ko/preview?draft=<uuid>` | 현재 브라우저의 임시 초안을 읽어 문서 미리보기 |
+| `/ko/preview#share=<payload>` | 사용자가 확인한 뒤 만든 내용 포함 공유 링크 |
+
+템플릿을 선택하면 생성 화면의 예시 링크가 `/ko/examples#<id>`로 바뀝니다. 전체 목록을 다시 탐색하지 않고 해당 템플릿으로 만든 실제 PNG/PDF 카드에 바로 도착합니다.
+
+생성 결과는 템플릿별 슬롯 스키마로 검증한 뒤 렌더링합니다. 일반 미리보기 주소에는 UUID만 들어가며 문서 내용은 현재 탭의 `sessionStorage`에 보관됩니다. 공유 링크는 별도 동작이며, 복사 전에 링크에 문서 내용이 들어간다는 경고를 표시합니다.
+
+화면 미리보기, specimen PNG, 서버 PDF, 브라우저 인쇄는 모두 `SatgatTemplateRenderer`와 `SatgatPrintStyles`를 사용합니다. 정적 HTML 데모를 별도 렌더러로 유지하지 않습니다.
+
+## 셀프호스팅
+
+### 새 작업 디렉터리
 
 ```bash
 npx satgat init my-satgat
@@ -39,198 +61,139 @@ echo "GOOGLE_GENERATIVE_AI_API_KEY=<키>" > .env.local
 npm run dev
 ```
 
-`http://localhost:3000` 열림. 14종 한국 문서 즉시 생성 가능.
-제안서·IR 덱·회사 소개서 등 비즈니스 문서에는 차트와 도표 슬롯도 함께 생성됩니다.
+`npx satgat init`은 공식 저장소의 최신 얕은 clone을 만들고 패키지를 private 앱으로 바꿉니다. 생성 기능에는 Google Generative AI 키가 필요합니다. 카탈로그와 기존 specimen 열람에는 키가 필요하지 않습니다.
 
-### 원본 저장소에서
+### 원본 저장소
 
 ```bash
 git clone https://github.com/unclejobs-ai/satgat.git
 cd satgat
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
----
+`.env.local`의 `SATGAT_APP_ORIGIN`을 사용자가 접속하는 정확한 `http` 또는 `https` origin으로 설정한 뒤 `npm run build`, `npm run start` 순서로 실행합니다. 이 값이 없으면 self-hosted production의 서버 PDF를 안전하게 렌더할 수 없습니다. 서버 PDF는 Chromium을 사용하며, 로컬에서는 `CHROMIUM_PATH`로 실행 파일을 지정할 수 있습니다. 미지정 환경에서는 패키지의 서버리스 Chromium 구성을 사용합니다.
 
-## 호출 예시
+## AI agent skill
 
-자연어 한 문장. AI 에이전트(Claude/GPT/Gemini)에 그대로 던집니다.
+Claude Code 등 skill 디렉터리를 읽는 에이전트:
+
+```bash
+npx satgat skill ~/.claude/skills/satgat
+```
+
+이 명령은 `skills/satgat/SKILL.md`와 `references/`를 지정한 위치에 복사합니다. Codex·Cursor처럼 프로젝트 지침을 읽는 도구에서는 설치된 `SKILL.md`를 `AGENTS.md`에서 참조하세요.
+
+호출 예시:
 
 ```text
-이력서 한 장 만들어 주세요. 7년차 프론트엔드, 카카오·무신사·29CM.
-
-신년 연하장 — 박상세 가족, 단정한 톤으로.
-
-스타트업 IR 덱 한 벌, 시드 단계, 단청 강조.
-
-회사 소개서 — 북촌랩스, 로컬 문화 공간 SaaS. 비전·미션·핵심 가치·연혁·팀.
-
-한지 리테일 제안서 — 도입 효과는 폭포 차트로, 12주 일정은 타임라인으로 보여 주세요.
-
-청첩장 — 민호와 지수, 2026년 10월 17일, 정동 예식당.
+삿갓 규칙으로 시드 투자 IR 덱을 만들어 주세요. 문제, 해결, 시장, 트랙션, 비즈니스 모델, 팀, 요청 금액을 포함해 주세요.
 ```
 
-14종 문서: 이력서 · 자기소개서 · 명함 · 브랜드 원페이지 · 제품 소개서 · 회사 소개서 · 투자 IR 덱 · 브랜드 스토리북 · 청첩장 · 연하장 · 제안서 · 뉴스레터 · 포트폴리오 · 보고서.
-지원 도표: 막대 · 선 · 도넛 · 폭포 · 타임라인 · 흐름도 · 구성도 · 사분면 · 벤 도표 · 레이어 스택.
+skill은 시각 규칙과 콘텐츠 계약을 제공하는 지침입니다. 웹앱을 실행하거나 로컬 파일의 브랜드 정보를 읽는 플러그인이 아닙니다.
 
----
+## 14개 문서와 실제 출력 형식
 
-## 디자인 한 줄
+| 문서 | ID | PageSpec | 실제 출력 |
+|---|---|---|---|
+| 이력서 | `resume` | A4 세로 | 1쪽 PDF · 1쪽 PNG |
+| 자기소개서 | `self-intro` | A4 세로 | 1쪽 PDF · 1쪽 PNG |
+| 명함 | `business-card` | 명함 8-up | A4 한 장에 90×55mm 명함 8면 |
+| 브랜드 원페이지 | `brand-onepager` | A4 가로 | 1쪽 PDF · 1쪽 PNG |
+| 제품 소개서 | `product-brochure` | A4 세로 | 4쪽 PDF · 첫 페이지 PNG |
+| 회사 소개서 | `company-profile` | A4 세로 | 2쪽 PDF · 첫 페이지 PNG |
+| 투자 IR 덱 | `investor-deck` | 16:9 슬라이드 | 9장 PDF · 첫 슬라이드 PNG |
+| 브랜드 스토리북 | `brand-storybook` | A4 세로 | 3쪽 PDF · 첫 페이지 PNG |
+| 청첩장 | `invitation` | 엽서 세로 | 105×148mm 1면 |
+| 연하장 | `new-year-card` | 엽서 세로 | 105×148mm 1면 |
+| 제안서 | `proposal` | A4 세로 | 2쪽 PDF · 첫 페이지 PNG |
+| 뉴스레터 | `newsletter` | A4 세로 | 1쪽 PDF · 1쪽 PNG |
+| 포트폴리오 | `portfolio` | A4 가로 | 1쪽 PDF · 1쪽 PNG |
+| 보고서 | `report` | A4 세로 | 2쪽 PDF · 첫 페이지 PNG |
 
-| 항목 | 값 |
-|---|---|
-| Canvas | 백자지 `#F7F7F2` |
-| Accent | 단청 `#9B1B1B` (≤ 5%/page) |
-| Ink | 먹 `#1C1916` |
-| Serif | 나눔명조 · 고운바탕 |
-| Sans | 고운돋움 · Pretendard |
+지원 시각화: 막대, 선, 도넛, 폭포, 타임라인, 흐름도, 구성도, 사분면, 벤 도표, 레이어 스택.
 
-규칙 8개: `references/design.ko.md` 또는 `skills/satgat/SKILL.md` 참조.
+완성 예시는 [`/ko/examples`](https://satgat.vercel.app/ko/examples)에서 보고, canonical 배포 계약은 [`manifest.json`](public/satgat/assets/examples/ko/manifest.json)과 같은 디렉터리의 14개 PNG/PDF에서 확인할 수 있습니다. PNG는 각 문서의 첫 페이지 미리보기이고 PDF는 전체 페이지를 담습니다. `npm run specimens:render`는 production React 경로를 열어 세 아티팩트 집합을 다시 만듭니다.
 
----
+## 데이터 처리와 공유
 
-## 한글 무료 폰트 (OFL)
+- **임시 초안:** 생성 결과와 현재 초안 ID는 브라우저 탭의 `sessionStorage`에 저장됩니다. 탭을 닫으면 유지된다고 가정하지 마세요.
+- **AI 생성:** 프롬프트와 선택한 브랜드 정보는 `/api/generate`를 거쳐 설정된 Google Generative AI 서비스로 전송됩니다.
+- **PDF:** 현재 문서 데이터는 `/api/export`로 전송되어 서버의 Chromium에서 PDF로 렌더링됩니다.
+- **일반 미리보기:** URL에는 문서 내용 대신 무작위 UUID만 포함됩니다. 다른 브라우저나 기기에서 그 주소만 열어도 문서가 전달되지 않습니다.
+- **공유 링크:** 사용자가 공유 대화상자에서 확인한 경우에만 문서 데이터를 URL fragment에 넣습니다. 서버 요청에는 fragment가 포함되지 않지만, 링크를 받은 사람은 내용을 읽을 수 있습니다. 개인정보가 있는 문서는 공유하지 마세요.
+- **계정·DB:** 현재 소스에는 인증이나 서버 문서 저장소가 없습니다.
 
-satgat이 쓰는 한글 폰트. 웹앱은 Google Fonts로 로드하고, **서버 PDF 내려받기**는 `public/fonts/`에 셀프호스팅한 OFL woff2(한자는 Noto Serif KR)를 임베드해 폰트 누락·두부(tofu) 없이 인쇄급으로 떨어집니다. 모두 무료, 상업 사용 가능.
+배포 전에는 사용하는 AI 제공자, 로그, 프록시, 호스팅 환경의 개인정보 정책을 별도로 검토하세요.
 
-| 폰트 | 역할 | 출처 |
-|---|---|---|
-| **나눔명조** | 표지 · H1 · 인장 | Google Fonts |
-| **고운바탕** | 본문 · 인용 | Google Fonts |
-| **고운돋움** | 라벨 · 메타 | Google Fonts |
-| **Pretendard** | UI · sans 본문 | orioncactus/pretendard |
-| **Noto Serif KR** | 명조 fallback | Google Fonts |
-| **Noto Sans KR** | 다국어 페어링 | Google Fonts |
-| **Hahmlet** | 두꺼운 명조 디스플레이 | Google Fonts |
-| **IBM Plex Sans KR** | 기술 문서 sans | Google Fonts |
-| **Black Han Sans** | 강한 헤드라인 (선택) | Google Fonts |
+## 개발·검증
 
-Latin 페어링: Cormorant Garamond italic, JetBrains Mono.
-
----
-
-## 데모팩 — 13종 specimen
-
-자연어 한 문장이 한국형 문서가 되는 13개 장면. 모두 같은 디자인 8조에서 나왔습니다. 각 예시는 인쇄용 HTML 원본과 미리보기 PNG로 제공됩니다.
-
-<a href="public/satgat/assets/examples/ko/index.html"><img src="public/satgat/assets/readme/demo-gallery.png" alt="satgat 한국어 데모팩 13종 갤러리" width="92%"></a>
-
-| 문서 | 폼팩터 | 미리보기 |
-|---|---|---|
-| **이력서** · 김수민 | A4 세로 | [열기](public/satgat/assets/examples/ko/resume-kim-sumin.html) · [PNG](public/satgat/assets/examples/ko/resume-kim-sumin.png) |
-| **자기소개서** · 윤하진 | A4 세로 · 4문항 | [열기](public/satgat/assets/examples/ko/self-intro-yoon-hajin.html) · [PNG](public/satgat/assets/examples/ko/self-intro-yoon-hajin.png) |
-| **명함** · 박상세 | 90×55mm 앞뒷면 | [열기](public/satgat/assets/examples/ko/business-card-parksangse.html) · [PNG](public/satgat/assets/examples/ko/business-card-parksangse.png) |
-| **브랜드 원페이지** · 백자상회 | A4 가로 | [열기](public/satgat/assets/examples/ko/one-pager-baekja.html) · [PNG](public/satgat/assets/examples/ko/one-pager-baekja.png) |
-| **제품 소개서** · 온정 | A4 세로 | [열기](public/satgat/assets/examples/ko/product-sheet-onjeong.html) · [PNG](public/satgat/assets/examples/ko/product-sheet-onjeong.png) |
-| **회사 소개서** · 달빛식품 | A4 세로 | [열기](public/satgat/assets/examples/ko/company-profile-dalbit.html) · [PNG](public/satgat/assets/examples/ko/company-profile-dalbit.png) |
-| **투자 IR 덱** · 마루AI | 16:9 · 6장 | [열기](public/satgat/assets/examples/ko/investor-deck-maruai.html) · [PNG](public/satgat/assets/examples/ko/investor-deck-maruai.png) |
-| **브랜드 스토리북** · 술도가 한울 | A4 세로 | [열기](public/satgat/assets/examples/ko/brand-storybook-sool.html) · [PNG](public/satgat/assets/examples/ko/brand-storybook-sool.png) |
-| **청첩장** · 지수와 민호 | 엽서 105×148mm | [열기](public/satgat/assets/examples/ko/invitation-jisoo-minho.html) · [PNG](public/satgat/assets/examples/ko/invitation-jisoo-minho.png) |
-| **연하장** · 박상세 가족 | 엽서 105×148mm | [열기](public/satgat/assets/examples/ko/newyear-card-park.html) · [PNG](public/satgat/assets/examples/ko/newyear-card-park.png) |
-| **제안서** · 한지 리테일 | A4 세로 | [열기](public/satgat/assets/examples/ko/proposal-hanji-retail.html) · [PNG](public/satgat/assets/examples/ko/proposal-hanji-retail.png) |
-| **뉴스레터** · 장소리 | A4 세로 | [열기](public/satgat/assets/examples/ko/newsletter-jangsori.html) · [PNG](public/satgat/assets/examples/ko/newsletter-jangsori.png) |
-| **포트폴리오** · 스튜디오결 | A4 가로 | [열기](public/satgat/assets/examples/ko/portfolio-studio-gyeol.html) · [PNG](public/satgat/assets/examples/ko/portfolio-studio-gyeol.png) |
-
-전체 갤러리: [한국어 데모팩](public/satgat/assets/examples/ko/index.html) · 재생성 `npm run demo:ko`.
-
----
-
-## 스크립트
+Node.js 20.9 이상과 npm을 기준으로 합니다. 테스트 러너는 Bun입니다.
 
 ```bash
-npm run dev               # 로컬 개발 서버
-npm run build             # 프로덕션 빌드
-npm run start             # 프로덕션 서버
-npm run lint              # ESLint
-npm run verify:templates  # 14종 템플릿·렌더러·UI 일치 계약 검증 (CI 게이트)
-npm run demo:ko           # 한국어 데모팩 HTML/manifest 재생성
-npm test                  # bun 단위 테스트 (문서 생성기)
+npm run dev                 # Next.js 개발 서버
+npm run lint                # ESLint
+npx tsc --noEmit            # TypeScript 검사
+npm test                    # Bun 테스트 전체
+npm run build               # 프로덕션 빌드
+npm run tokens:check        # constraint.ts → 생성 토큰 drift 검사
+npm run verify:templates    # 14개 정의·registry·렌더러·아티팩트 계약
+npm run verify:web          # 실행 중인 프로덕션 앱의 브라우저·PDF 계약
+npm run specimens:render    # 런타임 PNG/PDF/manifest 재생성
+node scripts/design-guard.mjs --check
+node scripts/design-guard.mjs --check-density
 ```
 
-디자인 강제기 (design-guard) — 디자인 8조를 코드로 검증하는 정적 분석기:
+`verify:web`은 기본적으로 `http://127.0.0.1:3000`을 검사합니다. 먼저 프로덕션 서버를 실행하세요.
 
 ```bash
-node scripts/design-guard.mjs --check          # 8조 위반 리포트 (순백·rgba·단청 예산·합성볼드·쿨그레이·이중강조)
-node scripts/design-guard.mjs --check-density   # 14종 fixture 페이지 밀도 스캔 (희소 페이지 < 50% 감지)
+npm run build
+SATGAT_APP_ORIGIN=http://127.0.0.1:3000 npm run start -- --hostname 127.0.0.1 --port 3000
+npm run verify:web
 ```
 
-`design-guard`는 warn 모드(위반을 리포트하되 CI를 깨뜨리지 않음)로 동작하며, `verify:templates`와 함께 CI에서 게이트로 실행됩니다(`.github/workflows/ci.yml`). PDF 내려받기를 로컬에서 시험하려면 `CHROMIUM_PATH`에 크롬 실행 파일 경로를 지정하세요(예: macOS `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"`). 미지정 시 서버리스용 `@sparticuz/chromium`을 사용합니다.
+CI의 blocking 계약:
 
-또는 CLI 직접:
+- `tokens:check`: `constraint.ts`에서 생성한 `app/satgat-tokens.css`와 저장된 파일의 drift 없음
+- `verify:templates`: 정의, registry, React renderer, manifest, 14개 PNG/PDF의 메타데이터·바이너리·모든 PDF 페이지 치수 일치
+- `design-guard --check`: raw Unicode escape, 순백, `rgba()`, 장식 한자, 관리되지 않은 토큰 등 오류 0개
+- `lint`, `typecheck`, `test`, `build`
+- 실행 중인 production 앱에서 `verify:web`: 데스크톱·모바일 랜딩/생성/미리보기, 14개 renderer, 모든 PDF 페이지, 실제 `/api/export` 응답
 
-```bash
-npx satgat help           # 도움말
-npx satgat dev            # next dev wrap
-npx satgat init <dir>     # 새 워크스페이스
-npx satgat skill <dir>    # AI agent용 skill 폴더 내보내기
-```
+디자인 밀도 검사는 현재 advisory warning으로 보고하며 CI 실패 조건은 아닙니다.
 
----
-
-## 프로젝트 구조
+### 단일 진실원천
 
 ```text
-app/                          Next.js App Router · API · 페이지
-bin/satgat.mjs                npx CLI 엔트리
-src/components/               14종 문서 React 렌더러
-src/lib/design-system/        한지·먹·단청·취색·금박 토큰 (constraint.ts)
-src/lib/templates/            슬롯·section·registry
-src/lib/engine/               렌더 + 검증 + 슬롯 정규화
-src/lib/generation/           AI 프롬프트 → 슬롯 데이터
-src/lib/bridge/prompt-builder.ts  type-aware 생성 프롬프트
-scripts/verify-template-catalog.mjs   14종 카탈로그 계약 검증 (CI 게이트)
-scripts/design-guard.mjs              디자인 8조 + 밀도 정적 강제기 (CI 게이트, warn)
-scripts/template-preview-fixtures.mjs 14종 미리보기 fixture
-scripts/generate-korean-demo-pack.mjs 데모팩 생성 (scripts/demo/* css·data·layouts)
-public/satgat/                정적 specimen + 한국어 데모팩
-skills/satgat/SKILL.md        AI agent용 brief
-references/                   디자인·글쓰기·이력서·안티패턴 가이드
+src/lib/design-system/constraint.ts       색·폰트·간격·그림자 원본
+scripts/generate-design-tokens.mjs        CSS 토큰 생성기
+app/satgat-tokens.css                     생성된 웹 토큰
+src/lib/templates/definitions/            14개 슬롯·section·specimen 정의
+src/lib/templates/registry.ts             PageSpec·카테고리 연결
+src/components/templates/runtime-catalog.tsx React renderer 연결
+src/lib/engine/                            슬롯 정규화·검증·렌더 계약
+src/lib/generation/                        AI 요청·응답 계약
+scripts/verify-template-catalog.mjs        카탈로그·아티팩트 검증
+scripts/verify-web-product.mjs             실행 제품·PDF 검증
+skills/satgat/SKILL.md                     에이전트용 한국 문서 brief
 ```
 
----
+### 디자인 8조
 
-## 동작 흐름
+1. 캔버스는 백자지 `#F7F7F2`; 순백과 누런 양피지를 쓰지 않습니다.
+2. 단청 `#9B1B1B`은 페이지의 5% 이내입니다.
+3. 보조 강조는 취색 또는 금박 중 하나만 고릅니다.
+4. 회색은 회녹 계열만 사용합니다.
+5. 표지·display는 명조 800, 제목은 명조 700, 본문은 바탕 400; 위계는 크기로 만듭니다.
+6. 문서 UI 색은 solid hex를 사용합니다.
+7. 큰 여백을 디자인 요소로 취급합니다.
+8. 합성 볼드와 장식 한자를 사용하지 않습니다. 한자는 필요한 고유명 옆 괄호 표기만 허용합니다.
 
-1. **brief** — 자연어로 목적·독자·핵심 사실 적기.
-2. **slot fill** — AI가 type-aware JSON 스켈레톤을 채움. 모든 list/table/image/visual 슬롯은 구조화 데이터로.
-3. **render** — satgat 렌더러가 백자지 캔버스 위에 명조 위계로 옮겨 적음. 14종 전부 데스크톱(가로 스크롤 없음)과 모바일 375px(가로 오버플로우 없음) 반응형을 지원.
-4. **export** — `PDF 내려받기` 버튼으로 서버 렌더 PDF(셀프호스팅 OFL 폰트 임베드, 한자 두부 없음, 백자지 `#F7F7F2` 캔버스 보존). 브라우저 인쇄·PNG 미리보기·HTML 저장도 그대로. 인쇄(`@media print`) 규칙은 `SatgatPrintStyles` 한 곳이 단독 소유하여 브라우저 인쇄와 서버 PDF가 동일한 단일 전략을 따릅니다.
+전문은 [`skills/satgat/SKILL.md`](skills/satgat/SKILL.md), [`references/design.ko.md`](references/design.ko.md), [`references/anti-patterns.ko.md`](references/anti-patterns.ko.md)를 참조하세요.
 
----
+## 영감과 라이선스
 
-## 디자인 8조
+삿갓의 제약 기반 문서 디자인 접근은 [tw93/Kami](https://github.com/tw93/Kami)에서 영감을 받았습니다. 삿갓은 별도 코드와 런타임을 가진 독립 프로젝트입니다.
 
-1. 백자지 `#F7F7F2`. 순백·양피지 누런 크림 금지.
-2. 단청 `#9B1B1B`. 한 페이지의 5% 이내.
-3. 보조 액센트는 취색·금박 중 하나만. 동시 사용 금지.
-4. 모든 회색은 회녹빛. 푸른 회색 금지.
-5. 제목은 명조(600-700), 본문은 바탕(400). 위계는 크기로.
-6. solid hex만. rgba 금지(그림자·질감 알파는 예외).
-7. 여백은 디자인. xl/2xl 간격 두려워하지 말 것.
-8. 합성 볼드 금지. 폰트 정의 weight만. 한자는 본문 옆 괄호 보조만.
-
-8조는 주석이 아니라 **`design-guard`가 기계적으로 검증**합니다. 전문: `skills/satgat/SKILL.md`, `references/design.ko.md`, `references/anti-patterns.ko.md`.
-
-### 밀도 계약
-
-AI가 채워도 정돈된 결과를 보장하기 위한 페이지 밀도 규칙. 페이지 채움률이 50% 미만이면 *희소(sparse)* 로 보고:
-
-- **정적 스캔** — `design-guard --check-density`가 14종 fixture를 offline 추정(현재 0 희소).
-- **렌더 시 힌트** — 프리뷰에서 각 문서 페이지가 자기 채움률을 측정해 `data-density="sparse"` 페이지에 인쇄되지 않는 `희소 NN%` 배지를 붙입니다(`SatgatDocument`).
-
-템플릿별 항목 수 권장치는 `skills/satgat/SKILL.md`의 밀도 계약 표 참조.
-
----
-
-## 영감
-
-삿갓의 랜딱 페이지 구조와 제약 기반 디자인 시스템 접근은 [tw93](https://github.com/tw93)의 [Kami](https://github.com/tw93/Kami)에서 깊은 영감을 받았습니다. Kami가 "좋은 콘텐츠는 좋은 종이를 만날 자격이 있다"고 말했을 때, 그 문장은 삿갓의 출발점이기도 합니다. 감사합니다.
-
----
-
-## 라이선스
-
-MIT © 2026 [unclejobs-ai](https://github.com/unclejobs-ai).
-
-번들된 폰트는 각 폰트의 OFL · MIT 라이선스를 따릅니다. 상업 사용 가능.
+MIT © 2026 [unclejobs-ai](https://github.com/unclejobs-ai). 번들 폰트는 각 OFL·MIT 라이선스를 따릅니다.

@@ -16,9 +16,7 @@ import {
   INK_MUTED,
   HAIRLINE,
   DANCHEONG,
-  JADE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
+  CANVAS_DARK,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -59,7 +57,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
   return (
     <>
       {/* ─── P1: 히어로 ───────────────────────────────────────────────── */}
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         <section
           className="product-brochure-cover"
           style={{
@@ -88,7 +86,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                 fontFamily: FONT_MYEONGJO,
                 fontWeight: 800,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 18px',
                 wordBreak: 'keep-all',
               }}
@@ -104,7 +101,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                   fontSize: 17,
                   lineHeight: 1.78,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: '0 0 34px',
                   wordBreak: 'keep-all',
                 }}
@@ -122,7 +118,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                     fontWeight: 700,
                     lineHeight: 1.35,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 16px',
                     wordBreak: 'keep-all',
                   }}
@@ -202,7 +197,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                   border: `1px solid ${HAIRLINE}`,
                   borderRadius: 3,
                   overflow: 'hidden',
-                  backgroundColor: '#E8E4DC',
+                  backgroundColor: CANVAS_DARK,
                 }}
               >
                 {/* Raw img keeps generated/remote artwork printable without Next image constraints. */}
@@ -229,7 +224,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                           fontFamily: FONT_DODUM,
                           fontSize: 10,
                           letterSpacing: '0.12em',
-                          color: JADE,
+                          color: INK_MUTED,
                           margin: '0 0 10px',
                         }}
                       >
@@ -311,32 +306,12 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
             padding-left: 30px;
           }
 
-          @media (max-width: 760px) {
-            .product-brochure-cover {
-              display: flex;
-              flex-direction: column;
-              gap: 28px;
-              min-height: 0;
-            }
-
-            .product-brochure-title {
-              font-size: 38px;
-              line-height: 1.12;
-            }
-
-            .product-brochure-visual {
-              border-left: 0;
-              border-top: 1px solid ${HAIRLINE};
-              padding-left: 0;
-              padding-top: 24px;
-            }
-          }
         `}</style>
       </SatgatDocument>
 
       {/* ─── P2: 주요 특징 ────────────────────────────────────────────── */}
       {(features.length > 0 || Boolean(featureChart)) && (
-        <SatgatDocument format="a4">
+        <SatgatDocument pageSpec="a4Portrait">
           <SectionHeading title="주요 특징" size={24} marginBottom={32} />
 
           {features.length > 0 && (
@@ -396,7 +371,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       )}
 
       {/* ─── P3: 스펙 + 사용법 ────────────────────────────────────────── */}
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         {specs.rows.length > 0 && (
           <section style={{ marginBottom: 40 }}>
             <SectionHeading title="제품 스펙" size={24} marginBottom={24} />
@@ -461,7 +436,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                 fontSize: 15,
                 lineHeight: 1.8,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 whiteSpace: 'pre-line',
@@ -474,7 +448,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
       </SatgatDocument>
 
       {/* ─── P4: 인증 + 연락처 ────────────────────────────────────────── */}
-      <SatgatDocument format="a4">
+      <SatgatDocument pageSpec="a4Portrait">
         {certifications.length > 0 && (
           <section style={{ marginBottom: 40 }}>
             <SectionHeading title="인증 및 수상" size={24} marginBottom={24} />
@@ -496,7 +470,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                       width: 6,
                       height: 6,
                       borderRadius: '50%',
-                      backgroundColor: JADE,
+                      backgroundColor: INK_MUTED,
                       flexShrink: 0,
                     }}
                   />

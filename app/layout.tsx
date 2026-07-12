@@ -12,10 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body className="min-h-screen antialiased">
-        {children}
-      </body>
+    <html lang="ko" data-scroll-behavior="smooth">
+      <body>{children}</body>
     </html>
   );
 }

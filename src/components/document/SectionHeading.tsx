@@ -9,7 +9,6 @@ import {
   INK_LIGHT,
   DANCHEONG,
   HAIRLINE,
-  INK_BLEED,
 } from '@/lib/design-system/constraint';
 
 // 단청 underline 규격 — 모든 섹션 헤더에서 동일하게 유지(8조 5: 위계는 크기로,
@@ -35,8 +34,8 @@ interface SectionHeadingProps {
  * 이것이 삿갓 섹션 헤더의 **단일 권위 패턴**이다(M4 통일). 구성:
  *   1. 명조(Nanum Myeongjo) H2 — 제목. 크기로 위계 표현(8조 5).
  *   2. (옵션) 단청 보조 라벨 — 제목 옆 작은 돋움 라벨.
- *   3. 단청 밑줄(#9B1B1B) — 짧은 강조 rule. 모든 헤더에서 동일 두께·색.
- *   4. hairline(#D2D6CB 0.5pt) — 전폭 가는 구분선. 단청 밑줄이 그 위에 겹친다.
+ *   3. 단청 밑줄(DANCHEONG) — 짧은 강조 rule. 모든 헤더에서 동일 두께·색.
+ *   4. hairline(HAIRLINE 0.5pt) — 전폭 가는 구분선. 단청 밑줄이 그 위에 겹친다.
  *
  * Proposal/Report/SelfIntro/ProductBrochure가 각자 복사하던 헤더 패턴
  * (`SectionHead`/`ReportSectionHead`/인라인 `2px solid INK` 헤더)을 이 컴포넌트로
@@ -66,7 +65,6 @@ export function SectionHeading({ title, subtitle, size = 16, weight = 700, margi
             color: INK,
             margin: 0,
             letterSpacing: '-0.005em',
-            textShadow: INK_BLEED,
           }}
         >
           {title}

@@ -1,5 +1,4 @@
-const SAMPLE_IMAGE =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"%3E%3Crect width="800" height="600" fill="%23f7f7f2"/%3E%3Ccircle cx="400" cy="300" r="170" fill="%232e6b5e"/%3E%3C/svg%3E';
+const SAMPLE_IMAGE = '/apple-icon.png';
 
 export const previewFixtures = {
   resume: {
@@ -26,7 +25,6 @@ export const previewFixtures = {
   },
   'business-card': {
     name: '박상세',
-    hanja_name: '朴詳細',
     title: '대표',
     company: '삿갓스튜디오',
     email: 'hello@satgat.vercel.app',
@@ -142,21 +140,17 @@ export const previewFixtures = {
   },
   invitation: {
     groom_name: '민호',
-    groom_hanja: '珉鎬',
-    groom_parents: '父 김영호 · 母 박미정',
+    groom_parents: '아버지 김영호 · 어머니 박미정',
     bride_name: '지수',
-    bride_hanja: '智秀',
-    bride_parents: '父 이성재 · 母 최은주',
+    bride_parents: '아버지 이성재 · 어머니 최은주',
     date: '2026년 10월 17일 토요일 오후 2시',
-    date_hanja: '丙午年 十月 十七日',
     venue: '서울 정동 예식당 · 은행나무홀',
     message: '귀한 걸음으로 축복해 주시면 그 마음 오래 간직하겠습니다.',
     rsvp_url: 'https://satgat.vercel.app/rsvp',
   },
   'new-year-card': {
     occasion: '신년',
-    year_hanja: '丙午年',
-    greeting: '謹賀新年',
+    greeting: '새해 복 많이 받으세요',
     message: '지난 한 해의 인연에 감사드립니다. 새해에도 평안과 건강이 함께하시길 바랍니다.',
     sender_family: '박상세 · 김한지 드림',
     recipient: '귀하',

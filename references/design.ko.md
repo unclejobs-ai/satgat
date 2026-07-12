@@ -1,227 +1,148 @@
-# 삿갓 디자인 원칙 (한국형)
+# 삿갓 디자인 레퍼런스
 
-> AI agent에게 넘기는 brief. 이 문서를 따르면 어떤 LLM이든 일관된 한국 문서를 그립니다.
+삿갓은 전통 장식을 붙이는 스타일이 아니다. 백자지의 맑은 표면, 먹의 위계, 제한된 단청, 정확한 물리 치수로 한국 문서를 조판하는 제약 시스템이다. 구현 token의 단일 진실원천은 `src/lib/design-system/constraint.ts`다.
 
----
+## 1. 색
 
-## 0. 단 하나의 미감
+| 역할 | 값 | 사용 |
+|---|---|---|
+| 백자지 Canvas | `#F7F7F2` | 모든 문서 페이지 |
+| 밝은 Surface | `#FFFFFB` | 제품 UI의 제한된 표면 |
+| 먹 Ink | `#1C1916` | H1·핵심 본문 |
+| 본문 Ink | `#3A3833` | 긴 본문 |
+| 보조 Ink | `#4D4B46` | 캡션·설명 |
+| Hairline | `#D2D6CB` | 얇은 구분선 |
+| Strong line | `#BEC5BA` | 표 외곽과 인쇄 경계 |
+| 단청 | `#9B1B1B` | 페이지당 하나의 핵심 강조 |
+| 취색 | `#2E6B5E` | 선택적 보조 강조 |
+| 금박 | `#B8954F` | 선택적 보조 강조 |
 
-한지(韓紙) 위에 먹(墨)으로 옮겨 적습니다. 화려한 그림자도 두 번째 색도 두지 않습니다. **인쇄에 견디는 색만, 합성 볼드 없이, 옛 종이 위 글씨의 단정함으로.**
+규칙:
 
----
+- 순백 캔버스와 누런 크림 배경을 쓰지 않는다.
+- 단청은 페이지 시각 면적의 5%를 넘지 않는다.
+- 단청 외 보조 강조가 필요하면 취색 또는 금박 중 하나만 고른다.
+- 회색은 붉거나 회녹 기운을 유지한다. blue channel이 지배하는 cool gray를 쓰지 않는다.
+- active document/UI 색은 solid hex다. 분위기를 만들기 위한 `rgba()`, gradient, glass 효과를 쓰지 않는다.
 
-## 1. 색 (Colors)
+## 2. 글꼴과 위계
 
-### 백자지 캔버스 (절대 #FFF 금지)
-```
-백자지(白瓷紙) #F7F7F2   페이지 본바탕
-이보리(象牙)   #FFFFFB   카드 · 부상 표면
-황지(黃紙)     #E7E8DD   버튼 · 인터랙티브
-백자지그늘     #D2D6CB   카드 음영
-```
+모든 weight는 실제 self-hosted face가 있는 값만 쓴다.
 
-### 먹(墨) 계열 — 위계
-```
-먹(墨)     #1C1916   본문 H1·H2
-부엽(腐葉) #3A3833   본문 9.5pt
-숯(炭)     #4D4B46   캡션·인용
-이끼(苔)   #6B6862   메타·label
-```
+| 역할 | 글꼴 | 크기 기준 | weight | line-height |
+|---|---|---:|---:|---:|
+| Cover display | Nanum Myeongjo | 36–48pt | 800 | 1.10 |
+| H1 | Nanum Myeongjo | 18–24pt | 700 | 1.20 |
+| H2 | Nanum Myeongjo | 14–16pt | 700 | 1.25 |
+| H3 | Nanum Myeongjo | 11–13pt | 700 | 1.30 |
+| 본문 | Gowun Batang | 10–11pt | 400 | 1.70–1.80 |
+| 캡션 | Gowun Batang | 8.5–9pt | 400 | 1.50–1.60 |
+| 라벨·메타 | Gowun Dodum | 7.5–9pt | 400 | 1.35–1.50 |
+| 제품 UI | Pretendard 또는 Gowun Dodum | 13–16px | 제공 face | 1.4–1.6 |
 
-### 강조 — 단청만 (5% 룰)
-```
-단청(丹靑)   #9B1B1B   단 하나의 강조색
-단청 밝게    #B92D2D   hover · 다크 위 링크
-취색(翠色)   #2E6B5E   보조 강조 (인장 등)
-금박(金箔)   #B8954F   메달·디바이더 (최소)
-```
+- display와 heading을 같은 800으로 평평하게 만들지 않는다.
+- `font-weight: 600`처럼 제공되지 않은 face를 요청하지 않는다.
+- 본문 위계는 weight보다 크기, 간격, 위치로 만든다.
+- 제목 자간은 약 `-0.018em`, 본문은 약 `-0.005em`을 시작점으로 삼는다.
+- 영문 italic은 필요한 한 점에만 사용한다.
 
-### 한지 위 단청 tint 5단계 (solid hex)
-```
-tint 1  #F4ECE9
-tint 2  #EEDED9
-tint 3  #E8D0C9   ← 기본
-tint 4  #DDC3BB
-tint 5  #D0B4AB
-```
+## 3. 간격과 그리드
 
-### 엷음(淡) — 보더
-```
-보더       #BEC5BA
-보더 옅음  #D8DBD1
-헤어라인   #D2D6CB
-```
+4pt 배수를 기본 단위로 삼는다.
 
-**규칙:**
-- 한 페이지에서 단청 ≤ 5% 면적
-- 단청과 취색 동시 사용 금지 (둘 중 하나만)
-- cool blue-gray 모두 금지
-
----
-
-## 2. 자 (Typography)
-
-### 폰트 페어링 (전부 OFL 무료)
-- **명조** (Display·H1): Nanum Myeongjo 800 — 장중함·표지·인장
-- **바탕** (본문): Gowun Batang 400 / 700 — 따뜻한 곡선
-- **돋움** (라벨·UI): Gowun Dodum 400 — 정갈한 직선
-- **Latin** italic: Cormorant Garamond — 영문 보조 일점
-
-### 스케일 (인쇄 pt 기준)
-```
-Display    36-48pt  weight 800  line 1.10
-H1 섹션    18-22pt  weight 800  line 1.20
-H2 소제목  14-16pt  weight 700  line 1.25
-H3 항목    12-13pt  weight 700  line 1.30
-본문       10-11pt  weight 400  line 1.72  ← 한글은 1.7+
-캡션       8.5-9pt  weight 400  line 1.55
-라벨       7.5-8pt  weight 600  line 1.35  uppercase
+```text
+xs      2–4pt      인라인 간격
+sm      6–8pt      라벨과 값
+md      12–16pt    같은 section 내부
+lg      24–32pt    section 사이
+xl      48–64pt    큰 위계 전환
+2xl     80–120pt   표지와 본문, 장 전환
 ```
 
-### 한글 자간 (letter-spacing)
-- 본문: `-0.005em` (약간 조이기)
-- 제목: `-0.018em` (더 조이기)
-- 라벨 uppercase: `+0.18em` (넓히기)
+- A4 page padding은 template과 PageSpec primitive가 소유한다.
+- 긴 문서는 section 제목과 첫 문단을 같은 페이지에 둔다.
+- 같은 중요도의 card를 반복해 dashboard처럼 만들지 않는다.
+- 표는 얇은 hairline과 충분한 cell padding을 사용한다.
+- page surface에는 두꺼운 drop shadow를 쓰지 않는다. 화면 구분이 필요하면 1px ring 또는 아주 옅은 solid shadow만 쓴다.
 
-### 합성 볼드 금지
-실제 weight (400 / 700 / 800)만. `font-weight: 600` 가짜 굵기 절대 금지.
+## 4. PageSpec
 
----
+| ID | 라벨 | 실제 캔버스 |
+|---|---|---|
+| `a4Portrait` | A4 세로 | 210×297mm |
+| `a4Landscape` | A4 가로 | 297×210mm |
+| `slide16x9` | 16:9 슬라이드 | 297×167mm |
+| `businessCard8Up` | 명함 8-up | A4 한 장에 90×55mm 명함 2×4 |
+| `postcardPortrait` | 엽서 세로 | 105×148mm |
 
-## 3. 결·꼴 (Spacing & Shape)
+`SatgatDocument`가 화면 캔버스를, `SatgatPrintStyles`가 print `@page`를 소유한다. 별도 CSS에서 비슷한 치수를 다시 선언하지 않는다.
 
-### 4pt 베이스 단위
-```
-xs   2-3pt    인라인 요소
-sm   4-5pt    태그 패딩
-md   8-10pt   컴포넌트 내부
-lg   16-20pt  컴포넌트 간격 · 카드 패딩
-xl   24-32pt  섹션 제목 마진
-2xl  40-60pt  주요 섹션 간격
-3xl  80-120pt 챕터 간격
-```
+## 5. 한국적 인상
 
-### Radii (작은 모서리)
-```
-4pt   타이트
-6pt   코드 블록
-8pt   기본 카드
-12pt  컨테이너
-16pt  피처 카드
-24pt  대형 컨테이너
-32pt  히어로
-```
+한국적 인상은 문양이나 큰 상징 문자보다 다음에서 만든다.
 
-### 그림자 — 가는 테 또는 옅은 whisper만
-```css
-/* ring */
-box-shadow: 0 0 0 1pt var(--border);
+- 넓은 여백과 비대칭 정렬
+- 세로로 긴 명조 획과 안정된 본문 행간
+- 백자지와 먹의 낮은 대비 변화
+- 작은 단청 rule, underline, 핵심 숫자 한 점
+- 제목과 메타의 절제된 크기 차이
 
-/* whisper */
-box-shadow: 0 4pt 24pt rgba(28, 25, 22, 0.05);
+도장, 낙관, 큰 장식 문자, 반복 전통 문양을 사용하지 않는다. 한자가 실제 인명·기관명 구분에 필요하면 한글 표기 바로 옆 괄호 안의 작은 보조 정보로 한 번만 쓴다.
 
-/* hard drop 금지 */
-```
+## 6. 시각화
 
----
+차트는 장식이 아니라 주장과 근거를 압축한다.
 
-## 4. 위계 (Hierarchy)
+- 막대: 범주 비교
+- 선: 시간 변화
+- 도넛: 제한된 구성비
+- 폭포: 증감 원인
+- 타임라인: 단계와 일정
+- 흐름도: 순서와 분기
+- 구성도: 조직·시스템 관계
+- 사분면: 두 축의 포지셔닝
+- 벤: 집합의 교집합
+- 레이어 스택: 계층 구조
 
-크기와 굵기가 위계를 짓는다. 장식 금지.
+단위, 기간, 표본, 출처를 보존한다. 데이터가 없으면 빈 차트를 만들지 않는다. 단청은 강조 series 하나에만 쓰고 나머지는 먹·회녹 단계로 구분한다.
 
-```
-표지 Display 800   →   섹션 H1 800   →   H2 700   →   본문 400
-```
+## 7. 이미지
 
-좌측 단청 2pt 바 또는 hairline 0.5pt 점선으로 섹션 구분.
+- 사용자 제공 이미지의 의미를 바꾸는 crop을 피한다.
+- 제품 소개서와 포트폴리오 이미지는 캡션과 연결한다.
+- 외부 추적 URL이나 실행 가능한 SVG를 문서 데이터로 허용하지 않는다.
+- 인쇄에서 이미지가 흐려지지 않도록 실제 출력 크기에 충분한 해상도를 쓴다.
+- 이미지가 없을 때 임의 stock 사진으로 사실을 꾸미지 않는다.
 
----
+## 8. 인쇄와 PDF
 
-## 5. 인장(印章)
+- `@page` margin과 background는 `SatgatPrintStyles` 한 곳에서 관리한다.
+- `printBackground: true`, `preferCSSPageSize: true`를 사용한다.
+- 화면과 PDF가 같은 self-hosted font family와 weight를 사용한다.
+- 모든 PDF 페이지의 MediaBox가 template PageSpec과 일치해야 한다.
+- 다중 페이지 PDF의 page count는 runtime document root 수와 같아야 한다.
+- 브라우저 print와 서버 PDF 모두 백자지 배경과 hairline을 보존한다.
 
-14 문서마다 한 한자 인장:
-```
-履 이력서        ink (#1C1916)
-介 자기소개서    dancheong
-名 명함         jade
-品 브랜드 원페이지 dancheong
-製 제품 소개서    jade
-社 회사 소개서    jade
-投 투자 IR 덱     gold
-話 브랜드 스토리북 gold
-牒 청첩장       dancheong
-賀 연하장       gold
-案 제안서       dancheong
-報 뉴스레터     gold
-作 포트폴리오   jade
-報 보고서       ink
+## 9. 밀도
+
+페이지 채움률 50%를 하한으로 삼는다. 빈 공간을 없애기 위해 글자를 키우거나 허구의 내용을 추가하지 않는다.
+
+- A4 문서는 핵심 section 3개 또는 동등한 표/차트 블록을 둔다.
+- IR 슬라이드는 한 장에 주장 하나와 본문·지표·차트 중 하나를 둔다.
+- 명함과 엽서는 카드 면 자체가 시각 블록이므로 짧은 문구를 억지로 늘리지 않는다.
+- 희소 페이지는 인접 내용을 합치거나 사용자에게 빠진 사실을 요청한다.
+
+```bash
+node scripts/design-guard.mjs --check-density
 ```
 
-22×22pt 사각 · 명조 800 · 카테고리 색 · `inset` 흰 광택 1.2px.
+## 10. 검토 질문
 
----
-
-## 6. 백자지 캔버스 (반드시)
-
-```css
-background-color: #F7F7F2;
-background-image:
-  radial-gradient(ellipse 95% 70% at 50% 30%, rgba(255,252,240,0.32), transparent 62%),
-  /* 닥섬유 텍스처 (긴 fiber + 짧은 cluster + grain) */
-  url("data:image/svg+xml,...");
-```
-
-순백(`#FFFFFF`) 절대 금지. `@page background` 도 백자지로 묶을 것.
-
----
-
-## 7. 인쇄
-
-- 모든 색은 solid hex (rgba 금지 — 인쇄 시 패딩·글리프 농도 어긋남)
-- `@page { margin: 0; background: #F7F7F2; }`
-- `-webkit-print-color-adjust: exact`
-- A4 = 210×297mm · A5 = 148×210mm · 명함 = 90×55mm
-
----
-
-## 8. 한국 문서 14종 표준
-
-| 인장 | 문서 | 포맷 | 핵심 슬롯 |
-|----|------|------|----------|
-| 履 | 이력서 | A4 | name, title, summary, experiences[], skills, education[] |
-| 介 | 자기소개서 | A4 | name, target, role, q1_motivation, q2_competence, q3_growth, q4_aspiration |
-| 名 | 명함 | 90×55 | name, hanja_name, title, company, email, phone, website |
-| 品 | 브랜드 원페이지 | A4 | brand_name, tagline, description, products[], positioning_map, contact |
-| 製 | 제품 소개서 | A4 | product_name, category, overview, features[], feature_chart, specs, certifications[] |
-| 社 | 회사 소개서 | A4 | company_name, tagline, vision, mission, values[], history[], team[], growth_chart |
-| 投 | 투자 IR 덱 | 16:9 | company_name, deck_title, problem, solution, market_size, traction[], traction_chart, team[], ask |
-| 話 | 브랜드 스토리북 | A4 | brand_name, origin_story, values[], visual_concept, tone_manner, milestones[] |
-| 牒 | 청첩장 | A5 | groom_name, bride_name, groom_parents, bride_parents, date, venue, message, rsvp_url |
-| 賀 | 연하장 | 엽서 | occasion, greeting, message, sender_family, recipient |
-| 案 | 제안서 | A4 | title, problem, solution, metrics[], impact_chart, timeline, cost, team[] |
-| 報 | 뉴스레터 | A4 | issue_title, issue_date, greeting, articles[], issue_chart, promotion, cta |
-| 作 | 포트폴리오 | A4 가로 | name, title, bio, projects[], skills, contact |
-| 報 | 보고서 | A4 | title, summary, background, progress[], results, issues, plan, closing |
-
----
-
-## 9. AI 출력 톤
-
-- **단정문** + 격조있는 한국어 (한자 보조)
-- 영문 직역체 금지 (예: "~하는 것입니다" → "~합니다")
-- 한 줄에 한 사실
-- 숫자 강조는 단청 색만 (`color: var(--brand)`)
-- "그리고" "하지만" "그러므로" 같은 접속사 절제
-
----
-
-## 10. 절대 금지
-
-1. ❌ 순백(#FFF) 캔버스
-2. ❌ 단청 5% 초과
-3. ❌ 합성 볼드 (font-weight 600 등)
-4. ❌ Hard drop shadow
-5. ❌ rgba 태그·배지 배경
-6. ❌ cool blue-gray 색조
-7. ❌ TsangerJinKai · Charter 같은 유료 폰트
-8. ❌ 영문 직역체 문장
+1. 3초 안에 문서 종류와 핵심 주장이 보이는가?
+2. 단청이 한 기능만 수행하는가?
+3. 제공되지 않은 font weight가 없는가?
+4. 장식 없이도 한국어 문서의 위계가 서는가?
+5. 다섯 PageSpec 중 정확한 하나를 쓰는가?
+6. 390px 화면에서 page preview와 controls가 가로로 넘치지 않는가?
+7. 모든 PDF 페이지의 치수와 page count가 맞는가?
+8. 데이터와 개인정보가 공유·export 경계를 넘을 때 사용자가 알고 있는가?

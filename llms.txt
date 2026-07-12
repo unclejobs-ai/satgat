@@ -21,19 +21,20 @@ Invoke via natural language:
 - "스타트업 IR 덱 한 벌, 시드 단계, 단청 강조."
 
 Core workflow:
-1. User writes a Korean natural-language brief.
-2. Selected template guides generator to fill type-aware JSON slots (list/table/image preserved as structured shapes).
-3. satgat renderer renders the output as HTML on baekjaji canvas with Korean serif hierarchy.
-4. Browser print → PDF, or PNG preview, or HTML save.
+1. User selects one of 14 templates and writes a Korean natural-language brief of up to 1,200 characters.
+2. The generator fills type-aware JSON slots and validates the resulting document.
+3. The browser stores a private draft in sessionStorage and opens the React preview through an opaque UUID.
+4. The same renderer serves screen preview, explicit content-bearing share links, browser print, specimen capture, and server PDF.
 
 Important paths:
 - bin/satgat.mjs: npx CLI entry (init / skill / dev / build / start).
 - skills/satgat/SKILL.md: single-file design brief for AI agents.
 - README.md: project overview, install paths, demo gallery, design rules.
-- public/satgat/satgat-ko.html: static Korean landing/specimen page (hanji editorial).
-- public/satgat/assets/examples/ko/: Korean demo pack with HTML, PDF, PNG, manifest.
-- scripts/generate-korean-demo-pack.mjs: regenerates Korean demo HTML and manifest.
-- scripts/verify-template-catalog.mjs: contract verification (definitions × renderers × landing × fixtures).
+- app/[lang]/page.tsx: React product landing at `/ko`.
+- app/[lang]/examples/page.tsx: canonical runtime specimen catalog at `/ko/examples`.
+- public/satgat/assets/examples/ko/: 14 canonical PNG/PDF pairs plus `manifest.json`.
+- scripts/render-template-specimens.mjs: captures the runtime preview route into deterministic artifacts.
+- scripts/verify-template-catalog.mjs: contract verification (definitions × registry × renderers × fixtures).
 - scripts/template-preview-fixtures.mjs: realistic slot payloads for all 14 runtime templates.
 - src/lib/templates/: runtime template definitions and registry.
 - src/lib/design-system/constraint.ts: tokens (palette, fonts, ink bleed shadows).
@@ -45,26 +46,23 @@ Important paths:
 Runtime template catalog (14):
 - resume, self-intro, business-card, brand-onepager, product-brochure, company-profile, investor-deck, brand-storybook, invitation, new-year-card, proposal, newsletter, portfolio, report.
 
-Korean demo pack:
-- resume-kim-sumin: Korean resume.
-- self-intro-yoon-hajin: Korean self-introduction.
-- proposal-hanji-retail: Korean business proposal.
-- company-profile-dalbit: Korean company profile.
-- investor-deck-maruai: Korean investor deck.
-- invitation-jisoo-minho: Korean wedding invitation.
+Korean runtime specimen pack:
+- One PNG and one PDF for every canonical template ID, in `TEMPLATE_IDS` order.
+- `manifest.json` records the canonical ID, runtime metadata, dimensions, and PDF page count.
+- Artifacts are generated from the private draft preview route, not a parallel static HTML renderer.
 
 Design rules (8조):
 1. Canvas: baekjaji #F7F7F2. No pure white. No warm parchment.
 2. Single accent: dancheong #9B1B1B, ≤ 5%/page.
 3. Secondary accent: jade #2E6B5E or gold #B8954F. Not both with dancheong.
 4. All grays warm baekjaji-toned. No cool blue-gray.
-5. Heading 600-700 myeongjo, body 400 batang. Hierarchy by size, not weight.
+5. Display 800, heading 700 myeongjo; body and labels use real 400 faces. Hierarchy by size and spacing.
 6. Solid hex tags only. No rgba (print fails). Shadows ring or whisper.
 7. Whitespace is design. Don't fear xl/2xl gaps.
 8. No synthetic bold. Hanja only as small parenthetical, never large display.
 
 Fonts (all free OFL, Korean):
-- Nanum Myeongjo (display, h1, seals)
+- Nanum Myeongjo (display 800, headings 700)
 - Gowun Batang (body, quote, numbers)
 - Gowun Dodum (labels, meta, mono labels)
 - Pretendard (UI sans, optional)
@@ -75,8 +73,10 @@ Fonts (all free OFL, Korean):
 Commands:
 - npx satgat help
 - npm run dev
-- npm run build
-- npm run start
 - npm run lint
+- npm test
+- npm run build
+- npm run tokens:check
 - npm run verify:templates
-- npm run demo:ko
+- npm run verify:web   # against a running production server
+- npm run specimens:render

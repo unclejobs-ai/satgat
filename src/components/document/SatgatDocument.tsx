@@ -1,38 +1,81 @@
 'use client';
 
 import React from 'react';
+import { getPageSpec } from '@/lib/templates/registry';
+import type { PageSpecId } from '@/lib/templates/types';
 import {
   CANVAS,
-  TEXTURE_CANVAS_GRADIENT,
-  TEXTURE_PAPER_NOISE,
-  SHADOW_BOOK,
+  FONT_BATANG,
+  HAIRLINE,
   PAGE_MARGIN_X,
   PAGE_MARGIN_Y,
 } from '@/lib/design-system/constraint';
 
-interface SatgatDocumentProps {
-  children: React.ReactNode;
-  /** A4 | A4-Landscape | Slide-16x9 */
-  format?: 'a4' | 'a4-landscape' | 'slide-16x9';
-  className?: string;
-  /** 개발용 baseline grid 표시 */
-  showBaseline?: boolean;
-}
-
-const formatMap = {
-  a4: { width: '210mm', height: '297mm' },
-  'a4-landscape': { width: '297mm', height: '210mm' },
-  'slide-16x9': { width: '297mm', height: '167mm' },
+const PAGE_PADDING: Readonly<Record<PageSpecId, { className: string; value: string }>> = {
+  a4Portrait: { className: 'satgat-page-padding-standard', value: `${PAGE_MARGIN_Y} ${PAGE_MARGIN_X}` },
+  a4Landscape: { className: 'satgat-page-padding-standard', value: `${PAGE_MARGIN_Y} ${PAGE_MARGIN_X}` },
+  slide16x9: { className: 'satgat-page-padding-standard', value: `${PAGE_MARGIN_Y} ${PAGE_MARGIN_X}` },
+  businessCard8Up: { className: 'satgat-page-padding-full-sheet', value: '0' },
+  postcardPortrait: { className: 'satgat-page-padding-compact', value: '8mm 7mm' },
 };
 
+interface SatgatDocumentProps {
+  children: React.ReactNode;
+  pageSpec: PageSpecId;
+  className?: string;
+}
+
+type DensityMeasurement = {
+  state: 'ok' | 'sparse' | 'unknown';
+  fill: number;
+};
+
+interface DensityGeometry {
+  contentInsetTop: number;
+  contentHeight: number;
+  lowestLayoutBottom: number;
+}
+
+export function calculateNestedOffsetBottom(
+  offsetTopChain: readonly number[],
+  offsetHeight: number,
+): number {
+  return offsetTopChain.reduce((bottom, offsetTop) => bottom + offsetTop, offsetHeight);
+}
+
+export function calculateDensityMeasurement({
+  contentInsetTop,
+  contentHeight,
+  lowestLayoutBottom,
+}: DensityGeometry): DensityMeasurement {
+  if (
+    contentHeight <= 0 ||
+    !Number.isFinite(contentHeight) ||
+    !Number.isFinite(contentInsetTop) ||
+    !Number.isFinite(lowestLayoutBottom)
+  ) {
+    return { state: 'unknown', fill: 0 };
+  }
+
+  const lowestContentPoint = lowestLayoutBottom - contentInsetTop;
+  // CSS zoom can round text line boxes by a few layout pixels. A five-point
+  // density bucket keeps this advisory value invariant without reading visual
+  // DOMRect coordinates or changing the sparse/ok signal's useful precision.
+  const rawFill = Math.min(1, Math.max(0, lowestContentPoint / contentHeight));
+  const fill = Math.round(rawFill * 20) * 5;
+  return {
+    state: fill < 50 ? 'sparse' : 'ok',
+    fill,
+  };
+}
+
 /**
- * 삿갓 문서 루트 — A4/16:9 캔버스
+ * 삿갓 문서 루트 — PageSpec 캔버스
  *
  * 철학: "한지 위의 먹글씨"
- * - 한지색 배경 + 미세 노이즈 질감 + 따뜻한 그라데이션
- * - 8px baseline grid (문서의 기준선)
+ * - 평평한 백자지 캔버스 + 회녹빛 1px 구분선
  * - 절대 pure white 금지
- * - 브라우저 프리뷰에서는 고정 크기 + 책자 그림자
+ * - 브라우저와 인쇄가 같은 물리 캔버스와 서체를 사용
  * - 인쇄(@media print)는 SatgatPrintStyles가 단독 소유 (M4 단일 권위 전략)
  *
  * 렌더 시 밀도 힌트(VAL-DENSITY-005): 각 페이지가 자기 자신을 측정한다. 페인트
@@ -47,13 +90,12 @@ const formatMap = {
  */
 export function SatgatDocument({
   children,
-  format = 'a4',
+  pageSpec,
   className = '',
-  showBaseline = false,
 }: SatgatDocumentProps) {
-  const dims = formatMap[format];
+  const spec = getPageSpec(pageSpec);
   const ref = React.useRef<HTMLDivElement>(null);
-  const [density, setDensity] = React.useState<{ state: 'ok' | 'sparse' | 'unknown'; fill: number } | null>(null);
+  const [density, setDensity] = React.useState<DensityMeasurement | null>(null);
 
   // 페인트 후(useEffect — useLayoutEffect 아님)에만 측정/상태 갱신한다. SSR과
   // 클라이언트 첫 렌더는 density=null(속성·배지 없음)로 동일하므로 하이드레이션
@@ -73,26 +115,37 @@ export function SatgatDocument({
       const cs = window.getComputedStyle(el);
       const padTop = parseFloat(cs.paddingTop) || 0;
       const padBot = parseFloat(cs.paddingBottom) || 0;
-      const bt = parseFloat(cs.borderTopWidth) || 0;
+      const borderTop = parseFloat(cs.borderTopWidth) || 0;
       const innerH = el.clientHeight - padTop - padBot;
       if (innerH <= 0) {
         apply('unknown', 0);
         return;
       }
-      const pageRect = el.getBoundingClientRect();
-      const contentTop = pageRect.top + bt + padTop;
-      let lowest = 0;
-      el.querySelectorAll<HTMLElement>('*').forEach((node) => {
-        // 배지 자신은 측정에서 제외 (절대배치 오버레이라 채움률을 오염시킨다).
-        if (node.closest('.density-warn, [data-density-hint]')) return;
-        const r = node.getBoundingClientRect();
-        if (r.width === 0 && r.height === 0) return; // 보이지 않는/0크기 노드 skip
-        const bottomRel = r.bottom - contentTop;
-        if (bottomRel > lowest) lowest = bottomRel;
+
+      let lowestLayoutBottom = borderTop + padTop;
+      el.querySelectorAll('*').forEach((candidate) => {
+        if (!(candidate instanceof HTMLElement)) return;
+        if (candidate.closest('.density-warn, [data-density-hint]')) return;
+        if (candidate.offsetWidth === 0 && candidate.offsetHeight === 0) return;
+
+        const offsetTopChain: number[] = [];
+        let current: HTMLElement | null = candidate;
+        while (current && current !== el) {
+          offsetTopChain.push(current.offsetTop);
+          const offsetParent: Element | null = current.offsetParent;
+          current = offsetParent instanceof HTMLElement ? offsetParent : null;
+        }
+        if (current !== el) return;
+
+        const bottom = calculateNestedOffsetBottom(offsetTopChain, candidate.offsetHeight);
+        if (bottom > lowestLayoutBottom) lowestLayoutBottom = bottom;
       });
-      const fill = Math.min(1, Math.max(0, lowest / innerH));
-      const pct = Math.round(fill * 100);
-      apply(fill < 0.5 ? 'sparse' : 'ok', pct);
+      const measurement = calculateDensityMeasurement({
+        contentInsetTop: borderTop + padTop,
+        contentHeight: innerH,
+        lowestLayoutBottom,
+      });
+      apply(measurement.state, measurement.fill);
     };
 
     measure();
@@ -113,34 +166,33 @@ export function SatgatDocument({
     };
   }, []);
 
-  const baselineGrid = showBaseline
-    ? `repeating-linear-gradient(to bottom, transparent, transparent 7px, rgba(28,28,28,0.03) 7px, rgba(28,28,28,0.03) 8px), `
-    : '';
 
   return (
     <>
       <div
         ref={ref}
-        className={`satgat-document ${className}`}
-        data-format={format}
+        className={`satgat-document ${PAGE_PADDING[pageSpec].className} ${className}`}
+        data-page-spec={pageSpec}
+        data-page-padding={PAGE_PADDING[pageSpec].className}
+        data-layout-ready={density ? '' : undefined}
         data-density={density?.state ?? undefined}
         data-density-fill={density ? String(density.fill) : undefined}
         style={{
-          width: dims.width,
-          minHeight: dims.height,
+          width: `${spec.canvas.widthMm}mm`,
+          height: `${spec.canvas.heightMm}mm`,
           backgroundColor: CANVAS,
-          backgroundImage: `${baselineGrid}${TEXTURE_CANVAS_GRADIENT}, ${TEXTURE_PAPER_NOISE}`,
-          color: 'var(--near-black, #1C1916)',
-          fontFamily: "var(--serif, 'Gowun Batang'), 'Nanum Myeongjo', 'Noto Serif KR', 'Batang', Georgia, serif",
+          color: 'var(--satgat-ink)',
+          fontFamily: FONT_BATANG,
           fontSize: '15px',
           lineHeight: 1.72,
           letterSpacing: '-0.005em',
           wordBreak: 'keep-all',
-          padding: `${PAGE_MARGIN_Y} ${PAGE_MARGIN_X}`,
+          padding: PAGE_PADDING[pageSpec].value,
+          overflow: 'hidden',
           boxSizing: 'border-box',
           position: 'relative',
           margin: '0 auto',
-          boxShadow: SHADOW_BOOK,
+          boxShadow: `0 0 0 1px ${HAIRLINE}`,
           breakAfter: 'page',
         }}
       >
@@ -160,6 +212,12 @@ export function SatgatDocument({
       {/* @media screen 여백만 소유. 인쇄(@media print) 규칙은 SatgatPrintStyles가
           단독 소유한다(M4 단일 권위 전략) — 여기서 print를 재정의하지 않는다. */}
       <style jsx global>{`
+        /* 마운트 후 flow-root 전환으로 Chromium paged-media가 visual figure를
+            anonymous 기본 용지로 승격하지 않도록 새 fragmentation context를 만든다. */
+        .satgat-document[data-layout-ready] .satgat-visual {
+          display: flow-root;
+        }
+
         @media screen {
           .satgat-document {
             margin-bottom: 48px;

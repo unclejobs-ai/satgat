@@ -14,8 +14,6 @@ import {
   INK_MUTED,
   DANCHEONG,
   HAIRLINE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -37,11 +35,11 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
     descriptionKeys: ['description', 'summary', 'overview', 'value'],
   });
 
-  const monogram = brandName.trim().slice(0, 1) || '上';
+  const monogram = brandName.trim().slice(0, 1);
   const primaryProducts = products.slice(0, 3);
 
   return (
-    <SatgatDocument format="a4">
+    <SatgatDocument pageSpec="a4Landscape">
       <section
         className="brand-onepager-sheet"
         style={{
@@ -69,7 +67,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
               fontFamily: FONT_MYEONGJO,
               fontWeight: 800,
               color: INK,
-              textShadow: INK_BLEED_STRONG,
               margin: '0 0 14px',
               wordBreak: 'keep-all',
             }}
@@ -85,7 +82,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                 fontSize: 20,
                 lineHeight: 1.5,
                 color: INK_LIGHT,
-                textShadow: INK_BLEED,
                 margin: '0 0 32px',
                 wordBreak: 'keep-all',
               }}
@@ -121,7 +117,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                   fontSize: 17,
                   lineHeight: 1.82,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: 0,
                   wordBreak: 'keep-all',
                 }}
@@ -144,18 +139,17 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
             aria-hidden="true"
             style={{
               alignSelf: 'flex-end',
-              width: 78,
-              height: 78,
+              width: 58,
+              height: 58,
               border: `1px solid ${DANCHEONG}`,
               display: 'grid',
               placeItems: 'center',
               fontFamily: FONT_MYEONGJO,
-              fontSize: 38,
+              fontSize: 30,
               fontWeight: 800,
               lineHeight: 1,
               color: INK,
-              textShadow: INK_BLEED,
-              marginBottom: 44,
+              marginBottom: 18,
             }}
           >
             {monogram}
@@ -166,12 +160,11 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
               <h2
                 style={{
                   fontFamily: FONT_MYEONGJO,
-                  fontSize: 20,
+                  fontSize: 17,
                   fontWeight: 700,
-                  lineHeight: 1.35,
+                  lineHeight: 1.3,
                   color: INK,
-                  textShadow: INK_BLEED,
-                  margin: '0 0 18px',
+                  margin: '0 0 8px',
                   wordBreak: 'keep-all',
                 }}
               >
@@ -184,9 +177,9 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                     key={`${item.title}-${index}`}
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: '34px 1fr',
-                      gap: 12,
-                      padding: '16px 0',
+                      gridTemplateColumns: '30px 1fr',
+                      gap: 10,
+                      padding: '8px 0',
                       borderTop: `1px solid ${index === 0 ? INK : HAIRLINE}`,
                     }}
                   >
@@ -204,11 +197,11 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                       <h3
                         style={{
                           fontFamily: FONT_MYEONGJO,
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: 700,
-                          lineHeight: 1.35,
+                          lineHeight: 1.3,
                           color: INK,
-                          margin: '0 0 5px',
+                          margin: '0 0 3px',
                           wordBreak: 'keep-all',
                         }}
                       >
@@ -217,8 +210,8 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                       <p
                         style={{
                           fontFamily: FONT_BATANG,
-                          fontSize: 13,
-                          lineHeight: 1.62,
+                          fontSize: 11.5,
+                          lineHeight: 1.45,
                           color: INK_MUTED,
                           margin: 0,
                           wordBreak: 'keep-all',
@@ -235,9 +228,10 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
 
           {Boolean(positioningMap) && (
             <section
+              className="brand-onepager-positioning"
               style={{
-                marginTop: primaryProducts.length > 0 ? 22 : 0,
-                paddingTop: primaryProducts.length > 0 ? 22 : 0,
+                marginTop: primaryProducts.length > 0 ? 10 : 0,
+                paddingTop: primaryProducts.length > 0 ? 10 : 0,
                 borderTop: primaryProducts.length > 0 ? `1px solid ${HAIRLINE}` : undefined,
               }}
             >
@@ -248,7 +242,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
           <section
             style={{
               marginTop: 'auto',
-              paddingTop: 22,
+              paddingTop: 10,
               borderTop: `1px solid ${HAIRLINE}`,
             }}
           >
@@ -340,7 +334,7 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
         .brand-onepager-sheet {
           display: grid;
           gap: 44px;
-          min-height: 760px;
+          height: 100%;
         }
 
         .brand-onepager-title {
@@ -353,26 +347,11 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
           padding-left: 30px;
         }
 
-        @media (max-width: 760px) {
-          .brand-onepager-sheet {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            min-height: 0;
-          }
-
-          .brand-onepager-title {
-            font-size: 40px;
-            line-height: 1.12;
-          }
-
-          .brand-onepager-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 24px;
-          }
+        .brand-onepager-positioning .satgat-visual {
+          width: 60%;
+          margin-inline: auto !important;
         }
+
       `}</style>
     </SatgatDocument>
   );

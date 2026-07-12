@@ -12,7 +12,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'design-guard-spike-'));
@@ -36,17 +36,17 @@ function clearSpikes() {
  * the report to findings whose file path ends with the given basename.
  */
 function runGuard(grepFile) {
-  let stdout;
-  try {
-    stdout = execFileSync(
-      'node',
-      ['scripts/design-guard.mjs', '--check'],
-      { cwd: root, encoding: 'utf8', env: { ...process.env, DESIGN_GUARD_SCAN: tmp }, stdio: ['ignore', 'pipe', 'pipe'] }
-    );
-  } catch (err) {
-    stdout = err.stdout?.toString() ?? '';
-  }
-  return parseReport(stdout, grepFile);
+  const result = spawnSync(
+    'node',
+    ['scripts/design-guard.mjs', '--check'],
+    {
+      cwd: root,
+      encoding: 'utf8',
+      env: { ...process.env, DESIGN_GUARD_SCAN: tmp },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  );
+  return { ...parseReport(result.stdout ?? '', grepFile), status: result.status };
 }
 
 function parseReport(stdout, grepFile) {
@@ -72,10 +72,11 @@ function assertOk(name, cond, detail) {
   }
 }
 
-// ─── Test: exit 0 (warn mode) + readable report — VAL-GUARD-001/009 ─────────
-function testWarnModeExit0() {
-  console.log('\n[VAL-GUARD-001/009] warn mode exits 0, report is readable');
+// ─── Test: strict baseline + readable report — VAL-GUARD-001/009 ────────────
+function testStrictBaseline() {
+  console.log('\n[VAL-GUARD-001/009] strict baseline exits 0, report is readable');
   const report = runGuard();
+  assertOk('clean repository exits 0', report.status === 0, `status=${report.status}`);
   assertOk('report has banner', report.raw.includes('design-guard'));
   assertOk('report has summary line', report.raw.includes('Summary:'));
   assertOk('report has legend line', report.raw.includes('Legend:'));
@@ -269,7 +270,7 @@ function testCoolGray() {
 // ─── Test: DUAL_ACCENT — VAL-GUARD-007 ──────────────────────────────────────
 function testDualAccent() {
   console.log('\n[VAL-GUARD-007] DUAL_ACCENT detects dancheong + jade/gold');
-  // Both dancheong and jade → warn.
+  // Both dancheong and jade → blocking error.
   clearSpikes();
   writeSpike('SpikeDual.tsx', [
     'export const SpikeDual = () => (',
@@ -279,7 +280,11 @@ function testDualAccent() {
   ].join('\n'));
   const reportDual = runGuard('SpikeDual.tsx');
   const dualHits = reportDual.findings.filter((f) => f.rule === 'DUAL_ACCENT');
-  assertOk('dancheong + jade together → DUAL_ACCENT warn', dualHits.length >= 1, `got ${dualHits.length}`);
+  assertOk(
+    'dancheong + jade together → blocking DUAL_ACCENT',
+    reportDual.status === 1 && dualHits.some((finding) => finding.severity === 'error'),
+    `status=${reportDual.status} hits=${JSON.stringify(dualHits)}`,
+  );
   // Dancheong only → NO finding.
   clearSpikes();
   writeSpike('SpikeDanOnly.tsx', [
@@ -304,48 +309,122 @@ function testDualAccent() {
   assertOk('jade only → NO finding', jadeHits.length === 0, `got ${jadeHits.length}`);
 }
 
-// ─── Test: permit hatch — VAL-GUARD-008 ─────────────────────────────────────
+// ─── Test: active UI source contracts ───────────────────────────────────────
+function testActiveUiSourceRules() {
+  console.log('\n[VAL-GUARD-014] active UI source blocks escapes, Hanja, and raw tokens');
+
+  clearSpikes();
+  writeSpike('SpikeUnicode.tsx', 'export const SpikeUnicode = () => <p>{\"\\\\uD55C\"}</p>;\n');
+  const unicode = runGuard('SpikeUnicode.tsx');
+  assertOk(
+    'literal Unicode escape is blocking',
+    unicode.status === 1 &&
+      unicode.findings.some((finding) => finding.rule === 'RAW_UNICODE_ESCAPE' && finding.severity === 'error'),
+    JSON.stringify(unicode.findings),
+  );
+
+  clearSpikes();
+  writeSpike('SpikeHanja.tsx', 'export const SpikeHanja = () => <p>提案</p>;\n');
+  const hanja = runGuard('SpikeHanja.tsx');
+  assertOk(
+    'decorative literal Hanja is blocking',
+    hanja.status === 1 &&
+      hanja.findings.some((finding) => finding.rule === 'DECORATIVE_HANJA' && finding.severity === 'error'),
+    JSON.stringify(hanja.findings),
+  );
+
+  clearSpikes();
+  writeSpike('SpikeToken.tsx', 'export const SpikeToken = () => <p style={{ color: \"#123456\" }}>token</p>;\n');
+  const token = runGuard('SpikeToken.tsx');
+  assertOk(
+    'raw UI color token is blocking',
+    token.status === 1 &&
+      token.findings.some((finding) => finding.rule === 'UNMANAGED_TOKEN' && finding.severity === 'error'),
+    JSON.stringify(token.findings),
+  );
+}
+
+// ─── Test: structured permit hatch — VAL-GUARD-008 ─────────────────────────
 function testPermitHatch() {
-  console.log('\n[VAL-GUARD-008] // permit suppresses to info, line-scoped');
-  // Line with permit → info, not warn.
+  console.log('\n[VAL-GUARD-008] structured permits are exact, scoped, and auditable');
   clearSpikes();
   writeSpike('SpikePermit.tsx', [
     'export const SpikePermit = () => (',
-    '  <div style={{ background: "rgba(0,0,0,0.5)" // permit: layered shadow',
-    '  }}>permitted</div>',
+    '  <div style={{ background: \"rgba(0,0,0,0.5)\" }} // satgat-allow: RGBA_USAGE ticket=SATGAT-123 reason=print-font-override',
+    '  >permitted</div>',
     ');',
     '',
   ].join('\n'));
-  const report = runGuard('SpikePermit.tsx');
-  const rgbaHits = report.findings.filter((f) => f.rule === 'RGBA_USAGE');
-  const infoHits = rgbaHits.filter((f) => f.severity === 'info');
-  const warnHits = rgbaHits.filter((f) => f.severity === 'warn');
-  assertOk('permitted line is info, not warn', infoHits.length >= 1 && warnHits.length === 0, `info=${infoHits.length} warn=${warnHits.length}`);
-  // Line without permit → warn (line-scoped).
+  const permitted = runGuard('SpikePermit.tsx');
+  const permittedRgba = permitted.findings.filter((finding) => finding.rule === 'RGBA_USAGE');
+  assertOk(
+    'valid permit suppresses one matching rule to info',
+    permitted.status === 0 &&
+      permittedRgba.some((finding) => finding.severity === 'info') &&
+      permittedRgba.every((finding) => finding.severity !== 'error'),
+    `status=${permitted.status} findings=${JSON.stringify(permittedRgba)}`,
+  );
+
   clearSpikes();
-  writeSpike('SpikeNoPermit.tsx', [
-    'export const SpikeNoPermit = () => (',
-    '  <div',
-    '    // permit: this line is fine',
-    '    style={{',
-    '      background: "rgba(0,0,0,0.5)",',
-    '    }}',
-    '  >not permitted</div>',
+  writeSpike('SpikeMalformedPermit.tsx', [
+    'export const SpikeMalformedPermit = () => (',
+    '  <div style={{ background: \"rgba(0,0,0,0.5)\" }} // satgat-allow: RGBA_USAGE ticket=SATGAT-123',
+    '  >rejected</div>',
     ');',
     '',
   ].join('\n'));
-  const report2 = runGuard('SpikeNoPermit.tsx');
-  const noPermitHits = report2.findings.filter((f) => f.rule === 'RGBA_USAGE');
-  const noPermitWarn = noPermitHits.filter((f) => f.severity === 'warn');
-  assertOk('rgba without permit → warn (line-scoped)', noPermitWarn.length >= 1, `got ${noPermitWarn.length}`);
+  const malformed = runGuard('SpikeMalformedPermit.tsx');
+  assertOk(
+    'permit missing a required field is blocking',
+    malformed.status === 1 &&
+      malformed.findings.some((finding) => finding.rule === 'PERMIT_FORMAT' && finding.severity === 'error') &&
+      malformed.findings.some((finding) => finding.rule === 'RGBA_USAGE' && finding.severity === 'error'),
+    `status=${malformed.status} findings=${JSON.stringify(malformed.findings)}`,
+  );
+
+  clearSpikes();
+  writeSpike('SpikeWrongRulePermit.tsx', [
+    'export const SpikeWrongRulePermit = () => (',
+    '  <div style={{ background: \"rgba(0,0,0,0.5)\" }} // satgat-allow: PURE_WHITE ticket=SATGAT-124 reason=print-font-override',
+    '  >rejected</div>',
+    ');',
+    '',
+  ].join('\n'));
+  const wrongRule = runGuard('SpikeWrongRulePermit.tsx');
+  assertOk(
+    'permit cannot suppress a different rule',
+    wrongRule.status === 1 &&
+      wrongRule.findings.some((finding) => finding.rule === 'RGBA_USAGE' && finding.severity === 'error'),
+    `status=${wrongRule.status} findings=${JSON.stringify(wrongRule.findings)}`,
+  );
+
+  clearSpikes();
+  writeSpike('SpikeNoPermit.tsx', 'export const color = \"rgba(0,0,0,0.5)\";\n');
+  const noPermit = runGuard('SpikeNoPermit.tsx');
+  assertOk(
+    'blocking violation without a permit exits 1',
+    noPermit.status === 1 &&
+      noPermit.findings.some((finding) => finding.rule === 'RGBA_USAGE' && finding.severity === 'error'),
+    `status=${noPermit.status} findings=${JSON.stringify(noPermit.findings)}`,
+  );
 }
 
 // ─── Test: density scanner — VAL-DENSITY-001/002/003/004/007/008/010/011/012 ─
 
-function runDensity(args = []) {
+function runDensity(args = [], env = {}) {
   return execFileSync('node', ['scripts/design-guard.mjs', '--check-density', ...args], {
-    cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+    cwd: root,
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
+}
+ 
+function writeSyntheticRegistry(transform) {
+  const registry = fs.readFileSync(path.join(root, 'src/lib/templates/registry.ts'), 'utf8');
+  const syntheticPath = path.join(tmp, 'registry-density.ts');
+  fs.writeFileSync(syntheticPath, transform(registry));
+  return syntheticPath;
 }
 
 function testDensityRuns() {
@@ -364,16 +443,11 @@ function testDensityRuns() {
 }
 
 function testDensityAll14() {
-  console.log('\n[VAL-DENSITY-002] per-page density for all 14 templates');
+  console.log('\n[VAL-DENSITY-002] per-page density for all 14 registry templates');
   const stdout = runDensity();
-  const ids = [
-    'resume', 'self-intro', 'business-card', 'brand-onepager', 'product-brochure',
-    'company-profile', 'investor-deck', 'brand-storybook', 'invitation',
-    'new-year-card', 'proposal', 'newsletter', 'portfolio', 'report',
-  ];
-  for (const id of ids) {
-    assertOk(`report mentions "${id}"`, stdout.includes(`▸ ${id} `), `missing ${id}`);
-  }
+  const templateRows = stdout.split('\n').filter((line) => line.startsWith('▸ ') && !line.startsWith('▸ sparse-control:'));
+  assertOk('report contains exactly 14 registry template rows', templateRows.length === 14, `got ${templateRows.length}`);
+  assertOk('summary reports 14 templates', stdout.includes('Summary: 14 templates'), 'wrong template count');
   // investor-deck must expand to multiple pages.
   const slideLines = stdout.split('\n').filter((l) => /page \d+\/\d+/.test(l) && /S\d/.test(l));
   assertOk('investor-deck expands to ≥5 pages', slideLines.length >= 5, `got ${slideLines.length} slide rows`);
@@ -400,23 +474,94 @@ function testDensityShippingClean() {
 }
 
 function testDensityFormFactors() {
-  console.log('\n[VAL-DENSITY-007] density handles all 3 form factors');
+  console.log('\n[VAL-DENSITY-007] density preserves all five PageSpec identities');
   const stdout = runDensity();
-  assertOk('report shows a4 form factor', stdout.includes('▸ report (a4)') || stdout.includes('(a4)'));
-  assertOk('report shows a4-landscape form factor', stdout.includes('portfolio (a4-landscape)'));
-  assertOk('report shows slide-16x9 form factor', stdout.includes('investor-deck (slide-16x9)'));
-  // Extract fill % for each form factor — must be finite and not identical.
-  const reportFill = (id) => {
-    const re = new RegExp(`▸ ${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^]*?fill (\\d+\\.\\d+)%`);
-    const m2 = stdout.match(re);
-    return m2 ? parseFloat(m2[1]) : NaN;
-  };
-  const a4Fill = reportFill('report');
-  const landscapeFill = reportFill('portfolio');
-  const slideFill = reportFill('investor-deck');
-  assertOk('a4 fill is finite', Number.isFinite(a4Fill), `got ${a4Fill}`);
-  assertOk('a4-landscape fill is finite', Number.isFinite(landscapeFill), `got ${landscapeFill}`);
-  assertOk('slide-16x9 fill is finite', Number.isFinite(slideFill), `got ${slideFill}`);
+  const expectedRows = [
+    ['report', 'a4Portrait'],
+    ['brand-onepager', 'a4Landscape'],
+    ['investor-deck', 'slide16x9'],
+    ['business-card', 'businessCard8Up'],
+    ['invitation', 'postcardPortrait'],
+  ];
+  for (const [templateId, pageSpec] of expectedRows) {
+    assertOk(
+      `${templateId} uses ${pageSpec}`,
+      stdout.includes(`▸ ${templateId} (${pageSpec})`),
+      `missing exact ${pageSpec} label`,
+    );
+  }
+  assertOk('landscape does not collapse to A4 portrait', !stdout.includes('▸ brand-onepager (a4Portrait)'));
+  assertOk('slide does not collapse to A4 portrait', !stdout.includes('▸ investor-deck (a4Portrait)'));
+  assertOk('business card does not collapse to A4 portrait', !stdout.includes('▸ business-card (a4Portrait)'));
+  assertOk('postcard does not collapse to A4 portrait', !stdout.includes('▸ invitation (a4Portrait)'));
+}
+
+function testDensityReadsContentOutline() {
+  console.log('\n[VAL-DENSITY-008] density reads contentOutline slot groups');
+  const stdout = runDensity();
+  const resumeFill = stdout.match(/▸ resume \(a4Portrait\)[^]*?fill (\d+\.\d+)%/)?.[1];
+  assertOk(
+    'resume contentOutline contributes non-zero density',
+    Number.parseFloat(resumeFill ?? '0') > 0,
+    `got ${resumeFill ?? 'no fill row'}`,
+  );
+}
+
+function testDensityParsesPageSpecs() {
+  console.log('\n[VAL-DENSITY-009] density geometry is parsed from PAGE_SPECS');
+  const syntheticPath = writeSyntheticRegistry((registry) =>
+    registry.replace(
+      "canvas: { widthMm: 105, heightMm: 148 },",
+      "canvas: { widthMm: 106, heightMm: 149 },",
+    ),
+  );
+  const stdout = runDensity([], { DESIGN_GUARD_REGISTRY: syntheticPath });
+  assertOk(
+    'postcard canvas follows synthetic PAGE_SPECS geometry',
+    stdout.includes('postcardPortrait 106×149mm'),
+    'synthetic postcard dimensions were not reported',
+  );
+  assertOk(
+    'business-card imposition is reported from PAGE_SPECS',
+    stdout.includes('businessCard8Up 210×297mm (2×4, 90×55mm faces)'),
+    'business-card imposition was not reported',
+  );
+}
+
+function testDensityPhysicalBounds() {
+  console.log('\n[VAL-DENSITY-011] postcard and business-card synthetic allowances stay physically bounded');
+  const syntheticPath = writeSyntheticRegistry((registry) =>
+    registry
+      .replace(
+        'imposition: { columns: 2, rows: 4, cardWidthMm: 90, cardHeightMm: 55 }',
+        'imposition: { columns: 2, rows: 4, cardWidthMm: 90, cardHeightMm: 12 }',
+      )
+      .replace(
+        "canvas: { widthMm: 105, heightMm: 148 },",
+        "canvas: { widthMm: 105, heightMm: 12 },",
+      ),
+  );
+  const stdout = runDensity([], { DESIGN_GUARD_REGISTRY: syntheticPath });
+  for (const templateId of ['business-card', 'invitation', 'new-year-card']) {
+    const section = stdout.match(new RegExp(`▸ ${templateId} \\([^\\n]+\\)\\n([\\s\\S]*?)(?=\\n▸ |\\n\\n|$)`))?.[1] ?? '';
+    const fills = [...section.matchAll(/fill (\d+\.\d+)%/g)].map((match) => Number.parseFloat(match[1]));
+    assertOk(
+      `${templateId} density is capped at 100%`,
+      fills.length > 0 && fills.every((fill) => fill <= 100),
+      `got ${fills.join(', ') || 'no fill rows'}`,
+    );
+  }
+}
+
+function testPreviewSelectorsMatchPageSpecIds() {
+  console.log('\n[VAL-DENSITY-013] preview selectors match emitted PageSpec classes');
+  const preview = fs.readFileSync(path.join(root, 'app/[lang]/preview/PreviewClient.tsx'), 'utf8');
+  assertOk('a4Landscape selector uses exact PageSpec ID', preview.includes('.preview-format-a4Landscape'));
+  assertOk('slide16x9 selector uses exact PageSpec ID', preview.includes('.preview-format-slide16x9'));
+  assertOk(
+    'legacy kebab-case selectors are absent',
+    !preview.includes('.preview-format-a4-landscape') && !preview.includes('.preview-format-slide-16x9'),
+  );
 }
 
 function testDensityDeterminism() {
@@ -441,7 +586,7 @@ function testDensityOffline() {
 
 // ─── Run all tests ──────────────────────────────────────────────────────────
 
-testWarnModeExit0();
+testStrictBaseline();
 testRgbaUsage();
 testPureWhite();
 testPureWhiteAlphaHex();
@@ -449,6 +594,7 @@ testDancheongBudget();
 testSyntheticBold();
 testCoolGray();
 testDualAccent();
+testActiveUiSourceRules();
 testPermitHatch();
 // Density (M2)
 testDensityRuns();
@@ -456,6 +602,10 @@ testDensityAll14();
 testDensitySparseControl();
 testDensityShippingClean();
 testDensityFormFactors();
+testDensityReadsContentOutline();
+testDensityParsesPageSpecs();
+testDensityPhysicalBounds();
+testPreviewSelectorsMatchPageSpecIds();
 testDensityDeterminism();
 testDensityOffline();
 

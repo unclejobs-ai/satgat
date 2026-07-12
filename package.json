@@ -38,12 +38,14 @@
     "llms.txt"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=20.9"
   },
   "scripts": {
     "dev": "next dev",
-    "demo:ko": "node scripts/generate-korean-demo-pack.mjs",
+    "specimens:render": "node scripts/render-template-specimens.mjs",
     "verify:templates": "node scripts/verify-template-catalog.mjs",
+    "tokens:check": "node scripts/generate-design-tokens.mjs --check",
+    "verify:web": "node scripts/verify-web-product.mjs --base-url http://127.0.0.1:3000",
     "test": "bun test",
     "build": "next build",
     "start": "next start",

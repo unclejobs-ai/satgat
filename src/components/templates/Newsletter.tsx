@@ -14,9 +14,6 @@ import {
   INK_MUTED,
   HAIRLINE,
   DANCHEONG,
-  GOLD,
-  INK_BLEED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -42,7 +39,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
   const secondaryArticles = articles.slice(1, 5);
 
   return (
-    <SatgatDocument format="a4">
+    <SatgatDocument pageSpec="a4Portrait">
       <section
         className="newsletter-sheet"
         style={{
@@ -69,7 +66,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
               fontFamily: FONT_MYEONGJO,
               fontWeight: 800,
               color: INK,
-              textShadow: INK_BLEED_STRONG,
               margin: '0 0 20px',
               wordBreak: 'keep-all',
               overflowWrap: 'anywhere',
@@ -88,7 +84,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                 fontSize: 17,
                 lineHeight: 1.82,
                 color: INK_LIGHT,
-                textShadow: INK_BLEED,
                 margin: '0 0 34px',
                 wordBreak: 'keep-all',
               }}
@@ -123,7 +118,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                   fontWeight: 800,
                   lineHeight: 1.28,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: '0 0 10px',
                   wordBreak: 'keep-all',
                   overflowWrap: 'anywhere',
@@ -229,7 +223,7 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
               <div
                 style={{
                   minHeight: 72,
-                  border: `1px solid ${GOLD}`,
+                  border: `1px solid ${HAIRLINE}`,
                   display: 'grid',
                   placeItems: 'center',
                   padding: '10px 8px',
@@ -294,7 +288,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                   fontWeight: 700,
                   lineHeight: 1.35,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: '0 0 12px',
                   wordBreak: 'keep-all',
                 }}
@@ -361,8 +354,8 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
             <section
               style={{
                 marginTop: 'auto',
-                borderTop: `1px solid ${GOLD}`,
-                borderBottom: `1px solid ${GOLD}`,
+                borderTop: `1px solid ${HAIRLINE}`,
+                borderBottom: `1px solid ${HAIRLINE}`,
                 padding: '20px 0',
               }}
             >
@@ -373,7 +366,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                     fontSize: 14,
                     lineHeight: 1.72,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: cta ? '0 0 16px' : 0,
                     wordBreak: 'keep-all',
                     overflowWrap: 'anywhere',
@@ -390,7 +382,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                     fontWeight: 800,
                     lineHeight: 1.35,
                     color: DANCHEONG,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                     overflowWrap: 'anywhere',
@@ -454,35 +445,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
           gap: 20px;
         }
 
-        @media (max-width: 760px) {
-          .newsletter-sheet {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            min-height: 0;
-          }
-
-          .newsletter-title {
-            font-size: 38px;
-            line-height: 1.12;
-          }
-
-          .newsletter-aside {
-            border-left: 0;
-            border-top: 1px solid ${HAIRLINE};
-            padding-left: 0;
-            padding-top: 24px;
-          }
-
-          .newsletter-date {
-            font-size: 10px;
-          }
-
-          .newsletter-digest-meta {
-            grid-template-columns: 1fr;
-            gap: 14px;
-          }
-        }
       `}</style>
     </SatgatDocument>
   );
