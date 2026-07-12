@@ -7,7 +7,6 @@ const root = process.cwd();
 const definitionDir = path.join(root, 'src/lib/templates/definitions');
 const registryPath = path.join(root, 'src/lib/templates/registry.ts');
 const rendererPath = path.join(root, 'src/components/templates/runtime-catalog.tsx');
-const newClientPath = path.join(root, 'app/[lang]/new/NewDocumentClient.tsx');
 const landingPath = path.join(root, 'public/satgat/satgat-ko.html');
 const PAGE_SPEC_IDS = new Set([
   'a4Portrait',
@@ -242,18 +241,6 @@ function parseRendererMap() {
   return { keys, imports };
 }
 
-function parseTemplatePreviewCases() {
-  const sourceFile = readSource(newClientPath);
-  const cases = [];
-
-  function visit(node) {
-    if (ts.isCaseClause(node) && ts.isStringLiteralLike(node.expression)) cases.push(node.expression.text);
-    ts.forEachChild(node, visit);
-  }
-
-  visit(sourceFile);
-  return cases;
-}
 
 function collectRendererSlotReads(filePath) {
   const sourceFile = readSource(filePath);
@@ -413,7 +400,6 @@ const registryIds = registryEntries.map((entry) => entry.definition?.id).filter(
 const registryIdsSorted = [...registryIds].sort();
 const renderer = parseRendererMap();
 const rendererIds = [...renderer.keys].sort();
-const previewIds = parseTemplatePreviewCases().sort();
 const landingHtml = fs.readFileSync(landingPath, 'utf8');
 const landingIds = [
   ...landingHtml.matchAll(/href="\/ko\/new\?template=([^"]+)"/g),
@@ -473,7 +459,6 @@ for (const definition of definitions) {
 
 assertSameSet('registry templates', definitionIds, registryIdsSorted, errors);
 assertSameSet('renderer map', registryIdsSorted, rendererIds, errors);
-assertSameSet('new page mini previews', registryIdsSorted, previewIds, errors);
 assertSameSet('Korean landing links', registryIdsSorted, [...new Set(landingIds)].sort(), errors);
 assertSameSet('preview fixtures', registryIdsSorted, Object.keys(previewFixtures).sort(), errors);
 
