@@ -15,8 +15,6 @@ import {
   DANCHEONG,
   JADE,
   HAIRLINE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -81,7 +79,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontWeight: 800,
                 lineHeight: 1.08,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 12px',
                 wordBreak: 'keep-all',
               }}
@@ -137,7 +134,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontSize: 15,
                       lineHeight: 1.62,
                       color: INK,
-                      textShadow: INK_BLEED,
                       margin: 0,
                       wordBreak: 'keep-all',
                     }}
@@ -171,7 +167,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontSize: 15,
                       lineHeight: 1.62,
                       color: INK,
-                      textShadow: INK_BLEED,
                       margin: 0,
                       wordBreak: 'keep-all',
                     }}
@@ -217,7 +212,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                     fontWeight: 800,
                     lineHeight: 1.25,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                   }}
@@ -262,7 +256,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                           fontWeight: 800,
                           lineHeight: 1,
                           color: DANCHEONG,
-                          textShadow: INK_BLEED,
                           margin: '0 0 8px',
                           wordBreak: 'keep-all',
                         }}
@@ -331,7 +324,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontWeight: 800,
                       lineHeight: 1.24,
                       color: DANCHEONG,
-                      textShadow: INK_BLEED,
                       margin: 0,
                       wordBreak: 'keep-all',
                     }}
@@ -355,7 +347,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontSize: 20,
                 lineHeight: 1.7,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -377,7 +368,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontSize: 20,
                 lineHeight: 1.7,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -400,7 +390,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontWeight: 800,
                 lineHeight: 1.25,
                 color: DANCHEONG,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -433,7 +422,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontWeight: 800,
                       lineHeight: 1.1,
                       color: DANCHEONG,
-                      textShadow: INK_BLEED,
                       margin: '0 0 8px 0',
                     }}
                   >
@@ -477,7 +465,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontSize: 20,
                 lineHeight: 1.7,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 textAlign: 'center',
@@ -510,7 +497,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                       fontSize: 18,
                       fontWeight: 700,
                       color: INK,
-                      textShadow: INK_BLEED,
                       margin: '0 0 4px 0',
                       wordBreak: 'keep-all',
                     }}
@@ -568,7 +554,6 @@ export default function InvestorDeckRenderer({ data }: { data: SatgatDocumentDat
                 fontWeight: 800,
                 lineHeight: 1.15,
                 color: DANCHEONG,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 16px 0',
                 wordBreak: 'keep-all',
               }}
@@ -647,7 +632,6 @@ function SlideSection({
           fontWeight: 700,
           lineHeight: 1.2,
           color: INK,
-          textShadow: INK_BLEED,
           margin: '0 0 24px 0',
           wordBreak: 'keep-all',
         }}

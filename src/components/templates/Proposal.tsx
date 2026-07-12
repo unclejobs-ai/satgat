@@ -14,11 +14,11 @@ import {
   INK_MUTED,
   DANCHEONG,
   HAIRLINE,
-  INK_BLEED_STRONG,
+  IVORY,
 } from '@/lib/design-system/constraint';
 
 /**
- * 제안서(提案書) — 사업의 길
+ * 제안서 — 사업의 길
  * 문제 · 해결안 · 메트릭 · 일정 · 비용 · 담당
  */
 
@@ -57,7 +57,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
             margin: '0 0 14px',
           }}
         >
-          提案書 · PROPOSAL
+          제안서 · PROPOSAL
         </p>
         <h1
           style={{
@@ -66,7 +66,6 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
             fontWeight: 800,
             lineHeight: 1.12,
             color: INK,
-            textShadow: INK_BLEED_STRONG,
             margin: '0 0 8px',
             letterSpacing: '-0.02em',
           }}
@@ -107,14 +106,14 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {/* Problem */}
       {problem && (
-        <ProseSection title="一. 문제(問題)" subtitle="현재 무엇이 어려운가" size={17} weight={700} bodyMarginTop={14}>
+        <ProseSection title="1. 문제" subtitle="현재 무엇이 어려운가" size={17} weight={700} bodyMarginTop={14}>
           {problem}
         </ProseSection>
       )}
 
       {/* Solution */}
       {solution && (
-        <ProseSection title="二. 해결안(解決案)" subtitle="우리가 제안하는 방식" size={17} weight={700} bodyMarginTop={14}>
+        <ProseSection title="2. 해결안" subtitle="우리가 제안하는 방식" size={17} weight={700} bodyMarginTop={14}>
           {solution}
         </ProseSection>
       )}
@@ -122,7 +121,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
       {/* Metrics */}
       {metrics.length > 0 && (
         <section style={{ margin: '32px 0' }}>
-          <SectionHeading title="三. 핵심 지표(指標)" subtitle="기대 효과 정량화" size={17} weight={700} />
+          <SectionHeading title="3. 핵심 지표" subtitle="기대 효과 정량화" size={17} weight={700} />
           <div
             style={{
               display: 'grid',
@@ -136,7 +135,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
                 key={i}
                 style={{
                   padding: '16px 14px',
-                  background: '#FFFFFB',
+                  background: IVORY,
                   border: `0.5pt solid ${HAIRLINE}`,
                   borderRadius: 6,
                   textAlign: 'left',
@@ -194,7 +193,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
       </header>
       {Boolean(impactChart) && (
         <section style={{ margin: '30px 0 34px', breakInside: 'avoid' }}>
-          <SectionHeading title="四. 효과 도표(圖表)" subtitle="숫자와 흐름을 함께 보기" size={17} weight={700} />
+          <SectionHeading title="4. 효과 도표" subtitle="숫자와 흐름을 함께 보기" size={17} weight={700} />
           <div style={{ marginTop: 14 }}>
             <SatgatVisual visual={impactChart} />
           </div>
@@ -203,14 +202,14 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
 
       {/* Timeline */}
       {timeline && (
-        <ProseSection title={Boolean(impactChart) ? '五. 추진 일정(日程)' : '四. 추진 일정(日程)'} subtitle="단계별 계획" size={17} weight={700} bodyMarginTop={14}>
+        <ProseSection title={Boolean(impactChart) ? '5. 추진 일정' : '4. 추진 일정'} subtitle="단계별 계획" size={17} weight={700} bodyMarginTop={14}>
           {timeline}
         </ProseSection>
       )}
 
       {/* Cost */}
       {cost && (
-        <ProseSection title={Boolean(impactChart) ? '六. 비용·조건(費用)' : '五. 비용·조건(費用)'} subtitle="투자 규모와 조건" size={17} weight={700} bodyMarginTop={14}>
+        <ProseSection title={Boolean(impactChart) ? '6. 비용·조건' : '5. 비용·조건'} subtitle="투자 규모와 조건" size={17} weight={700} bodyMarginTop={14}>
           {cost}
         </ProseSection>
       )}
@@ -218,7 +217,7 @@ export default function ProposalRenderer({ data }: { data: SatgatDocumentData })
       {/* Team */}
       {team.length > 0 && (
         <section style={{ marginTop: 32 }}>
-          <SectionHeading title={Boolean(impactChart) ? '七. 담당(擔當)' : '六. 담당(擔當)'} subtitle="추진 인력" size={17} weight={700} />
+          <SectionHeading title={Boolean(impactChart) ? '7. 담당' : '6. 담당'} subtitle="추진 인력" size={17} weight={700} />
           <div
             style={{
               display: 'grid',

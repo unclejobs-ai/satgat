@@ -56,7 +56,7 @@ export default function NewDocumentClient({
   const errorRef = React.useRef<HTMLDivElement | null>(null);
   const requestCoordinatorRef = React.useRef<GenerationRequestCoordinator | null>(null);
 
-  if (!requestCoordinatorRef.current) {
+  if (requestCoordinatorRef.current === null) {
     requestCoordinatorRef.current = new GenerationRequestCoordinator();
   }
 

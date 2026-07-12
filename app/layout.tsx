@@ -13,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" data-scroll-behavior="smooth">
-      <body className="min-h-screen antialiased">
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

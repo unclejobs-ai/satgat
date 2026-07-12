@@ -14,8 +14,8 @@ import {
   HAIRLINE,
   DANCHEONG,
   GOLD,
-  INK_BLEED,
-  INK_BLEED_STRONG,
+  CANVAS,
+  IVORY,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -75,7 +75,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                 fontFamily: FONT_MYEONGJO,
                 fontWeight: 800,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 18px',
                 wordBreak: 'keep-all',
               }}
@@ -111,7 +110,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                     fontWeight: 700,
                     lineHeight: 1.3,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 12px',
                     wordBreak: 'keep-all',
                   }}
@@ -124,7 +122,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                     fontSize: 16,
                     lineHeight: 1.8,
                     color: INK_LIGHT,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                   }}
@@ -157,7 +154,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                 fontWeight: 800,
                 lineHeight: 1,
                 color: INK,
-                textShadow: INK_BLEED,
               }}
             >
               {monogram}
@@ -172,7 +168,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                     fontWeight: 700,
                     lineHeight: 1.35,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 16px',
                     wordBreak: 'keep-all',
                   }}
@@ -335,7 +330,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                 fontWeight: 800,
                 lineHeight: 1.16,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: 0,
                 wordBreak: 'keep-all',
               }}
@@ -392,7 +386,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                     fontWeight: 700,
                     lineHeight: 1.25,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 12px',
                     wordBreak: 'keep-all',
                   }}
@@ -446,7 +439,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                 fontWeight: 700,
                 lineHeight: 1.3,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
               }}
@@ -460,7 +452,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
               fontSize: 15,
               lineHeight: 1.76,
               color: INK_LIGHT,
-              textShadow: INK_BLEED,
               margin: 0,
               wordBreak: 'keep-all',
             }}
@@ -498,7 +489,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                 fontWeight: 800,
                 lineHeight: 1.18,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 24px',
                 wordBreak: 'keep-all',
               }}
@@ -519,16 +509,14 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                 style={{
                   height: 128,
                   border: `1px solid ${HAIRLINE}`,
-                  background:
-                    'linear-gradient(135deg, rgba(28,25,22,0.06), rgba(184,149,79,0.1)), #FFFFFB',
+                  background: IVORY,
                 }}
               />
               <div
                 style={{
                   height: 128,
                   border: `1px solid ${HAIRLINE}`,
-                  background:
-                    'linear-gradient(135deg, rgba(155,27,27,0.09), rgba(28,25,22,0.04)), #F7F7F2',
+                  background: CANVAS,
                 }}
               />
             </div>
@@ -540,7 +528,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                   fontSize: 16,
                   lineHeight: 1.8,
                   color: INK_LIGHT,
-                  textShadow: INK_BLEED,
                   margin: 0,
                   wordBreak: 'keep-all',
                 }}
@@ -568,7 +555,6 @@ export default function BrandStorybookRenderer({ data }: { data: SatgatDocumentD
                       fontWeight: 700,
                       lineHeight: 1.35,
                       color: INK,
-                      textShadow: INK_BLEED,
                       margin: '0 0 18px',
                       wordBreak: 'keep-all',
                     }}

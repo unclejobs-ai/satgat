@@ -5,9 +5,8 @@ import { getPageSpec } from '@/lib/templates/registry';
 import type { PageSpecId } from '@/lib/templates/types';
 import {
   CANVAS,
-  TEXTURE_CANVAS_GRADIENT,
-  TEXTURE_PAPER_NOISE,
-  SHADOW_BOOK,
+  FONT_BATANG,
+  HAIRLINE,
   PAGE_MARGIN_X,
   PAGE_MARGIN_Y,
 } from '@/lib/design-system/constraint';
@@ -24,8 +23,6 @@ interface SatgatDocumentProps {
   children: React.ReactNode;
   pageSpec: PageSpecId;
   className?: string;
-  /** 개발용 baseline grid 표시 */
-  showBaseline?: boolean;
 }
 
 type DensityMeasurement = {
@@ -76,10 +73,9 @@ export function calculateDensityMeasurement({
  * 삿갓 문서 루트 — PageSpec 캔버스
  *
  * 철학: "한지 위의 먹글씨"
- * - 한지색 배경 + 미세 노이즈 질감 + 따뜻한 그라데이션
- * - 8px baseline grid (문서의 기준선)
+ * - 평평한 백자지 캔버스 + 회녹빛 1px 구분선
  * - 절대 pure white 금지
- * - 브라우저 프리뷰에서는 고정 크기 + 책자 그림자
+ * - 브라우저와 인쇄가 같은 물리 캔버스와 서체를 사용
  * - 인쇄(@media print)는 SatgatPrintStyles가 단독 소유 (M4 단일 권위 전략)
  *
  * 렌더 시 밀도 힌트(VAL-DENSITY-005): 각 페이지가 자기 자신을 측정한다. 페인트
@@ -96,7 +92,6 @@ export function SatgatDocument({
   children,
   pageSpec,
   className = '',
-  showBaseline = false,
 }: SatgatDocumentProps) {
   const spec = getPageSpec(pageSpec);
   const ref = React.useRef<HTMLDivElement>(null);
@@ -171,9 +166,6 @@ export function SatgatDocument({
     };
   }, []);
 
-  const baselineGrid = showBaseline
-    ? `repeating-linear-gradient(to bottom, transparent, transparent 7px, rgba(28,28,28,0.03) 7px, rgba(28,28,28,0.03) 8px), `
-    : '';
 
   return (
     <>
@@ -189,9 +181,8 @@ export function SatgatDocument({
           width: `${spec.canvas.widthMm}mm`,
           height: `${spec.canvas.heightMm}mm`,
           backgroundColor: CANVAS,
-          backgroundImage: `${baselineGrid}${TEXTURE_CANVAS_GRADIENT}, ${TEXTURE_PAPER_NOISE}`,
-          color: 'var(--near-black, #1C1916)',
-          fontFamily: "var(--serif, 'Gowun Batang'), 'Nanum Myeongjo', 'Noto Serif KR', 'Batang', Georgia, serif",
+          color: 'var(--satgat-ink)',
+          fontFamily: FONT_BATANG,
           fontSize: '15px',
           lineHeight: 1.72,
           letterSpacing: '-0.005em',
@@ -201,7 +192,7 @@ export function SatgatDocument({
           boxSizing: 'border-box',
           position: 'relative',
           margin: '0 auto',
-          boxShadow: SHADOW_BOOK,
+          boxShadow: `0 0 0 1px ${HAIRLINE}`,
           breakAfter: 'page',
         }}
       >

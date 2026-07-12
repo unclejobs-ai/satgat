@@ -11,11 +11,10 @@ import {
   INK_MUTED,
   GOLD,
   HAIRLINE,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
- * 연하장(年賀狀) — 한 해의 인사
+ * 연하장 — 한 해의 인사
  * 엽서 비율 · 인사말 + 메시지 + 보내는 사람
  */
 
@@ -85,7 +84,6 @@ export default function NewYearCardRenderer({ data }: { data: SatgatDocumentData
             fontWeight: 800,
             lineHeight: 1.08,
             color: INK,
-            textShadow: INK_BLEED_STRONG,
             margin: '0 0 6px',
             letterSpacing: '-0.025em',
           }}

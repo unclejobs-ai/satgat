@@ -12,7 +12,7 @@ import {
   INK_MUTED,
   DANCHEONG,
   HAIRLINE,
-  INK_BLEED_STRONG,
+  IVORY,
 } from '@/lib/design-system/constraint';
 
 const BUSINESS_CARD_SPEC = getPageSpec('businessCard8Up');
@@ -36,7 +36,7 @@ const BUSINESS_CARD_ORIGIN_Y =
   (BUSINESS_CARD_SPEC.canvas.heightMm - BUSINESS_CARD_GRID_HEIGHT) / 2;
 
 /**
- * 명함(名銜) — 한 사람의 표지
+ * 명함 — 한 사람의 표지
  *
  * PageSpec의 imposition 기하를 사용해 화면 미리보기와 8-up 인쇄판을 만든다.
  * 인쇄 전환과 용지 선택은 SatgatPrintStyles가 단독 소유한다.
@@ -58,7 +58,7 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
       style={{
         width: `${BUSINESS_CARD_IMPOSITION.cardWidthMm * scale}mm`,
         height: `${BUSINESS_CARD_IMPOSITION.cardHeightMm * scale}mm`,
-        background: '#FFFFFB',
+        background: IVORY,
         border: `0.4pt solid ${HAIRLINE}`,
         padding: `${5 * scale}mm ${6 * scale}mm`,
         display: 'flex',
@@ -77,7 +77,6 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
           right: `${6 * scale}mm`,
           height: '0.4pt',
           background: DANCHEONG,
-          opacity: 0.85,
           transform: 'translateY(-50%)',
         }}
       />
@@ -90,7 +89,6 @@ function CardFace({ data, scale = 1 }: { data: SatgatDocumentData; scale?: numbe
             fontWeight: 800,
             lineHeight: 1.05,
             color: INK,
-            textShadow: INK_BLEED_STRONG,
             letterSpacing: '-0.018em',
           }}
         >
@@ -159,7 +157,7 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div
             style={{
-              boxShadow: '0 8pt 24pt rgba(28,25,22,0.08)',
+              boxShadow: `0 0 0 1px ${HAIRLINE}`,
               borderRadius: 4,
             }}
           >
@@ -203,11 +201,11 @@ export default function BusinessCardRenderer({ data }: { data: SatgatDocumentDat
             style={{
               borderRight:
                 i % BUSINESS_CARD_IMPOSITION.columns < BUSINESS_CARD_IMPOSITION.columns - 1
-                  ? '0.4pt dashed #C9C3B4'
+                  ? `0.4pt dashed ${HAIRLINE}`
                   : 'none',
               borderBottom:
                 i < BUSINESS_CARD_IMPOSITION.columns * (BUSINESS_CARD_IMPOSITION.rows - 1)
-                  ? '0.4pt dashed #C9C3B4'
+                  ? `0.4pt dashed ${HAIRLINE}`
                   : 'none',
             }}
           >

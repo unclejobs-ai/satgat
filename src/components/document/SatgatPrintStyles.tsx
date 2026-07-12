@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { getPageSpec } from '@/lib/templates/registry';
+import { CANVAS } from '@/lib/design-system/constraint';
 
 const A4_PORTRAIT = getPageSpec('a4Portrait');
 const A4_LANDSCAPE = getPageSpec('a4Landscape');
@@ -17,7 +18,7 @@ const POSTCARD_PORTRAIT = getPageSpec('postcardPortrait');
  * 곳에 흩어져 body/@page/.satgat-document를 각자 따로 설정하며 충돌했다(M4).
  * 이제 다음 한 곳으로 통합한다:
  *   - @page (size/margin)
- *   - html/body 백자지 캔버스 색 보존 (#F7F7F2, color-adjust exact)
+ *   - html/body 백자지 캔버스 색 보존 (CANVAS, color-adjust exact)
  *   - .satgat-document 화면용 그림자/여백 해제 + 페이지 분할
  *   - 본문 break-inside / 제목 break-after / orphans·widows
  *   - 링크 장식 제거
@@ -61,7 +62,7 @@ export function SatgatPrintStyles() {
           padding: 0 !important;
           min-width: 0 !important;
           min-height: 0 !important;
-          background: #F7F7F2 !important;
+          background: ${CANVAS} !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }

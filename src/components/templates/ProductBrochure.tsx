@@ -17,8 +17,7 @@ import {
   HAIRLINE,
   DANCHEONG,
   JADE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
+  CANVAS_DARK,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -88,7 +87,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                 fontFamily: FONT_MYEONGJO,
                 fontWeight: 800,
                 color: INK,
-                textShadow: INK_BLEED_STRONG,
                 margin: '0 0 18px',
                 wordBreak: 'keep-all',
               }}
@@ -104,7 +102,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                   fontSize: 17,
                   lineHeight: 1.78,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: '0 0 34px',
                   wordBreak: 'keep-all',
                 }}
@@ -122,7 +119,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                     fontWeight: 700,
                     lineHeight: 1.35,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: '0 0 16px',
                     wordBreak: 'keep-all',
                   }}
@@ -202,7 +198,7 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                   border: `1px solid ${HAIRLINE}`,
                   borderRadius: 3,
                   overflow: 'hidden',
-                  backgroundColor: '#E8E4DC',
+                  backgroundColor: CANVAS_DARK,
                 }}
               >
                 {/* Raw img keeps generated/remote artwork printable without Next image constraints. */}
@@ -441,7 +437,6 @@ export default function ProductBrochureRenderer({ data }: { data: SatgatDocument
                 fontSize: 15,
                 lineHeight: 1.8,
                 color: INK,
-                textShadow: INK_BLEED,
                 margin: 0,
                 wordBreak: 'keep-all',
                 whiteSpace: 'pre-line',

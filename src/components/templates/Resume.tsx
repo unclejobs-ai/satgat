@@ -13,7 +13,6 @@ import {
   INK,
   INK_LIGHT,
   INK_MUTED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -74,7 +73,6 @@ export default function ResumeRenderer({ data }: { data: SatgatDocumentData }) {
               fontWeight: 800,
               lineHeight: 1.15,
               color: INK,
-              textShadow: INK_BLEED_STRONG,
               margin: 0,
               wordBreak: 'keep-all',
             }}

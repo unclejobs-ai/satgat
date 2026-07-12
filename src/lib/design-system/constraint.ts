@@ -43,19 +43,17 @@ export const GOLD = '#B8954F';
 export const GOLD_LIGHT = '#D4B76A';
 
 // ─── 6. NEUTRALS ────────────────────────────────────────────────────────────
-// Warm gray 계열. cool blue-gray 절대 금지.
+// 회녹 중성 계열. cool blue-gray 절대 금지.
 export const HAIRLINE = '#D2D6CB';
 export const BORDER = '#BEC5BA';
 export const MUTED = '#73786F';
 export const PLACEHOLDER = '#969B91';
 
 // ─── 7. SERIF HIERARCHY ─────────────────────────────────────────────────────
-// 나눔명조(장중함) → 고울바탕(따뜻함) → 고울돋움(깔끔함)
-// Latin: Cormorant Garamond (classic serif, 인쇄물 품격)
+// 화면과 PDF가 같은 self-hosted OFL 명조·바탕·돋움 서체를 사용한다.
 export const FONT_MYEONGJO = "'Nanum Myeongjo', 'Noto Serif KR', 'Batang', Georgia, serif";
 export const FONT_BATANG = "'Gowun Batang', 'Nanum Myeongjo', 'Noto Serif KR', 'Batang', Georgia, serif";
-export const FONT_DODUM = "'Gowun Dodum', 'Nanum Myeongjo', 'Noto Serif KR', sans-serif";
-export const FONT_LATIN = "'Cormorant Garamond', 'Nanum Myeongjo', Georgia, 'Times New Roman', serif";
+export const FONT_DODUM = "'Gowun Dodum', 'Noto Serif KR', sans-serif";
 
 // Weight 규칙:
 // - Display/H1: 800 (extra bold) — 장중한 무게감
@@ -92,12 +90,13 @@ export const SECTION_GAP_MIN = 36;
 export const SECTION_GAP_STD = 48;
 export const SECTION_GAP_LARGE = 64;
 
-// ─── 12. SHADOWS ─────────────────────────────────────────────────────────────
-// 종이 두께감만. multi-layer subtle.
-// hard drop shadow, large blur 금지.
-export const SHADOW_PAPER = '0 1px 2px rgba(28,28,28,0.04), 0 2px 4px rgba(28,28,28,0.02)';
-export const SHADOW_BOOK = '0 8px 24px rgba(28,28,28,0.08), 0 2px 8px rgba(28,28,28,0.04)';
-
+// ─── 12. SEPARATION ──────────────────────────────────────────────────────────
+// 종이 표면은 투명 그림자 대신 HAIRLINE 1px로만 구분한다.
+export const DIVIDER_WEIGHT = {
+  thin: 1,
+  medium: 2,
+  thick: 3,
+} as const;
 // ─── 13. BORDER-RADIUS ──────────────────────────────────────────────────────
 // 전통지(傳統紙)의 직선미. 큰 둥근 모서리 금지.
 export const RADIUS_SM = 3;
@@ -106,7 +105,7 @@ export const RADIUS_LG = 8;
 
 // ─── 14. IMAGE ──────────────────────────────────────────────────────────────
 // 이미지는 문서의 일부. 장식이 아닌 정보.
-// rounded corners 최소화. border는 hairline(#D9D4C8) 1px.
+// rounded corners 최소화. border는 HAIRLINE 1px.
 // caption은 고울바탕 italic 또는 고울돋움 caption size.
 
 // ─── 15. TABLE ──────────────────────────────────────────────────────────────
@@ -114,16 +113,4 @@ export const RADIUS_LG = 8;
 // 나머지 구분선: hairline 1px. 행 구분은 zebra 금지.
 // cell padding: 12px 16px. 숫자는 우측 정렬, 텍스트는 좌측 정렬.
 
-// ─── INK BLEED ──────────────────────────────────────────────────────────────
-// 먹 번짐. 미세한 text-shadow로 종이에 스며든 느낌.
-export const INK_BLEED = '0 0 0.3px rgba(28,28,28,0.12), 0 0 0.6px rgba(28,28,28,0.06)';
-export const INK_BLEED_STRONG = '0 0 0.5px rgba(28,28,28,0.18), 0 0 1px rgba(28,28,28,0.09)';
-
-// ─── TEXTURE ────────────────────────────────────────────────────────────────
-// 종이결: 거의 안 보이는 미세 노이즈. 한지 흉내가 아닌 인쇄물의 톤 정돈.
-export const TEXTURE_PAPER_NOISE =
-  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.018'/%3E%3C/svg%3E\")";
-
-// 캔버스 분위기: 따뜻한 누런/녹색 얼룩 제거. 종이 가장자리만 살짝 가라앉히는 중성 vignette.
-export const TEXTURE_CANVAS_GRADIENT =
-  'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.55) 0%, transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(28,25,22,0.03) 0%, transparent 55%)';
+// 시각 효과는 불투명 색과 1px 선만 사용한다. 텍스처·그라데이션·먹 번짐은 없다.

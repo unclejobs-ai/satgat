@@ -4,9 +4,9 @@
   left: 16px;
   z-index: 100;
   padding: 10px 16px;
-  color: #fffffb;
-  background-color: #1c1916;
-  font-family: var(--font-sans-kr);
+  color: var(--satgat-surface);
+  background-color: var(--satgat-ink);
+  font-family: var(--satgat-font-label);
   font-size: 14px;
   text-decoration: none;
   transform: translateY(-160%);
@@ -15,7 +15,7 @@
 
 .skipLink:focus-visible {
   transform: translateY(0);
-  outline: 3px solid #9b1b1b;
+  outline: 3px solid var(--satgat-accent);
   outline-offset: 2px;
 }
 
@@ -24,8 +24,8 @@
   top: 0;
   z-index: 50;
   width: 100%;
-  background-color: #f7f7f2;
-  border-bottom: 1px solid #d8dbd1;
+  background-color: var(--satgat-canvas);
+  border-bottom: 1px solid var(--satgat-line);
 }
 
 .inner {
@@ -44,13 +44,13 @@
   gap: 2px;
   min-height: 44px;
   align-content: center;
-  color: #1c1916;
+  color: var(--satgat-ink);
   text-decoration: none;
   transition: transform 120ms ease;
 }
 
 .brand strong {
-  font-family: var(--font-myeongjo);
+  font-family: var(--satgat-font-display);
   font-size: 23px;
   line-height: 1;
   letter-spacing: -0.012em;
@@ -58,8 +58,8 @@
 }
 
 .brand span {
-  color: #4d4b46;
-  font-family: var(--font-sans-kr);
+  color: var(--satgat-ink-muted);
+  font-family: var(--satgat-font-label);
   font-size: 11px;
   line-height: 1.35;
 }
@@ -77,7 +77,7 @@
   align-items: center;
   justify-content: center;
   padding-inline: 16px;
-  font-family: var(--font-sans-kr);
+  font-family: var(--satgat-font-label);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -86,18 +86,18 @@
 }
 
 .homeLink {
-  color: #3a3833;
+  color: var(--satgat-ink-body);
 }
 
 .createLink {
-  color: #fffffb;
-  background-color: #1c1916;
+  color: var(--satgat-surface);
+  background-color: var(--satgat-ink);
 }
 
 .homeLink:focus-visible,
 .createLink:focus-visible,
 .brand:focus-visible {
-  outline: 3px solid #9b1b1b;
+  outline: 3px solid var(--satgat-accent);
   outline-offset: 3px;
 }
 
@@ -109,16 +109,16 @@
 
 @media (hover: hover) {
   .brand:hover strong {
-    color: #2e6b5e;
+    color: var(--satgat-jade);
   }
 
   .homeLink:hover {
-    color: #2e6b5e;
-    background-color: #e7e8dd;
+    color: var(--satgat-jade);
+    background-color: var(--satgat-surface-muted);
   }
 
   .createLink:hover {
-    background-color: #2e6b5e;
+    background-color: var(--satgat-jade);
   }
 }
 

@@ -15,8 +15,6 @@ import {
   HAIRLINE,
   DANCHEONG,
   GOLD,
-  INK_BLEED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -69,7 +67,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
               fontFamily: FONT_MYEONGJO,
               fontWeight: 800,
               color: INK,
-              textShadow: INK_BLEED_STRONG,
               margin: '0 0 20px',
               wordBreak: 'keep-all',
               overflowWrap: 'anywhere',
@@ -88,7 +85,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                 fontSize: 17,
                 lineHeight: 1.82,
                 color: INK_LIGHT,
-                textShadow: INK_BLEED,
                 margin: '0 0 34px',
                 wordBreak: 'keep-all',
               }}
@@ -123,7 +119,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                   fontWeight: 800,
                   lineHeight: 1.28,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: '0 0 10px',
                   wordBreak: 'keep-all',
                   overflowWrap: 'anywhere',
@@ -294,7 +289,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                   fontWeight: 700,
                   lineHeight: 1.35,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: '0 0 12px',
                   wordBreak: 'keep-all',
                 }}
@@ -373,7 +367,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                     fontSize: 14,
                     lineHeight: 1.72,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: cta ? '0 0 16px' : 0,
                     wordBreak: 'keep-all',
                     overflowWrap: 'anywhere',
@@ -390,7 +383,6 @@ export default function NewsletterRenderer({ data }: { data: SatgatDocumentData 
                     fontWeight: 800,
                     lineHeight: 1.35,
                     color: DANCHEONG,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                     overflowWrap: 'anywhere',

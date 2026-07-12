@@ -14,8 +14,8 @@ import {
   HAIRLINE,
   DANCHEONG,
   GOLD,
-  INK_BLEED,
-  INK_BLEED_STRONG,
+  IVORY,
+  CANVAS_DARK,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -75,7 +75,6 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                   fontFamily: FONT_MYEONGJO,
                   fontWeight: 800,
                   color: INK,
-                  textShadow: INK_BLEED_STRONG,
                   margin: '0 0 14px',
                   wordBreak: 'keep-all',
                 }}
@@ -92,7 +91,7 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                     width: '100%',
                     aspectRatio: '16 / 9',
                     border: `1px solid ${HAIRLINE}`,
-                    background: '#E8E4DC',
+                    background: CANVAS_DARK,
                     overflow: 'hidden',
                   }}
                 >
@@ -110,15 +109,14 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                     width: '100%',
                     aspectRatio: '16 / 9',
                     border: `1px solid ${HAIRLINE}`,
-                    background:
-                      'linear-gradient(135deg, rgba(28,25,22,0.06), rgba(184,149,79,0.1)), #FFFFFB',
+                    background: IVORY,
                     marginBottom: 22,
                     display: 'grid',
                     placeItems: 'center',
                     fontFamily: FONT_MYEONGJO,
                     fontSize: 78,
                     fontWeight: 800,
-                    color: 'rgba(28,25,22,0.18)',
+                    color: INK_MUTED,
                   }}
                 >
                   01
@@ -132,7 +130,6 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                     fontSize: 15,
                     lineHeight: 1.78,
                     color: INK,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                     maxWidth: 560,
@@ -231,7 +228,6 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                   fontFamily: FONT_MYEONGJO,
                   fontWeight: 800,
                   color: INK,
-                  textShadow: INK_BLEED_STRONG,
                   margin: '0 0 8px',
                   wordBreak: 'keep-all',
                 }}
@@ -245,7 +241,6 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                     fontSize: 15,
                     lineHeight: 1.45,
                     color: INK_LIGHT,
-                    textShadow: INK_BLEED,
                     margin: 0,
                     wordBreak: 'keep-all',
                   }}
@@ -267,7 +262,6 @@ export default function PortfolioRenderer({ data }: { data: SatgatDocumentData }
                 fontWeight: 800,
                 lineHeight: 1,
                 color: INK,
-                textShadow: INK_BLEED,
               }}
             >
               {monogram}

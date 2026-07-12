@@ -1,14 +1,8 @@
 .examples {
-  --canvas: oklch(0.965 0.014 86);
-  --paper: oklch(0.992 0.007 86);
-  --ink: oklch(0.2 0.014 67);
-  --muted: oklch(0.45 0.018 73);
-  --line: oklch(0.86 0.026 83);
-  --brand: oklch(0.43 0.15 29);
   min-height: 100dvh;
   padding: 88px clamp(20px, 5vw, 76px) 120px;
-  color: var(--ink);
-  background-color: var(--canvas);
+  color: var(--satgat-ink);
+  background-color: var(--satgat-canvas);
 }
 
 .intro {
@@ -23,16 +17,16 @@
 .eyebrow {
   grid-column: 1 / -1;
   margin: 0;
-  font-family: var(--sans);
+  font-family: var(--satgat-font-label);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
-  color: var(--brand);
+  color: var(--satgat-accent);
 }
 
 .intro h1 {
   margin: 0;
-  font-family: var(--serif-display);
+  font-family: var(--satgat-font-display);
   font-size: clamp(40px, 5.2vw, 72px);
   font-weight: 800;
   line-height: 1.04;
@@ -42,10 +36,10 @@
 
 .description {
   margin: 0 0 8px;
-  font-family: var(--serif);
+  font-family: var(--satgat-font-body);
   font-size: 17px;
   line-height: 1.85;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   text-wrap: pretty;
 }
 
@@ -63,7 +57,7 @@
 }
 
 .card:target .imageFrame {
-  box-shadow: 0 0 0 3px var(--brand), 0 18px 48px rgba(40, 31, 22, 0.14);
+  box-shadow: 0 0 0 3px var(--satgat-accent);
 }
 
 .cardLink {
@@ -79,8 +73,8 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   place-items: center;
-  background-color: oklch(0.91 0.018 82);
-  box-shadow: 0 14px 36px rgba(40, 31, 22, 0.1), inset 0 0 0 1px rgba(40, 31, 22, 0.08);
+  background-color: var(--satgat-surface-muted);
+  box-shadow: 0 0 0 1px var(--satgat-line);
   transition-property: transform, box-shadow;
   transition-duration: 220ms;
   transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
@@ -91,8 +85,8 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
-  background-color: var(--paper);
-  outline: 1px solid rgba(40, 31, 22, 0.08);
+  background-color: var(--satgat-surface);
+  outline: 1px solid var(--satgat-line);
   outline-offset: -1px;
 }
 
@@ -104,11 +98,11 @@
   width: 34px;
   height: 34px;
   place-items: center;
-  font-family: var(--sans);
+  font-family: var(--satgat-font-label);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
-  color: var(--paper);
-  background-color: var(--ink);
+  color: var(--satgat-surface);
+  background-color: var(--satgat-ink);
 }
 
 .cardCopy {
@@ -126,39 +120,39 @@
 }
 
 .cardHeading strong {
-  font-family: var(--serif-display);
+  font-family: var(--satgat-font-display);
   font-size: 22px;
   letter-spacing: -0.012em;
 }
 
 .cardHeading > span {
-  font-family: var(--sans);
+  font-family: var(--satgat-font-label);
   font-size: 12px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--satgat-accent);
   white-space: nowrap;
 }
 
 .title,
 .facts {
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
 }
 
 .title {
-  font-family: var(--serif);
+  font-family: var(--satgat-font-body);
   font-size: 14px;
   line-height: 1.5;
 }
 
 .facts {
-  font-family: var(--sans);
+  font-family: var(--satgat-font-label);
   font-size: 11px;
   line-height: 1.6;
   font-variant-numeric: tabular-nums;
 }
 
 .cardLink:focus-visible {
-  outline: 3px solid var(--brand);
+  outline: 3px solid var(--satgat-accent);
   outline-offset: 6px;
 }
 
@@ -170,18 +164,18 @@
   max-width: 720px;
   margin: 0 auto;
   padding: 64px 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--satgat-line);
 }
 
 .empty h2 {
   margin: 0 0 12px;
-  font-family: var(--serif-display);
+  font-family: var(--satgat-font-display);
   font-size: 28px;
 }
 
 .empty p {
   margin: 0;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
 }
 
 @media (max-width: 900px) {
@@ -234,7 +228,7 @@
 @media (hover: hover) {
   .cardLink:hover .imageFrame {
     transform: translateY(-5px);
-    box-shadow: 0 22px 52px rgba(40, 31, 22, 0.16), inset 0 0 0 1px rgba(40, 31, 22, 0.08);
+    box-shadow: 0 0 0 2px var(--satgat-line-strong);
   }
 }
 

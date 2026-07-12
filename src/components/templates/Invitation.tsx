@@ -7,13 +7,10 @@ import {
   FONT_MYEONGJO,
   FONT_BATANG,
   FONT_DODUM,
-  FONT_LATIN,
   INK,
   INK_MUTED,
   DANCHEONG,
   HAIRLINE,
-  INK_BLEED_STRONG,
-  INK_BLEED,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -63,7 +60,6 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
             width: 36,
             height: 1,
             background: DANCHEONG,
-            opacity: 0.85,
             marginBottom: 14,
           }}
         />
@@ -92,20 +88,18 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
               fontSize: 24,
               fontWeight: 800,
               color: INK,
-              textShadow: INK_BLEED_STRONG,
               letterSpacing: '-0.015em',
             }}
           >
             {groomName}
           </span>
-          <span style={{ fontFamily: FONT_LATIN, fontStyle: 'italic', fontSize: 17, color: DANCHEONG }}>·</span>
+          <span style={{ fontSize: 17, color: DANCHEONG }}>·</span>
           <span
             style={{
               fontFamily: FONT_MYEONGJO,
               fontSize: 24,
               fontWeight: 800,
               color: INK,
-              textShadow: INK_BLEED_STRONG,
               letterSpacing: '-0.015em',
             }}
           >
@@ -144,7 +138,6 @@ export default function InvitationRenderer({ data }: { data: SatgatDocumentData 
               fontWeight: 700,
               color: INK,
               margin: '0 0 3px',
-              textShadow: INK_BLEED,
             }}
           >
             {date}

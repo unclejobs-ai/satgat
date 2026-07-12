@@ -1,20 +1,11 @@
 .landing {
-  --canvas: #f7f7f2;
-  --ivory: #fffffb;
-  --ink: #1c1916;
-  --ink-light: #3a3833;
-  --muted: #63675f;
-  --line: #d2d6cb;
-  --soft-line: #e6e8de;
-  --jade: #2e6b5e;
-  --dancheong: #9b1b1b;
-  color: var(--ink);
-  background-color: var(--canvas);
-  font-family: var(--font-sans-kr);
+  color: var(--satgat-ink);
+  background-color: var(--satgat-canvas);
+  font-family: var(--satgat-font-label);
 }
 
 .landing:focus-visible {
-  outline: 2px solid var(--jade);
+  outline: 2px solid var(--satgat-jade);
   outline-offset: -2px;
 }
 
@@ -33,7 +24,7 @@
 .landing h1,
 .landing h2,
 .landing h3 {
-  font-family: var(--font-myeongjo);
+  font-family: var(--satgat-font-display);
   text-wrap: balance;
 }
 
@@ -66,8 +57,8 @@
 
 .eyebrow,
 .sectionNumber {
-  color: var(--jade);
-  font-family: var(--font-sans-kr);
+  color: var(--satgat-jade);
+  font-family: var(--satgat-font-label);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -88,8 +79,8 @@
 .heroDescription {
   max-width: 590px;
   margin-top: 32px !important;
-  color: var(--ink-light);
-  font-family: var(--font-myeongjo);
+  color: var(--satgat-ink-body);
+  font-family: var(--satgat-font-display);
   font-size: clamp(18px, 1.6vw, 22px);
   line-height: 1.85;
   text-wrap: pretty;
@@ -117,14 +108,14 @@
 }
 
 .primaryAction {
-  color: var(--ivory);
-  background-color: var(--ink);
+  color: var(--satgat-surface);
+  background-color: var(--satgat-ink);
 }
 
 .secondaryAction {
-  color: var(--ink);
-  background-color: var(--ivory);
-  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--satgat-ink);
+  background-color: var(--satgat-surface);
+  box-shadow: inset 0 0 0 1px var(--satgat-line);
 }
 
 .primaryAction:active,
@@ -140,7 +131,7 @@
 .catalogGroup a:focus-visible,
 .resultLink:focus-visible,
 .questions summary:focus-visible {
-  outline: 3px solid var(--dancheong);
+  outline: 3px solid var(--satgat-accent);
   outline-offset: 3px;
 }
 
@@ -156,17 +147,17 @@
   box-sizing: border-box;
   position: relative;
   padding: 18px;
-  background-color: var(--ivory);
-  box-shadow: 18px 18px 0 #e7e8dd, 30px 30px 0 #d2d6cb;
+  background-color: var(--satgat-surface);
+  box-shadow: 0 0 0 1px var(--satgat-line-strong);
 }
 
 .specimenImage {
   display: block;
   width: 100%;
   height: auto;
-  background-color: var(--ivory);
+  background-color: var(--satgat-surface);
   object-fit: contain;
-  box-shadow: inset 0 0 0 1px var(--soft-line);
+  box-shadow: inset 0 0 0 1px var(--satgat-line);
 }
 
 .specimenImage[data-page-spec="a4Portrait"],
@@ -188,7 +179,7 @@
 
 .heroSpecimen figcaption {
   margin-top: 44px;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 12px;
   text-align: right;
 }
@@ -198,7 +189,7 @@
 .results,
 .trust,
 .closing {
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--satgat-line);
   padding-block: clamp(72px, 8vw, 112px);
 }
 
@@ -220,7 +211,7 @@
 
 .sectionHeading div > p {
   margin-top: 12px !important;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 16px;
   line-height: 1.7;
 }
@@ -235,7 +226,7 @@
   grid-template-columns: minmax(220px, 0.68fr) minmax(0, 2fr);
   gap: 30px;
   padding-top: 24px;
-  border-top: 1px solid var(--soft-line);
+  border-top: 1px solid var(--satgat-line);
 }
 
 .groupHeading {
@@ -251,7 +242,7 @@
 
 .groupHeading p {
   margin-top: 10px !important;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 13px;
   line-height: 1.65;
   text-wrap: pretty;
@@ -261,7 +252,7 @@
   position: absolute;
   top: 3px;
   right: 0;
-  color: var(--jade);
+  color: var(--satgat-jade);
   font-size: 12px;
   font-weight: 700;
 }
@@ -286,16 +277,16 @@
   align-content: center;
   column-gap: 8px;
   padding: 14px 15px;
-  color: var(--ink);
-  background-color: var(--ivory);
+  color: var(--satgat-ink);
+  background-color: var(--satgat-surface);
   text-decoration: none;
-  box-shadow: inset 0 0 0 1px var(--soft-line);
+  box-shadow: inset 0 0 0 1px var(--satgat-line);
   transition: color 160ms ease, background-color 160ms ease, transform 120ms ease;
 }
 
 .templateName {
   grid-column: 1 / -1;
-  font-family: var(--font-myeongjo);
+  font-family: var(--satgat-font-display);
   font-size: 16px;
   font-weight: 700;
   line-height: 1.35;
@@ -304,13 +295,13 @@
 .templateFormat {
   align-self: end;
   margin-top: 9px;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 11px;
 }
 
 .templateArrow {
   align-self: end;
-  color: var(--jade);
+  color: var(--satgat-jade);
   font-size: 15px;
 }
 
@@ -341,15 +332,15 @@
   align-items: baseline;
   gap: 20px;
   padding-block: 28px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--satgat-line);
 }
 
 .steps li:last-child {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--satgat-line);
 }
 
 .steps span {
-  color: var(--jade);
+  color: var(--satgat-jade);
   font-size: 12px;
   font-weight: 700;
 }
@@ -360,7 +351,7 @@
 }
 
 .steps p {
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 14px;
   line-height: 1.7;
   text-wrap: pretty;
@@ -375,10 +366,10 @@
 .resultLink {
   display: grid;
   min-width: 0;
-  color: var(--ink);
-  background-color: var(--ivory);
+  color: var(--satgat-ink);
+  background-color: var(--satgat-surface);
   text-decoration: none;
-  box-shadow: inset 0 0 0 1px var(--soft-line);
+  box-shadow: inset 0 0 0 1px var(--satgat-line);
   transition: color 160ms ease, background-color 160ms ease, transform 120ms ease;
 }
 
@@ -388,7 +379,7 @@
   place-items: center;
   overflow: hidden;
   padding: 24px;
-  background-color: #e7e8dd;
+  background-color: var(--satgat-surface-muted);
 }
 
 .resultImage .specimenImage {
@@ -403,7 +394,7 @@
 }
 
 .resultMeta > span {
-  color: var(--jade);
+  color: var(--satgat-jade);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -411,13 +402,13 @@
 
 .resultMeta strong {
   margin-top: 8px;
-  font-family: var(--font-myeongjo);
+  font-family: var(--satgat-font-display);
   font-size: 19px;
 }
 
 .resultMeta small {
   margin-top: 8px;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 12px;
 }
 
@@ -425,14 +416,14 @@
   display: grid;
   grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.35fr);
   gap: 72px;
-  color: var(--ivory);
-  background-color: var(--ink);
+  color: var(--satgat-surface);
+  background-color: var(--satgat-ink);
   border-top: 0;
 }
 
 .trustLead .sectionNumber {
   margin-bottom: 22px !important;
-  color: #c5ded7;
+  color: var(--satgat-line);
 }
 
 .trustList {
@@ -443,18 +434,18 @@
 
 .trustList div {
   padding-block: 22px;
-  border-top: 1px solid #4d4b46;
+  border-top: 1px solid var(--satgat-ink-muted);
 }
 
 .trustList dt {
-  font-family: var(--font-myeongjo);
+  font-family: var(--satgat-font-display);
   font-size: 19px;
   font-weight: 700;
 }
 
 .trustList dd {
   margin-top: 10px;
-  color: #d8dbd1;
+  color: var(--satgat-line);
   font-size: 13px;
   line-height: 1.75;
   text-wrap: pretty;
@@ -476,18 +467,18 @@
 }
 
 .questions {
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--satgat-line);
 }
 
 .questions details {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--satgat-line);
 }
 
 .questions summary {
   min-height: 68px;
   align-content: center;
   padding: 10px 38px 10px 0;
-  font-family: var(--font-myeongjo);
+  font-family: var(--satgat-font-display);
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
@@ -497,7 +488,7 @@
 .questions p {
   max-width: 650px;
   padding: 0 38px 22px 0;
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 14px;
   line-height: 1.75;
   text-wrap: pretty;
@@ -509,35 +500,35 @@
   align-items: baseline;
   gap: 24px;
   padding-top: 24px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--satgat-line);
 }
 
 .footer strong {
-  font-family: var(--font-myeongjo);
+  font-family: var(--satgat-font-display);
   font-size: 23px;
 }
 
 .footer p,
 .footer small {
-  color: var(--muted);
+  color: var(--satgat-text-subtle);
   font-size: 12px;
 }
 
 @media (hover: hover) {
   .primaryAction:hover {
-    background-color: var(--jade);
+    background-color: var(--satgat-jade);
   }
 
   .secondaryAction:hover,
   .templateList a:hover,
   .resultLink:hover {
-    color: var(--jade);
-    background-color: #eef1e9;
+    color: var(--satgat-jade);
+    background-color: var(--satgat-surface-muted);
   }
 
   .questions summary:hover {
-    color: var(--jade);
-    background-color: #eef1e9;
+    color: var(--satgat-jade);
+    background-color: var(--satgat-surface-muted);
   }
 }
 

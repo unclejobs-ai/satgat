@@ -7,6 +7,7 @@ import type {
   TemplateCatalogEntry,
 } from '@/lib/templates/types';
 import { getRuntimeRenderer } from './runtime-catalog';
+import { FONT_BATANG, INK_MUTED } from '@/lib/design-system/constraint';
 
 interface SatgatTemplateRendererProps {
   template: TemplateCatalogEntry;
@@ -18,7 +19,7 @@ export function RendererLoadFailure() {
     <div
       role="alert"
       data-render-state="error"
-      style={{ padding: 48, textAlign: 'center', color: '#8A8478' }}
+      style={{ padding: 48, textAlign: 'center', color: INK_MUTED }}
     >
       <p>문서를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>
     </div>
@@ -73,7 +74,7 @@ export function SatgatTemplateRenderer({ template, data }: SatgatTemplateRendere
       <div
         role="alert"
         data-render-state="missing"
-        style={{ padding: 48, textAlign: 'center', color: '#8A8478' }}
+        style={{ padding: 48, textAlign: 'center', color: INK_MUTED }}
       >
         <p>선택한 템플릿의 문서를 표시할 수 없습니다.</p>
       </div>
@@ -98,15 +99,15 @@ export function SatgatTemplateRenderer({ template, data }: SatgatTemplateRendere
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#8A8478',
-              fontFamily: "'Gowun Batang', serif",
+              color: INK_MUTED,
+              fontFamily: FONT_BATANG,
             }}
           >
             <p>문서를 준비하는 중...</p>
           </div>
         }
       >
-        <Renderer data={data} />
+        {React.createElement(Renderer, { data })}
       </React.Suspense>
     </RendererLoadBoundary>
   );

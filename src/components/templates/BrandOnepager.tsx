@@ -14,8 +14,6 @@ import {
   INK_MUTED,
   DANCHEONG,
   HAIRLINE,
-  INK_BLEED,
-  INK_BLEED_STRONG,
 } from '@/lib/design-system/constraint';
 
 /**
@@ -69,7 +67,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
               fontFamily: FONT_MYEONGJO,
               fontWeight: 800,
               color: INK,
-              textShadow: INK_BLEED_STRONG,
               margin: '0 0 14px',
               wordBreak: 'keep-all',
             }}
@@ -85,7 +82,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                 fontSize: 20,
                 lineHeight: 1.5,
                 color: INK_LIGHT,
-                textShadow: INK_BLEED,
                 margin: '0 0 32px',
                 wordBreak: 'keep-all',
               }}
@@ -121,7 +117,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                   fontSize: 17,
                   lineHeight: 1.82,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: 0,
                   wordBreak: 'keep-all',
                 }}
@@ -154,7 +149,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
               fontWeight: 800,
               lineHeight: 1,
               color: INK,
-              textShadow: INK_BLEED,
               marginBottom: 18,
             }}
           >
@@ -170,7 +164,6 @@ export default function BrandOnepagerRenderer({ data }: { data: SatgatDocumentDa
                   fontWeight: 700,
                   lineHeight: 1.3,
                   color: INK,
-                  textShadow: INK_BLEED,
                   margin: '0 0 8px',
                   wordBreak: 'keep-all',
                 }}

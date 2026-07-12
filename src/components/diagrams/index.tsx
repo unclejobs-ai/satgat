@@ -5,6 +5,7 @@ import type { SatgatVisualSlot } from "@/lib/engine/slot-visual";
 import { normalizeVisualSlot } from "@/lib/engine/slot-visual";
 import {
   CANVAS,
+  CANVAS_DARK,
   IVORY,
   INK,
   INK_LIGHT,
@@ -20,12 +21,12 @@ import {
   FONT_DODUM,
 } from "@/lib/design-system/constraint";
 
-const NEUTRAL_1 = "#ECEDE4";
-const NEUTRAL_2 = "#E2E5DA";
-const DANCHEONG_WASH = "#F1E5E2";
-const JADE_WASH = "#E3EDE7";
-const GOLD_WASH = "#F0E8D6";
-const INK_WASH = "#E8E7DE";
+const NEUTRAL_1 = CANVAS;
+const NEUTRAL_2 = HAIRLINE;
+const DANCHEONG_WASH = CANVAS;
+const JADE_WASH = CANVAS;
+const GOLD_WASH = CANVAS;
+const INK_WASH = CANVAS_DARK;
 const SERIES = [INK_LIGHT, INK_MUTED, MUTED, BORDER, DANCHEONG, JADE, GOLD];
 
 type Point = { x: number; y: number };
