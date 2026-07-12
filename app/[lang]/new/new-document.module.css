@@ -129,6 +129,7 @@
 .templateCard:disabled,
 .seedButton:disabled,
 .generateButton:disabled,
+.promptField textarea:disabled,
 .brandProfile input:disabled,
 .brandProfile textarea:disabled,
 .brandProfile button:disabled {

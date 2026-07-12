@@ -76,6 +76,7 @@ const REQUIRED_README_SNIPPETS = [
   'app/satgat-tokens.css',
   '4쪽 PDF',
   '실제 `/api/export`',
+  '선택한 템플릿의 실제 PNG/PDF',
 ];
 
 export function assertReadmeContract(readme) {
@@ -215,16 +216,25 @@ async function inspectCreateFlow(page, origin) {
   const initial = await page.evaluate(() => {
     const card = document.querySelector('[aria-label="이력서 템플릿 선택"]');
     const submit = document.querySelector('button[type="submit"]');
+    const example = document.querySelector('a[href$="/examples#resume"]');
     return {
       selected: card?.getAttribute('aria-pressed'),
       cardLabel: card?.getAttribute('aria-label'),
       submitDisabled: submit instanceof HTMLButtonElement ? submit.disabled : null,
+      exampleHref: example?.getAttribute('href'),
+      exampleText: example?.textContent?.trim(),
     };
   });
   if (initial.selected !== 'true' || initial.cardLabel !== '이력서 템플릿 선택') {
     fail('resume query must select a concise accessible resume card');
   }
   if (initial.submitDisabled !== true) fail('generation CTA must begin disabled');
+  if (
+    initial.exampleHref !== '/ko/examples#resume' ||
+    initial.exampleText !== '이력서 완성 예시 보기'
+  ) {
+    fail('selected template must link directly to its matching runtime example');
+  }
 
   await page.evaluate(() => document.body.focus());
   const cardFocus = await tabUntil(page, (active) => active?.ariaLabel === '이력서 템플릿 선택');
@@ -323,7 +333,7 @@ async function inspectTemplatePreview(page, origin, template) {
   );
   await page.evaluate(() => document.fonts.ready);
 
-  const state = await page.evaluate((expectedPageSpec) => {
+  const state = await page.evaluate(() => {
     const roots = [...document.querySelectorAll('.satgat-document[data-page-spec]')];
     return {
       pageSpecs: roots.map((root) => root.getAttribute('data-page-spec')),
@@ -331,10 +341,10 @@ async function inspectTemplatePreview(page, origin, template) {
       text: document.body.innerText,
       dimensions: roots.map((root) => {
         const rect = root.getBoundingClientRect();
-        return { width: rect.width, height: rect.height, expectedPageSpec };
+        return { width: rect.width, height: rect.height };
       }),
     };
-  }, template.pageSpec);
+  });
 
   if (!state.pageSpecs.length || state.pageSpecs.some((value) => value !== template.pageSpec)) {
     fail(`${template.id} preview page spec does not match ${template.pageSpec}: ${state.pageSpecs.join(', ')}`);

@@ -214,7 +214,14 @@ test("owns the create route main landmark after the shared language header", asy
 
   expect(markup.match(/<main/g)).toHaveLength(1);
   expect(markup).toContain('<main id="main-content">');
+
+  const selectedMarkup = renderToStaticMarkup(
+    <NewDocumentClient lang="ko" preselectedTemplate="resume" />,
+  );
+  expect(selectedMarkup).toContain('href="/ko/examples#resume"');
+  expect(selectedMarkup).toContain(">이력서 완성 예시 보기</a>");
 });
+
 
 test("builds a private draft-only preview URL", () => {
   expect(buildPrivatePreviewHref("ko", "draft-id-123")).toBe(

@@ -43,9 +43,15 @@ export async function POST(req: NextRequest) {
   try {
     const body = await readBoundedJsonBody(req);
     if (!body.ok) {
+      const tooLarge = body.reason === "too-large";
       return NextResponse.json(
-        { error: "Invalid export request", message: "내보낼 문서 데이터가 올바르지 않습니다." },
-        { status: body.reason === "too-large" ? 413 : 400 },
+        {
+          error: "Invalid export request",
+          message: tooLarge
+            ? "문서가 너무 커서 PDF로 내보낼 수 없습니다."
+            : "내보낼 문서 데이터가 올바르지 않습니다.",
+        },
+        { status: tooLarge ? 413 : 400 },
       );
     }
     const parsed = ExportRequestSchema.safeParse(body.value);

@@ -203,8 +203,12 @@ export default function NewDocumentClient({
           onSelect={chooseTemplate}
         />
 
-        <Link className={styles.examplesLink} href={`/${encodeURIComponent(lang)}/examples`} prefetch={false}>
-          완성 문서 예시 보기
+        <Link
+          className={styles.examplesLink}
+          href={`/${encodeURIComponent(lang)}/examples${selected ? `#${encodeURIComponent(selected.id)}` : ""}`}
+          prefetch={false}
+        >
+          {selected ? `${selected.name} 완성 예시 보기` : "완성 문서 예시 보기"}
         </Link>
 
         {selected ? (
