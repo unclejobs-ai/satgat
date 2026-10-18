@@ -6,6 +6,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # satgat — 한국형 문서 디자인 시스템
 
+시스템·개발자·사용자 요청이 이 파일과 스킬보다 우선합니다. 승인된 변경은
+관련 검증까지 마무리하고, 후속 요청은 남은 작업의 목적에 반영합니다.
+
 자연어 한 문장이면 한국 문서 한 장이 됩니다. 14종 한국 문서. 단청 단일 강조 (≤ 5%/page), 명조 위계, 회녹 백자지 캔버스.
 
 ## 디자인 원칙 (skill brief)
