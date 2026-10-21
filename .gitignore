@@ -25,6 +25,7 @@
 *.pem
 .codex-orchestration/
 /.worktrees/
+.claude/worktrees/
 
 # gjc runtime state (plans, ledgers, session state) — never published
 .gjc/
