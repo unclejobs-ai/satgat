@@ -13,7 +13,7 @@
 [![npm](https://img.shields.io/badge/npm-satgat-1C1916.svg)](https://www.npmjs.com/package/satgat)
 [![Next.js](https://img.shields.io/badge/Next.js-16-1C1916.svg)](https://nextjs.org)
 
-<img src="public/satgat/assets/readme/satgat-home.png" alt="삿갓 웹앱의 템플릿 카탈로그" width="92%">
+<img src="public/satgat/assets/readme/satgat-home.png" alt="삿갓 웹앱 첫 화면: 한 문장으로 시작해 인쇄 문서로 끝나는 문서 생성기" width="92%">
 
 </div>
 
