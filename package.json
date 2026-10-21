@@ -35,6 +35,7 @@
     "references",
     "README.md",
     "LICENSE",
+    "NOTICE",
     "llms.txt"
   ],
   "engines": {

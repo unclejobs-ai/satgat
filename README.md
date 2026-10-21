@@ -196,4 +196,4 @@ skills/satgat/SKILL.md                     에이전트용 한국 문서 brief
 
 삿갓의 제약 기반 문서 디자인 접근은 [tw93/Kami](https://github.com/tw93/Kami)에서 영감을 받았습니다. 삿갓은 별도 코드와 런타임을 가진 독립 프로젝트입니다.
 
-MIT © 2026 [unclejobs-ai](https://github.com/unclejobs-ai). 번들 폰트는 각 OFL·MIT 라이선스를 따릅니다.
+MIT © 2026 [unclejobs-ai](https://github.com/unclejobs-ai). 번들 폰트는 각 OFL·MIT 라이선스를 따릅니다. 출처와 폰트 목록은 [NOTICE](NOTICE)에 있습니다.

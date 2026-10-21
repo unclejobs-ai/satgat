@@ -20,18 +20,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----
-
-ATTRIBUTION
-
-This project is inspired by the design principles of Kami (https://github.com/tw93/Kami)
-by Tw93, also licensed under MIT. The code, assets, and Korean design language
-are original to this repository. Kami remains its own upstream — Satgat does not
-sync from or merge to it.
-
-Korean OFL fonts used:
-- Nanum Myeongjo (SIL OFL 1.1, NAVER)
-- Gowun Batang (SIL OFL 1.1, GwsRyu)
-- Gowun Dodum (SIL OFL 1.1, GwsRyu)
-- Cormorant Garamond (SIL OFL 1.1, Catharsis Fonts)
-- Pretendard (SIL OFL 1.1, orioncactus)
